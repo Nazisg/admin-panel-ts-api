@@ -1,0 +1,32 @@
+.sideMenu {
+  padding-top: 25px;
+  color: gray;
+  .title {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    margin-left: 8px;
+    h1 {
+      font-size: 25px;
+      margin: 0;
+    }
+  }
+  ul {
+    li {
+      font-size: 18px;
+    }
+  }
+  .logo {
+    width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+.activeLink {
+  background-color: #6743c121 !important;
+  color: #6743c1 !important;
+}
+.ant-layout-sider-trigger {
+  background: #6743c121 !important;
+}
