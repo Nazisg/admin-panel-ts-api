@@ -21,15 +21,7 @@ const Router = () => {
         },
       }}
     >
-      <RenderIf
-        condition={token}
-        renderElse={
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-          </Routes>
-        }
-      >
+      <RenderIf condition={token}>
         <Auxilliary>
           <SideMenu />
           <Auxilliary>
@@ -39,6 +31,12 @@ const Router = () => {
             </Cover>
           </Auxilliary>
         </Auxilliary>
+      </RenderIf>
+      <RenderIf condition={!token}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+        </Routes>
       </RenderIf>
     </ConfigProvider>
   );

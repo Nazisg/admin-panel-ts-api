@@ -56,8 +56,8 @@ export interface EmployeeType {
 
 export interface RenderIfProps {
   children: React.ReactNode;
-  condition: React.ReactNode;
-  renderElse: React.ReactNode;
+  condition: boolean;
+  renderElse?: React.ReactNode;
 }
 
 export interface TableProps {
