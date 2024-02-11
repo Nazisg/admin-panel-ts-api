@@ -5,13 +5,14 @@ import ResetPassword from "./ResetPassword";
 import Update from "./Update";
 import View from "./View";
 
-const EmployeeModal: React.FC<ModalProps> = ({
+const EmployeeModal: React.FC<ModalProps & { selectedEmployeeId: number | null }> = ({
   statusType,
   modalOpen,
   setModalOpen,
+  selectedEmployeeId,
 }) => {
   const status = {
-    view: <View modalOpen={modalOpen} setModalOpen={setModalOpen} />,
+    view: <View modalOpen={modalOpen} setModalOpen={setModalOpen} selectedEmployeeId={selectedEmployeeId}/>,
     update: <Update modalOpen={modalOpen} setModalOpen={setModalOpen} />,
     delete: <Delete modalOpen={modalOpen} setModalOpen={setModalOpen} />,
     create: <Create modalOpen={modalOpen} setModalOpen={setModalOpen} />,

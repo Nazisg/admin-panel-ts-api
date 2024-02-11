@@ -10,39 +10,54 @@ import {
   SelectProps,
 } from "antd";
 import { ActionModalProps } from "shared/types";
+import { useGetRolesQuery } from "src/redux/api/roles";
+import { useGetTeamsQuery } from "src/redux/api/teams";
+import { useUpdateEmployeeMutation } from "src/redux/api/employees";
 
 const Update: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
-  const onFinish = (values: any) => {
-    console.log("Success:", values);
-  };
+ 
+  const [updateEmployee, { isLoading }] = useUpdateEmployeeMutation();
+  const [form] = Form.useForm();
+  const { data: roles } = useGetRolesQuery();
+  const { data: teams } = useGetTeamsQuery();
   const optionsTeams: SelectProps["options"] = [];
   const optionsRole: SelectProps["options"] = [];
-  const teams = [
-    { id: "1", teamName: "Frontend" },
-    { id: "2", teamName: "Backend" },
-    { id: "3", teamName: "Mobile" },
-  ];
-  const roles = [
-    { id: "1", roleName: "Admin" },
-    { id: "2", roleName: "Employee" },
-  ];
-  teams.map((team) => {
-    optionsTeams.push({
-      value: team.id,
-      label: team.teamName,
+
+  if (Array.isArray(teams)) {
+    teams?.map((team) => {
+      optionsTeams.push({
+        value: team.id,
+        label: team.teamName,
+      });
     });
-  });
-  roles.map((role) => {
-    optionsRole.push({
-      value: role.id,
-      label: role.roleName,
+  }
+
+  if (Array.isArray(roles)) {
+    roles.forEach((role) => {
+      optionsRole.push({
+        value: role.id,
+        label: role.roleName,
+      });
     });
-  });
+  }
   const handleChangeTeams = (value: string | string[]) => {
     console.log(`Selected: ${value}`);
   };
   const handleChangeRole = (value: string | string[]) => {
     console.log(`Selected: ${value}`);
+  };
+  const onFinish = (values: any) => {
+    // Make sure to include employee ID in values
+    const { id, firstName, lastName, mail, role, team } = values;
+    updateEmployee({ id, firstName, lastName, mail, role, team }).unwrap()
+      .then(() => {
+        console.log("Employee updated successfully");
+        form.resetFields(); // Reset form fields after successful update
+        setModalOpen(false); // Close modal
+      })
+      .catch((error) => {
+        console.error("Failed to update employee:", error);
+      });
   };
   return (
     <Modal
@@ -85,7 +100,7 @@ const Update: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
           <Col span={12}>
             <Form.Item
               label="Mail"
-              name="userName"
+              name="mail"
               rules={[{ required: true, message: "" }]}
             >
               <Input placeholder="nazrin@crocusoft.az" size="large" />

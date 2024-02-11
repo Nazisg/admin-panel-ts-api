@@ -8,6 +8,8 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   title,
   setModalOpen,
   setStatus,
+  employeeId,
+  setSelectedEmployeeId,
 }) => {
   const status = {
     View: "view",
@@ -15,7 +17,6 @@ const ActionButton: React.FC<ActionButtonProps> = ({
     Delete: "delete",
     ResetPassword: "resetPassword",
   };
-
   return (
     <Tooltip placement="top" title={title}>
       <Button
@@ -23,6 +24,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
           setModalOpen(true);
           //@ts-ignore
           setStatus(status[title]);
+          setSelectedEmployeeId(employeeId);
         }}
         shape="circle"
         className={styles[type]}

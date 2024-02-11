@@ -19,13 +19,22 @@ import ActionButton from "src/shared/components/ActionButton";
 import Filter from "src/shared/components/Filter";
 import styles from "./Projects.module.scss";
 import ProjectModal from "./modals/";
+import { useGetProjectsQuery } from "src/redux/api/projects";
 
 export default function Projects() {
+  const { data } = useGetProjectsQuery();
   const [modalOpen, setModalOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [status, setStatus] = useState<
     "view" | "delete" | "update" | "create" | "resetPassword"
   >("view");
+  
+  const projects =
+    data?.map((project) => ({
+      key: project.id,
+      id: project.id,
+      project: project.projectName,
+    })) ?? [];
 
   const handleCreate = () => {
     setModalOpen(true);
@@ -33,6 +42,7 @@ export default function Projects() {
   };
   const columns: TableColumnsType<ProjectType> = [
     {
+      key: "Project",
       title: "Project",
       dataIndex: "project",
       ellipsis: true,
@@ -62,32 +72,7 @@ export default function Projects() {
       ),
     },
   ];
-  const data: ProjectType[] = [
-    {
-      key: "1",
-      project: "Furniro",
-      employees: [
-        { name: "Nazrin", surname: "Isgandarova" },
-        { name: "Lale", surname: "Qarayeva" },
-      ],
-    },
-    {
-      key: "2",
-      project: "Plast",
-      employees: [
-        { name: "Rahman", surname: "Aliyev" },
-        { name: "Musa", surname: "Agali" },
-      ],
-    },
-    {
-      key: "3",
-      project: "CRM",
-      employees: [
-        { name: "Aytac", surname: "Qarayev" },
-        { name: "Murad", surname: "Hasanli" },
-      ],
-    },
-  ];
+
   return (
     <>
       <Flex align="baseline" gap="small" className={styles.header}>
@@ -119,7 +104,8 @@ export default function Projects() {
         className="table"
         scroll={{ y: 300, x: "auto" }}
         columns={columns}
-        dataSource={data}
+        loading={data === undefined}
+        dataSource={projects}
       />
       <ProjectModal
         modalOpen={modalOpen}

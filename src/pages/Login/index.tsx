@@ -1,7 +1,7 @@
 import { Button, Form, Input, Typography } from "antd";
 import { Link } from "react-router-dom";
 import styles from "./Login.module.scss";
-import { useLoginUserMutation } from "src/services/authApi/authApi";
+import { useLoginUserMutation } from "src/redux/api/auth";
 import { useDispatch } from "react-redux";
 import { setUser } from "src/redux/features/auth/AuthSlice";
 export default function Login() {

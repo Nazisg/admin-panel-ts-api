@@ -1,9 +1,19 @@
 import { Button, Flex, Form, Input, Modal, Select, SelectProps } from "antd";
 import { ActionModalProps } from "shared/types";
+import {useCreateProjectMutation} from 'src/redux/api/projects'
 
 const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
-  const onFinish = (values: any) => {
-    console.log("Success:", values);
+  const createProjectMutation = useCreateProjectMutation();
+  const onFinish = async (values: any) => {
+    // try {
+    //   // Send a request to create a new project
+    //   const response = await createProjectMutation.mutateAsync(values);
+    //   console.log("Project created successfully:", response);
+    //   // Close the modal
+    //   setModalOpen(false);
+    // } catch (error) {
+    //   console.error("Error creating project:", error);
+    // }
   };
 
   const optionsEmployees: SelectProps["options"] = [];

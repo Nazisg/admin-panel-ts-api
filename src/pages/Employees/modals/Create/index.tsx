@@ -1,49 +1,62 @@
 import {
-    Button,
-    Col,
-    Flex,
-    Form,
-    Input,
-    Modal,
-    Row,
-    Select,
-    SelectProps,
+  Button,
+  Col,
+  Flex,
+  Form,
+  Input,
+  Modal,
+  Row,
+  Select,
+  SelectProps,
 } from "antd";
 import { ActionModalProps } from "shared/types";
-
+import { useGetRolesQuery } from "src/redux/api/roles";
+import { useGetTeamsQuery } from "src/redux/api/teams";
+import { useCreateEmployeeMutation } from "src/redux/api/employees";
 const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
-  const onFinish = (values: any) => {
-    console.log("Success:", values);
-  };
+  const [createEmployee] = useCreateEmployeeMutation();
+  const { data: roles } = useGetRolesQuery();
+  const { data: teams } = useGetTeamsQuery();
   const optionsTeams: SelectProps["options"] = [];
   const optionsRole: SelectProps["options"] = [];
-  const teams = [
-    { id: "1", teamName: "Frontend" },
-    { id: "2", teamName: "Backend" },
-    { id: "3", teamName: "Mobile" },
-  ];
-  const roles = [
-    { id: "1", roleName: "Admin" },
-    { id: "2", roleName: "Employee" },
-  ];
-  teams.map((team) => {
-    optionsTeams.push({
-      value: team.id,
-      label: team.teamName,
+
+  if (Array.isArray(teams)) {
+    teams?.map((team) => {
+      optionsTeams.push({
+        value: team.id,
+        label: team.teamName,
+      });
     });
-  });
-  roles.map((role) => {
-    optionsRole.push({
-      value: role.id,
-      label: role.roleName,
+  }
+
+  if (Array.isArray(roles)) {
+    roles.forEach((role) => {
+      optionsRole.push({
+        value: role.id,
+        label: role.roleName,
+      });
     });
-  });
+  }
   const handleChangeTeams = (value: string | string[]) => {
     console.log(`Selected: ${value}`);
   };
-  const handleChangeRole = (value: string | string[]) => {
-    console.log(`Selected: ${value}`);
+  const handleChangeRole = (value: string | string[], option: { key: React.Key; label: React.ReactNode }) => {
+    console.log(`Selected: ${value}, ${option.label}`);
   };
+  const onFinish = async (values: any) => {
+    try {
+      const { role, ...rest } = values;
+      const selectedRole = optionsRole.find(option => option.value === role);
+      const response = await createEmployee({
+        ...rest,
+        role: { id: role, roleName: selectedRole?.label },
+      }).unwrap();
+      console.log(response);
+    } catch (error) {
+      console.error("Failed to create employee:", error);
+    }
+  };
+
   return (
     <Modal
       title="Create Employee"
@@ -85,7 +98,7 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
           <Col span={12}>
             <Form.Item
               label="Mail"
-              name="userName"
+              name="mail"
               rules={[{ required: true, message: "" }]}
             >
               <Input placeholder="nazrin@crocusoft.az" size="large" />
@@ -94,7 +107,7 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
           <Col span={12}>
             <Form.Item
               label="Password"
-              name="mail"
+              name="password"
               rules={[{ required: true, message: "" }]}
             >
               <Input placeholder="********" size="large" />
@@ -105,7 +118,7 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
           <Col span={12}>
             <Form.Item
               label="Team"
-              name="teams"
+              name="teamId"
               rules={[{ required: true, message: "" }]}
             >
               <Select
@@ -117,14 +130,14 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item
+          <Form.Item
               label="Role"
               name="role"
               rules={[{ required: true, message: "" }]}
             >
-              <Select
+             <Select
                 size="large"
-                onChange={handleChangeRole}
+                onChange={(value, option) => handleChangeRole(value, option)}
                 placeholder="Employee"
                 options={optionsRole}
               />

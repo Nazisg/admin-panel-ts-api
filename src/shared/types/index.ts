@@ -20,11 +20,11 @@ export interface FilterProps {
 
 export interface TeamType {
   key: React.Key;
-  team: string;
-  employees: {
-    name: string;
-    surname: string;
-  }[];
+  teamName: string;
+  // employees: {
+  //   name: string;
+  //   surname: string;
+  // }[];
 }
 
 export interface ReportType {
@@ -36,18 +36,17 @@ export interface ReportType {
 }
 
 export interface ProjectType {
-  key: React.Key;
+  key: React.Key; 
+  // id: number;
   project: string;
-  employees: {
-    name: string;
-    surname: string;
-  }[];
+  projectName: string;
 }
 
 export interface EmployeeType {
   key: React.Key;
-  name: string;
-  surname: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
   mail: string;
   team: string;
   role: string;
@@ -76,6 +75,8 @@ export interface ActionButtonProps {
   icon: JSX.Element;
   type: string;
   title: string;
+  employeeId: number;
+  setSelectedEmployeeId:any;
   setModalOpen: Dispatch<SetStateAction<boolean>>;
   setStatus: Dispatch<
     SetStateAction<"view" | "delete" | "update" | "create" | "resetPassword">

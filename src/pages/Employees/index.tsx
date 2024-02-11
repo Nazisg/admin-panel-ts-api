@@ -19,13 +19,16 @@ import {
 import { useState } from "react";
 import ActionButton from "shared/components/ActionButton/index";
 import { EmployeeType } from "shared/types";
+import { useGetEmployeesQuery } from "src/redux/api/employees";
 import Filter from "src/shared/components/Filter";
 import EmployeeModal from "../Employees/modals/index";
 import styles from "./Employees.module.scss";
-
-export default function index() {
+export default function Employees() {
+  const { data } = useGetEmployeesQuery();
   const [modalOpen, setModalOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<number | null>(null); 
+
   const [status, setStatus] = useState<
     "view" | "delete" | "update" | "create" | "resetPassword"
   >("view");
@@ -35,19 +38,24 @@ export default function index() {
     setStatus("create");
   };
 
+  const employees =
+    data?.map((employee) => ({
+      key: employee.id,
+      id: employee.id, 
+      // name: employee.firstName,
+      // surname: employee.lastName,
+      mail: employee.mail,
+      // team: employee.team,
+      // role: employee.role,
+      // status: employee.status,
+    })) ?? [];
   // const [status, setStatus] = useState<"active" | "deactive">("active");
 
   const columns: TableColumnsType<EmployeeType> = [
     {
       title: "Name",
-      dataIndex: "name",
+      dataIndex: "fullName",
       sorter: (a, b) => a.name.localeCompare(b.name),
-      render: (text) => (
-        <>
-          {/* <Avatar icon={<EmployeeOutlined />} alt="Avatar" /> */}
-          <p style={{ marginLeft: 10 }}>{text}</p>
-        </>
-      ),
     },
     {
       title: "Surname",
@@ -84,14 +92,16 @@ export default function index() {
     {
       title: "Action",
       ellipsis: true,
-      render: () => (
+      render: (_, record) => (
         <Space size="small">
           <ActionButton
             setStatus={setStatus}
             setModalOpen={setModalOpen}
             title="View"
-            icon={<EyeOutlined />}
             type="btnView"
+            icon={<EyeOutlined />}
+            employeeId={record.id} 
+            setSelectedEmployeeId={setSelectedEmployeeId}
           />
           <ActionButton
             setStatus={setStatus}
@@ -118,35 +128,6 @@ export default function index() {
       ),
     },
   ];
-  const data: EmployeeType[] = [
-    {
-      key: "1",
-      name: "Nazrin",
-      surname: "Isgandarova",
-      mail: "naz@crocusoft.az",
-      team: "Frontend",
-      role: "Employee",
-      status: true,
-    },
-    {
-      key: "2",
-      name: "Rahman",
-      surname: "Aliyev",
-      mail: "rah@crocusoft.az",
-      team: "Backend",
-      role: "Employee",
-      status: true,
-    },
-    {
-      key: "3",
-      name: "Sevinc",
-      surname: "Mahmudlu",
-      mail: "sev@crocusoft.az",
-      team: "UX/UI Design",
-      role: "Employee",
-      status: false,
-    },
-  ];
 
   return (
     <>
@@ -154,6 +135,7 @@ export default function index() {
         modalOpen={modalOpen}
         setModalOpen={setModalOpen}
         statusType={status}
+        selectedEmployeeId={selectedEmployeeId}
       />
       <Flex align="baseline" gap="small" className={styles.header}>
         <Typography.Title className="title">Employees</Typography.Title>
@@ -186,7 +168,8 @@ export default function index() {
         pagination={{ pageSize: 10 }}
         scroll={{ y: "300px", x: "auto" }}
         columns={columns}
-        dataSource={data}
+        loading={data === undefined}
+        dataSource={employees}
       />
       <Filter
         modalOpen={filterOpen}

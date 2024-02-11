@@ -1,18 +1,22 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
+import persistStore from "redux-persist/es/persistStore";
+import { PersistGate } from "redux-persist/integration/react";
+import Spinner from "shared/components/Spinner";
 import App from "./App.tsx";
 import "./index.css";
-import { Provider } from "react-redux";
-import { store } from "./redux/app/store.ts";
-// import { PersistGate } from "redux-persist/integration/react";
+import { store } from "./redux/store.ts";
+import "./styles/index.scss";
 // import * as dotenv from "dotenv";
 // dotenv.config();
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
+  <BrowserRouter>
     <Provider store={store}>
-      {/* <PersistGate loading={null} persistor={persistor}> */}
+      {/* <PersistGate loading={<Spinner />} persistor={persistStore(store)}> */}
         <App />
       {/* </PersistGate> */}
     </Provider>
-  </React.StrictMode>
+  </BrowserRouter>
 );

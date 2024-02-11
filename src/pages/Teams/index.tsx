@@ -14,22 +14,29 @@ import {
   Typography,
 } from "antd";
 import { useState } from "react";
+import { useGetTeamsQuery } from "src/redux/api/teams";
 import ActionButton from "src/shared/components/ActionButton";
 import Filter from "src/shared/components/Filter";
 import { TeamType } from "src/shared/types";
 import TeamModal from "./modals/index";
-
 export default function Teams() {
+  const { data } = useGetTeamsQuery();
   const [modalOpen, setModalOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [status, setStatus] = useState<
     "view" | "update" | "create" | "delete" | "resetPassword"
   >("view");
-
   const handleCreate = () => {
     setModalOpen(true);
     setStatus("create");
   };
+
+  const teams =
+    data?.map((team) => ({
+      key: team.id,
+      id: team.id,
+      team: team.teamName,
+    })) ?? [];
 
   const columns: TableColumnsType<TeamType> = [
     {
@@ -68,40 +75,6 @@ export default function Teams() {
       ),
     },
   ];
-  const data: TeamType[] = [
-    {
-      key: "1",
-      team: "Frontend",
-      employees: [
-        { name: "Nazrin", surname: "Isgandarova" },
-        { name: "Lale", surname: "Qarayeva" },
-      ],
-    },
-    {
-      key: "2",
-      team: "Backend",
-      employees: [
-        { name: "Rahman", surname: "Aliyev" },
-        { name: "Musa", surname: "Agali" },
-      ],
-    },
-    {
-      key: "3",
-      team: "Mobile",
-      employees: [
-        { name: "Aytac", surname: "Qarayev" },
-        { name: "Murad", surname: "Hasanli" },
-      ],
-    },
-    {
-      key: "4",
-      team: "UX/UI Design",
-      employees: [
-        { name: "GulPeri", surname: "Rustemli" },
-        { name: "Samir", surname: "Huseynli" },
-      ],
-    },
-  ];
 
   return (
     <>
@@ -125,7 +98,8 @@ export default function Teams() {
         className="table"
         scroll={{ y: 300, x: "auto" }}
         columns={columns}
-        dataSource={data}
+        dataSource={teams}
+        loading={data === undefined}
       />
       <TeamModal
         modalOpen={modalOpen}
