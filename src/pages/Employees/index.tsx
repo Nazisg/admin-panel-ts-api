@@ -19,12 +19,12 @@ import {
 import { useState } from "react";
 import ActionButton from "shared/components/ActionButton/index";
 import { EmployeeType } from "shared/types";
-import { useGetEmployeesQuery } from "src/redux/api/employees";
+import { useGetEmployeesFilterQuery } from "src/redux/api/employees";
 import Filter from "src/shared/components/Filter";
 import EmployeeModal from "../Employees/modals/index";
 import styles from "./Employees.module.scss";
 export default function Employees() {
-  const { data } = useGetEmployeesQuery();
+  const { data } = useGetEmployeesFilterQuery();
   const [modalOpen, setModalOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<number | null>(null); 
@@ -37,24 +37,23 @@ export default function Employees() {
     setModalOpen(true);
     setStatus("create");
   };
-
   const employees =
-    data?.map((employee) => ({
+    data?.content?.map((employee) => ({
       key: employee.id,
       id: employee.id, 
-      // name: employee.firstName,
-      // surname: employee.lastName,
+      name: employee.firstName,
+      surname: employee.lastName,
       mail: employee.mail,
-      // team: employee.team,
-      // role: employee.role,
-      // status: employee.status,
+      team: employee.team?.teamName,
+      role: employee.role?.roleName,
+      status: employee.status,
     })) ?? [];
   // const [status, setStatus] = useState<"active" | "deactive">("active");
 
   const columns: TableColumnsType<EmployeeType> = [
     {
       title: "Name",
-      dataIndex: "fullName",
+      dataIndex: "name",
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
@@ -109,6 +108,8 @@ export default function Employees() {
             title="Update"
             icon={<EditOutlined />}
             type="btnUpdate"
+            employeeId={record.id} 
+            setSelectedEmployeeId={setSelectedEmployeeId}
           />
           <ActionButton
             setStatus={setStatus}
@@ -116,6 +117,8 @@ export default function Employees() {
             title="ResetPassword"
             icon={<LockOutlined />}
             type="btnReset"
+            employeeId={record.id} 
+            setSelectedEmployeeId={setSelectedEmployeeId}
           />
           <ActionButton
             setStatus={setStatus}
@@ -123,6 +126,8 @@ export default function Employees() {
             title="Delete"
             icon={<DeleteOutlined />}
             type="btnDel"
+            employeeId={record.id} 
+            setSelectedEmployeeId={setSelectedEmployeeId}
           />
         </Space>
       ),

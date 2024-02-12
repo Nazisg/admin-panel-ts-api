@@ -14,15 +14,17 @@ import { useGetRolesQuery } from "src/redux/api/roles";
 import { useGetTeamsQuery } from "src/redux/api/teams";
 import { useUpdateEmployeeMutation } from "src/redux/api/employees";
 
-const Update: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
- 
-  const [updateEmployee, { isLoading }] = useUpdateEmployeeMutation();
+const Update: React.FC<ActionModalProps> = ({
+  modalOpen,
+  setModalOpen,
+  selectedEmployeeId,
+}) => {
+  const [updateEmployee] = useUpdateEmployeeMutation();
   const [form] = Form.useForm();
   const { data: roles } = useGetRolesQuery();
   const { data: teams } = useGetTeamsQuery();
   const optionsTeams: SelectProps["options"] = [];
   const optionsRole: SelectProps["options"] = [];
-
   if (Array.isArray(teams)) {
     teams?.map((team) => {
       optionsTeams.push({
@@ -48,12 +50,13 @@ const Update: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
   };
   const onFinish = (values: any) => {
     // Make sure to include employee ID in values
-    const { id, firstName, lastName, mail, role, team } = values;
-    updateEmployee({ id, firstName, lastName, mail, role, team }).unwrap()
+    const { selectedEmployeeId, firstName, lastName, mail, role, team } = values;
+    updateEmployee({ selectedEmployeeId, firstName, lastName, mail, role, team })
+      .unwrap()
       .then(() => {
         console.log("Employee updated successfully");
-        form.resetFields(); // Reset form fields after successful update
-        setModalOpen(false); // Close modal
+        form.resetFields(); 
+        setModalOpen(false); 
       })
       .catch((error) => {
         console.error("Failed to update employee:", error);

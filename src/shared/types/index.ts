@@ -47,6 +47,8 @@ export interface EmployeeType {
   firstName: string;
   lastName: string;
   fullName: string;
+  name:string;
+  surname:string;
   mail: string;
   team: string;
   role: string;
@@ -69,6 +71,7 @@ export interface TableProps {
 export interface ActionModalProps {
   modalOpen: boolean;
   setModalOpen: Dispatch<SetStateAction<boolean>>;
+  selectedEmployeeId: number | null 
 }
 
 export interface ActionButtonProps {

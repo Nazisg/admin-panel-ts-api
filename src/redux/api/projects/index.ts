@@ -17,7 +17,7 @@ export const projectsApi = createApi({
     baseUrl: "http://localhost:8085/api/",
     prepareHeaders: (headers) => {
       const token =
-        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQGNyb2N1c29mdC5jb20iLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJpYXQiOjE3MDc2NDAxOTAsImV4cCI6MTcwNzcyNjU5MH0.WnumTHpqAYQl65FMK9IsuovzKqe8r7EPdc9JDXfm_zY";
+        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQGNyb2N1c29mdC5jb20iLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJpYXQiOjE3MDc3MjYzMzksImV4cCI6MTcwNzgxMjczOX0.0ktKu0T9OohMeDQD2GBjfvuINBOS3K30Y-QssCiJPfM";
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
@@ -29,6 +29,9 @@ export const projectsApi = createApi({
     getProjects: builder.query<ProjectsApiResponse, void>({
       query: () => `project`,
     }),
+    getProjectsFilter: builder.query<ProjectsApiResponse, void>({
+      query: () => `project/search`,
+    }),
     createProject: builder.mutation<ProjectsApiResponce, ProjectType>({
       query: (newProject) => ({
         url: `project`,
@@ -39,4 +42,8 @@ export const projectsApi = createApi({
   }),
 });
 
-export const { useGetProjectsQuery, useCreateProjectMutation } = projectsApi;
+export const {
+  useGetProjectsQuery,
+  useGetProjectsFilterQuery,
+  useCreateProjectMutation,
+} = projectsApi;

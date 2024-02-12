@@ -1,12 +1,13 @@
-import { Button, Descriptions, Drawer, Flex, Tag } from "antd";
+import { Descriptions, Drawer, Flex, Tag } from "antd";
 import { ActionModalProps } from "shared/types";
 import { useGetEmployeeByIdQuery } from "src/redux/api/employees";
 
-const View: React.FC<
-  ActionModalProps & { selectedEmployeeId: number | null }
-> = ({ modalOpen, setModalOpen, selectedEmployeeId }) => {
+const View: React.FC<ActionModalProps> = ({
+  modalOpen,
+  setModalOpen,
+  selectedEmployeeId,
+}) => {
   const { data } = useGetEmployeeByIdQuery(selectedEmployeeId);
-  console.log(data);
 
   return (
     <Drawer
@@ -22,7 +23,7 @@ const View: React.FC<
           {data?.team?.teamName}
         </Descriptions.Item>
         <Descriptions.Item label="Role">
-        <Tag color="geekblue"> {data?.role?.roleName}</Tag>
+          <Tag color="geekblue"> {data?.role?.roleName}</Tag>
         </Descriptions.Item>
         <Descriptions.Item label="Status">
           <Tag color={data?.status === "ACTIVE" ? "green" : "red"}>

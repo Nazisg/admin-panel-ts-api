@@ -1,7 +1,9 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import storage from "redux-persist/lib/storage";
+import { createSlice } from "@reduxjs/toolkit";
+import { persistReducer } from "redux-persist";
 
 export interface authType {
-  id: string | null | undefined;
+  id: number | null | undefined;
   access_token: string | null | undefined;
 }
 
@@ -10,19 +12,23 @@ const initialState: authType = {
   access_token: null,
 };
 
-export const authSlice = createSlice({
-  name: "auth",
+export const userSlice = createSlice({
+  name: "user",
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<authType>) => {
-    state.id   = action.payload.id;
-    },
-    setToken: (state) => {
-      state.access_token = null;
+    setUser: (state, action) => {
+      state.access_token = action.payload;
     },
   },
 });
+export const reducer = persistReducer(
+  {
+    key: "CRM:AUTH",
+    storage,
+    whitelist: ["user"],
+  },
+  userSlice.reducer
+);
+export const { setUser } = userSlice.actions;
 
-export const { setUser, setToken } = authSlice.actions;
-
-export default authSlice.reducer;
+export default reducer;

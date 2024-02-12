@@ -12,8 +12,7 @@ export const rolesApi = createApi({
     baseUrl: "http://localhost:8085/api/roles/",
     prepareHeaders: (headers) => {
       const token =
-        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQGNyb2N1c29mdC5jb20iLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJpYXQiOjE3MDc2NDAxOTAsImV4cCI6MTcwNzcyNjU5MH0.WnumTHpqAYQl65FMK9IsuovzKqe8r7EPdc9JDXfm_zY";
-      if (token) {
+      "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQGNyb2N1c29mdC5jb20iLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJpYXQiOjE3MDc3MjYzMzksImV4cCI6MTcwNzgxMjczOX0.0ktKu0T9OohMeDQD2GBjfvuINBOS3K30Y-QssCiJPfM";      if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
       headers.set("Content-Type", "application/json");

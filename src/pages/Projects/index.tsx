@@ -19,18 +19,18 @@ import ActionButton from "src/shared/components/ActionButton";
 import Filter from "src/shared/components/Filter";
 import styles from "./Projects.module.scss";
 import ProjectModal from "./modals/";
-import { useGetProjectsQuery } from "src/redux/api/projects";
+import { useGetProjectsFilterQuery } from "src/redux/api/projects";
 
 export default function Projects() {
-  const { data } = useGetProjectsQuery();
+  const { data } = useGetProjectsFilterQuery();
   const [modalOpen, setModalOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [status, setStatus] = useState<
     "view" | "delete" | "update" | "create" | "resetPassword"
   >("view");
-  
+  console.log(useGetProjectsFilterQuery())
   const projects =
-    data?.map((project) => ({
+    data?.content?.map((project) => ({
       key: project.id,
       id: project.id,
       project: project.projectName,

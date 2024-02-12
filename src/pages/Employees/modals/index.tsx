@@ -13,11 +13,11 @@ const EmployeeModal: React.FC<ModalProps & { selectedEmployeeId: number | null }
 }) => {
   const status = {
     view: <View modalOpen={modalOpen} setModalOpen={setModalOpen} selectedEmployeeId={selectedEmployeeId}/>,
-    update: <Update modalOpen={modalOpen} setModalOpen={setModalOpen} />,
-    delete: <Delete modalOpen={modalOpen} setModalOpen={setModalOpen} />,
+    update: <Update modalOpen={modalOpen} setModalOpen={setModalOpen} selectedEmployeeId={selectedEmployeeId}/>,
+    delete: <Delete modalOpen={modalOpen} setModalOpen={setModalOpen} selectedEmployeeId={selectedEmployeeId}/>,
     create: <Create modalOpen={modalOpen} setModalOpen={setModalOpen} />,
     resetPassword: (
-      <ResetPassword modalOpen={modalOpen} setModalOpen={setModalOpen} />
+      <ResetPassword modalOpen={modalOpen} setModalOpen={setModalOpen} selectedEmployeeId={selectedEmployeeId} />
     ),
   };
   return status[statusType];

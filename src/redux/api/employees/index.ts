@@ -4,7 +4,6 @@ interface EmployeesType {
   id: number;
   firstName: string;
   lastName: string;
-  fullName: string;
   mail: string;
   status: string;
   team: {
@@ -27,7 +26,7 @@ export const employeesApi = createApi({
     baseUrl: "http://localhost:8085/",
     prepareHeaders: (headers) => {
       const token =
-        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQGNyb2N1c29mdC5jb20iLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJpYXQiOjE3MDc2NDAxOTAsImV4cCI6MTcwNzcyNjU5MH0.WnumTHpqAYQl65FMK9IsuovzKqe8r7EPdc9JDXfm_zY";
+        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQGNyb2N1c29mdC5jb20iLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJpYXQiOjE3MDc3MjYzMzksImV4cCI6MTcwNzgxMjczOX0.0ktKu0T9OohMeDQD2GBjfvuINBOS3K30Y-QssCiJPfM";
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
@@ -39,6 +38,9 @@ export const employeesApi = createApi({
     getEmployees: builder.query<EmployeesType, void>({
       query: () => `users`,
     }),
+    getEmployeesFilter: builder.query<EmployeesType, void>({
+      query: () => `users/filters`,
+    }),
     getEmployeeById: builder.query<EmployeesType, number>({
       query: (employeeId) => `users/${employeeId}`,
     }),
@@ -49,19 +51,23 @@ export const employeesApi = createApi({
         body: { newEmployee },
       }),
     }),
-    updateEmployee: builder.mutation<EmployeesType, void>({
-      query: (updatedEmployee) => ({
-        url: `users`,
-        method: "PUT",
-        body: { updatedEmployee },
+    updateEmployee: builder.mutation<
+      EmployeesType,
+      { id: number; post: FormData }
+    >({
+      query: ({ id, post }) => ({
+        url: `users/${id}`,
+        method: "PATCH",
+        credentials: "include",
+        body: post,
       }),
     }),
-    
   }),
 });
 
 export const {
   useGetEmployeesQuery,
+  useGetEmployeesFilterQuery,
   useGetEmployeeByIdQuery,
   useCreateEmployeeMutation,
   useUpdateEmployeeMutation,

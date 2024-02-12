@@ -14,7 +14,7 @@ import "./styles/index.scss";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
     <Provider store={store}>
-      {/* <PersistGate loading={<Spinner />} persistor={persistStore(store)}> */}
+      {/* <PersistGate persistor={persistStore(store)}> */}
         <App />
       {/* </PersistGate> */}
     </Provider>
