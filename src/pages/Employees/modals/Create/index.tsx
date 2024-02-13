@@ -45,15 +45,21 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
   };
   const onFinish = async (values: any) => {
     try {
-      const { role, ...rest } = values;
-      const selectedRole = optionsRole.find(option => option.value === role);
-      const response = await createEmployee({
+      const { role, teamId, ...rest } = values;
+      const selectedRole = roles?.find((r: any) => r.id === role);
+      const dataToSend = {
         ...rest,
-        role: { id: role, roleName: selectedRole?.label },
-      }).unwrap();
+        role: {
+          id: role,
+          roleName: selectedRole.roleName,
+        },
+        teamId,
+      };
+      const response = await createEmployee(dataToSend).unwrap();
       console.log(response);
+      setModalOpen(false); 
     } catch (error) {
-      console.error("Failed to create employee:", error);
+      console.error('Failed to create employee:', error);
     }
   };
 

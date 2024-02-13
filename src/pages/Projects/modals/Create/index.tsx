@@ -1,31 +1,30 @@
 import { Button, Flex, Form, Input, Modal, Select, SelectProps } from "antd";
 import { ActionModalProps } from "shared/types";
-import {useCreateProjectMutation} from 'src/redux/api/projects'
-
+import { useCreateProjectMutation } from "src/redux/api/projects";
+import { useGetEmployeesQuery } from "src/redux/api/employees";
 const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
-  const createProjectMutation = useCreateProjectMutation();
+  const [createProject] = useCreateProjectMutation();
+  const { data: employees } = useGetEmployeesQuery();
+  console.log(createProject)
   const onFinish = async (values: any) => {
-    // try {
-    //   // Send a request to create a new project
-    //   const response = await createProjectMutation.mutateAsync(values);
-    //   console.log("Project created successfully:", response);
-    //   // Close the modal
-    //   setModalOpen(false);
-    // } catch (error) {
-    //   console.error("Error creating project:", error);
-    // }
+    try {
+      const response = await createProject({
+        projectName: values.projectName,
+        userIds: values.userIds,
+      }).unwrap();
+      console.log("Project created successfully:", response);
+      setModalOpen(false);
+    } catch (error) {
+      console.error("Error creating project:", error);
+    }
   };
 
   const optionsEmployees: SelectProps["options"] = [];
-  const employees = [
-    { id: "1", employeeName: "Nazrin Isgandarova" },
-    { id: "2", employeeName: "Rahman Aliyev" },
-    { id: "3", employeeName: "Lala Agayeva" },
-  ];
-  employees.map((employee) => {
+
+  employees?.map((employee) => {
     optionsEmployees.push({
       value: employee.id,
-      label: employee.employeeName,
+      label: employee.fullName,
     });
   });
   const handleChangeEmployees = (value: string | string[]) => {
@@ -58,7 +57,7 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
         </Form.Item>
         <Form.Item
           label="Employees"
-          name="employees"
+          name="userIds" 
           rules={[{ required: true, message: "" }]}
         >
           <Select

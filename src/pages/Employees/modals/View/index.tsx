@@ -31,7 +31,7 @@ const View: React.FC<ActionModalProps> = ({
           </Tag>
         </Descriptions.Item>
         <Descriptions.Item label="Projects">
-          <Flex wrap="wrap">
+          <Flex wrap="wrap" gap={6}>
             {data?.projects?.map((project) => (
               <Tag color="purple" key={project.id}>
                 {project.projectName}
