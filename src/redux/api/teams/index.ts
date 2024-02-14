@@ -12,7 +12,7 @@ export const teamsApi = createApi({
     baseUrl: "http://localhost:8085/api/",
     prepareHeaders: (headers) => {
       const token =
-        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQGNyb2N1c29mdC5jb20iLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJpYXQiOjE3MDc4MTE3ODQsImV4cCI6MTcwNzg5ODE4NH0.hgki5wmEiCos51uv5NjO_o304lI5sojlsJLQd-YXAqA";
+        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQGNyb2N1c29mdC5jb20iLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJpYXQiOjE3MDc5MDQwMzYsImV4cCI6MTcwNzk5MDQzNn0.0VmdiLY0GTa9WwvzZKJhAo8qaHHToH3nsDB1NROvpSk";
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
@@ -21,10 +21,17 @@ export const teamsApi = createApi({
     },
   }),
   endpoints: (builder) => ({
-    getTeams: builder.query<TeamType, void>({
+    getTeams: builder.query<TeamType[], void>({
       query: () => `teams`,
+    }),
+    createTeams: builder.mutation<TeamType, TeamType>({
+      query: (newTeam) => ({
+        url: `teams`,
+        method: "POST",
+        body: newTeam,
+      }),
     }),
   }),
 });
 
-export const { useGetTeamsQuery } = teamsApi;
+export const { useGetTeamsQuery, useCreateTeamsMutation } = teamsApi;

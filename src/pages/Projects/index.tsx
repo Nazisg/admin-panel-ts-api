@@ -102,7 +102,7 @@ export default function Projects() {
       <Table
         bordered
         className="table"
-        scroll={{ y: 300, x: "auto" }}
+        scroll={{ y: "350px", x: "auto" }}
         columns={columns}
         loading={data === undefined}
         dataSource={projects}

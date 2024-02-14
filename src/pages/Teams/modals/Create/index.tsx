@@ -1,25 +1,13 @@
-import { Button, Flex, Form, Input, Modal, Select, SelectProps } from "antd";
+import { Button, Flex, Form, Input, Modal } from "antd";
 import { ActionModalProps } from "shared/types";
-
+import { useCreateTeamsMutation } from "src/redux/api/teams";
 const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
-  const onFinish = (values: any) => {
+  const [createTeam] = useCreateTeamsMutation();
+  const onFinish = (values: { team: string }) => {
     console.log("Success:", values);
-  };
-
-  const optionsEmployees: SelectProps["options"] = [];
-  const employees = [
-    { id: "1", employeeName: "Nazrin Isgandarova" },
-    { id: "2", employeeName: "Rahman Aliyev" },
-    { id: "3", employeeName: "Lala Agayeva" },
-  ];
-  employees.map((employee) => {
-    optionsEmployees.push({
-      value: employee.id,
-      label: employee.employeeName,
-    });
-  });
-  const handleChangeEmployees = (value: string | string[]) => {
-    console.log(`Selected: ${value}`);
+    createTeam({
+      teamName:values.team
+    })
   };
 
   return (
@@ -41,23 +29,10 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
       >
         <Form.Item
           label="Team"
-          name="teams"
+          name="team"
           rules={[{ required: true, message: "" }]}
         >
           <Input placeholder="Frontend" size="large" />
-        </Form.Item>
-        <Form.Item
-          label="Employees"
-          name="employees"
-          rules={[{ required: true, message: "" }]}
-        >
-          <Select
-            mode="tags"
-            size="large"
-            placeholder="Furniro"
-            onChange={handleChangeEmployees}
-            options={optionsEmployees}
-          />
         </Form.Item>
         <Flex justify="end">
           <Button type="primary" htmlType="submit">

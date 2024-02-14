@@ -6,12 +6,14 @@ import ForgotPassword from "src/pages/ForgotPassword";
 import RenderIf from "src/shared/components/RenderIf";
 import Login from "./Login";
 import PrivateRouter from "./PrivateRouter";
-
+import { useAppSelector } from "src/redux/hooks";
 const Router = () => {
   const { defaultAlgorithm, darkAlgorithm } = theme;
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const token = true;
-
+  // const token = true;
+  const user  = useAppSelector((state) => state.auth);
+console.log(user)
+console.log(useAppSelector((state) => state))
   return (
     <ConfigProvider
       theme={{
@@ -21,7 +23,7 @@ const Router = () => {
         },
       }}
     >
-      <RenderIf condition={token}>
+      <RenderIf condition={Boolean(user)}>
         <Auxilliary>
           <SideMenu />
           <Auxilliary>
@@ -32,7 +34,7 @@ const Router = () => {
           </Auxilliary>
         </Auxilliary>
       </RenderIf>
-      <RenderIf condition={!token}>
+      <RenderIf condition={Boolean(!user)}>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />

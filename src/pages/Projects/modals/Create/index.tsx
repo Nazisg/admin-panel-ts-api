@@ -20,13 +20,15 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
   };
 
   const optionsEmployees: SelectProps["options"] = [];
-
-  employees?.map((employee) => {
-    optionsEmployees.push({
-      value: employee.id,
-      label: employee.fullName,
+  
+  if (Array.isArray(employees)) {
+    employees.map((employee) => {
+      optionsEmployees.push({
+        value: employee.id,
+        label: employee.fullName,
+      });
     });
-  });
+  }
   const handleChangeEmployees = (value: string | string[]) => {
     console.log(`Selected: ${value}`);
   };

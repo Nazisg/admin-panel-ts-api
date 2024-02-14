@@ -144,7 +144,7 @@ export default function DailyReport() {
       <Table
         bordered
         className="table"
-        scroll={{ y: 300, x: "auto" }}
+        scroll={{ y: "350px", x: "auto" }}
         columns={columns}
         dataSource={data}
       />

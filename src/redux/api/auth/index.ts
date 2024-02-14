@@ -1,27 +1,34 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
 // import {API_URL} from '../../../'
+import { axiosBaseQuery } from "../axiosBase";
+import  {setToken } from "../../features/auth/AuthSlice"
 
-export interface authType {
-  id: number | null | undefined;
-  access_token: string | null | undefined;
+
+interface LoginData {
+  mail: string;
+  password: string;
 }
 export const authApi = createApi({
-  reducerPath: "authApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8085/api/v1",
-  }),
-   endpoints: (builder) => ({
-    loginUser: builder.mutation<authType, { mail: string; password: string }>({
-      query: (body) => ({
-        url: "/auth/login",
-        method: "POST",
-        body,
+  reducerPath: "loginApi",
+  baseQuery: axiosBaseQuery(),
+  endpoints: (builder) => ({
+    login: builder.mutation({
+      query: (data: LoginData) => ({
+        url: "/api/v1/auth/login",
+        method: "post",
+        data: data,
       }),
-      transformResponse: (response: { id: number; access_token: string }) => {
-        return { id: response.id, access_token: response.access_token };
-      },
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(setToken(data));
+        } catch (err) {
+          console.log(err);
+        }
+      }
+
     }),
   }),
 });
 
-export const { useLoginUserMutation } = authApi;
+export const { useLoginMutation } = authApi;

@@ -171,7 +171,7 @@ export default function Employees() {
         size="large"
         className="table"
         pagination={{ pageSize: 10 }}
-        scroll={{ y: "300px", x: "auto" }}
+        scroll={{ y: "350px", x: "auto" }}
         columns={columns}
         loading={data === undefined}
         dataSource={employees}

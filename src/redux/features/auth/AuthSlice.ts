@@ -1,34 +1,47 @@
 import storage from "redux-persist/lib/storage";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { persistReducer } from "redux-persist";
 
-export interface authType {
-  id: number | null | undefined;
-  access_token: string | null | undefined;
+export interface User {
+  email: string;
+  password: string;
 }
 
-const initialState: authType = {
-  id: null,
-  access_token: null,
+export interface AuthState {
+  user: {
+    id: number | null;
+    access_token: string | null;
+    refresh_token: string | null;
+  };
+}
+
+const initialState: AuthState = {
+  user: {
+    id: null,
+    access_token: null,
+    refresh_token: null
+  }
 };
 
-export const userSlice = createSlice({
-  name: "user",
+const authSlice = createSlice({
+  name: 'login',
   initialState,
   reducers: {
-    setUser: (state, action) => {
-      state.access_token = action.payload;
+    setToken: (state, action: PayloadAction<AuthState['user']>) => {
+      state.user = action.payload;
     },
   },
 });
+
 export const reducer = persistReducer(
   {
     key: "CRM:AUTH",
     storage,
     whitelist: ["user"],
   },
-  userSlice.reducer
+  authSlice.reducer
 );
-export const { setUser } = userSlice.actions;
 
-export default reducer;
+export const { setToken } = authSlice.actions;
+
+export default authSlice.reducer;

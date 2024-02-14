@@ -1,23 +1,16 @@
 import { Button, Form, Input, Typography } from "antd";
 import { Link } from "react-router-dom";
 import styles from "./Login.module.scss";
-import { useLoginUserMutation } from "src/redux/api/auth";
-import { useDispatch } from "react-redux";
-import { setUser } from "src/redux/features/auth/AuthSlice";
+import { useLoginMutation } from "src/redux/api/auth";
 export default function Login() {
-
-  const dispatch = useDispatch();
-  const [loginUserMutation] = useLoginUserMutation();
-
+  const [userLogin] = useLoginMutation();
   const onFinish = async (values: { mail: string; password: string }) => {
-    try {
-      const response = await loginUserMutation({ mail: values.mail, password: values.password }).unwrap();
-      dispatch(setUser(response));
-      console.log(response)
-    } catch (error) {
-      console.error("Login failed:", error);
-    }
+    userLogin({
+      mail: values.mail,
+      password: values.password,
+    });
   };
+
   return (
     <div className={styles.loginBg}>
       <Form onFinish={onFinish} layout="vertical" className={styles.form}>

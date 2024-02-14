@@ -3,19 +3,17 @@ import React, { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { ActionModalProps } from "shared/types";
+import { useGetProjectsQuery } from "src/redux/api/projects";
 
 const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
   const [value, setValue] = useState("");
+  const {data:projects} = useGetProjectsQuery()
   const onFinish = (values: any) => {
     console.log("Success:", values);
   };
+  console.log(projects)
   const optionsProject: SelectProps["options"] = [];
-  const projects = [
-    { id: "1", projectName: "Plast" },
-    { id: "2", projectName: "Furniro" },
-    { id: "3", projectName: "DailyReport" },
-  ];
-  projects.map((project) => {
+  projects?.map((project) => {
     optionsProject.push({
       value: project.id,
       label: project.projectName,
@@ -48,7 +46,6 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
           rules={[{ required: true, message: "" }]}
         >
           <Select
-            mode="tags"
             size="large"
             placeholder="Furniro"
             onChange={handleChangeProjects}
