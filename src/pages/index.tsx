@@ -6,14 +6,12 @@ import ForgotPassword from "src/pages/ForgotPassword";
 import RenderIf from "src/shared/components/RenderIf";
 import Login from "./Login";
 import PrivateRouter from "./PrivateRouter";
-import { useAppSelector } from "src/redux/hooks";
 const Router = () => {
   const { defaultAlgorithm, darkAlgorithm } = theme;
   const [isDarkMode, setIsDarkMode] = useState(false);
-  // const token = true;
-  const user  = useAppSelector((state) => state.auth);
-console.log(user)
-console.log(useAppSelector((state) => state))
+  const user = false;
+// const { auth } = getState();
+// const {data: profile} = 
   return (
     <ConfigProvider
       theme={{

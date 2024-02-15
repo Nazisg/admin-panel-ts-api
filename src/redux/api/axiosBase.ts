@@ -1,73 +1,88 @@
-import type { BaseQueryFn } from "@reduxjs/toolkit/query";
-import type { AxiosError, AxiosRequestConfig } from "axios";
-import { useAppSelector } from "src/redux/hooks";
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
 
-const axiosBase: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+interface AuthState {
+  id: number;
+  access_token?: string;
+}
+
+interface APIResult {
+  data?: any;
+  error?: {
+    status?: number;
+    data?: any;
+  };
+}
+
+interface HeadersFunction {
+  (
+    headers: Record<string, string>,
+    context: { getState: () => { auth: AuthState }; signal: AbortSignal }
+  ): Record<string, string>;
+}
+
+interface BaseQueryOptions {
+  url: string;
+  params?: Record<string, any>;
+  method?: string;
+  data?: any;
+  responseType?: string;
+}
+
+const baseURL: string = `${import.meta.env.VITE_BASE_URL}`;
 
 export const axiosBaseQuery =
-  (
-    { baseUrl }: { baseUrl: string } = { baseUrl: "http://localhost:8085" }
-  ): BaseQueryFn<
+  ({
+    baseURL = "",
+    headers,
+  }: {
+    baseURL?: string;
+    headers?: HeadersFunction;
+  }) =>
+  async (
+    { url, params, method, data, responseType }: BaseQueryOptions,
     {
-      url: string;
-      method: AxiosRequestConfig["method"];
-      data?: AxiosRequestConfig["data"];
-      params?: AxiosRequestConfig["params"];
-      headers?: AxiosRequestConfig["headers"];
-    },
-    unknown,
-    unknown
-  > =>
-  async ({ url, method, data, params, headers }) => {
+      signal,
+      getState,
+    }: { signal: AbortSignal; getState: () => { auth: AuthState } }
+  ): Promise<APIResult> => {
     try {
-      // Fetch the token from your Redux state
-      const user = useAppSelector((state) => state.auth);
-
-      // Include the token in the headers
-      const result = await axiosBase({
-        url: baseUrl + url,
-        method,
-        data,
-        params,
-        headers: {
-          ...headers,
-          Authorization: `Bearer  test`,
-        },
-      });
-      return { data: result.data };
-    } catch (axiosError) {
+      const result = await axios({
+        url: baseURL + url,
+        method: method ? method : "GET",
+        ...(params && { params: params }),
+        ...(headers && { headers: headers({}, { getState, signal }) }),
+        ...(data && { data: data }),
+        responseType: responseType ? responseType : "json",
+      } as AxiosRequestConfig);
+      return {
+        data: result.data,
+      };
+    } catch (axiosError: unknown) {
       const err = axiosError as AxiosError;
       return {
-        error: {
-          status: err.response?.status,
-          data: err.response?.data || err.message,
-        },
+        error: { status: err.response?.status, data: err.response?.data },
       };
     }
   };
 
-axiosBase.interceptors.request.use(
-  (config) => {
-    console.log("interceptors -> request: ", config);
-    return config;
+export const APIBaseQueryInterceptor = axiosBaseQuery({
+  baseURL: baseURL,
+  headers: (headers, { getState }) => {
+    const { auth } = getState();
+    if (auth?.access_token) {
+      headers["Authorization"] = `${auth?.access_token}`;
+    }
+    return headers;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+});
 
-axiosBase.interceptors.response.use(
-  (response) => {
-    console.log("interceptors -> response: ", response);
-    return response;
-  },
-  (error) => {
-    return Promise.reject(error);
+export const APIBaseQuery = async (
+  args: BaseQueryOptions,
+  api: any
+): Promise<APIResult> => {
+  let result = await APIBaseQueryInterceptor(args, api);
+  if (result.error) {
+    console.log("Error an occured");
   }
-);
+  return result;
+};
