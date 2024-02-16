@@ -10,8 +10,6 @@ const Router = () => {
   const { defaultAlgorithm, darkAlgorithm } = theme;
   const [isDarkMode, setIsDarkMode] = useState(false);
   const user = false;
-// const { auth } = getState();
-// const {data: profile} = 
   return (
     <ConfigProvider
       theme={{

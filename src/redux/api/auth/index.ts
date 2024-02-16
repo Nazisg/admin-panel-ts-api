@@ -10,6 +10,7 @@ interface LoginData {
 export const authApi = createApi({
   reducerPath: "loginApi",
   baseQuery: APIBaseQuery,
+  tagTypes: ['AuthApi'],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (data: LoginData) => ({
@@ -21,13 +22,27 @@ export const authApi = createApi({
         try {
           const { data } = await queryFulfilled;
           dispatch(setToken(data));
+          dispatch(authApi.endpoints.getProfile.initiate(undefined, { forceRefetch: true }))
+         console.log('loginUser isledi');
         } catch (err) {
-          console.log(err);
-        }
+            // dispatch(messageCreated('Error fetching post!'))
+          console.log('loginUser islemedi');
+      }
       },
-      getProfile: builder.query<any, void>({
-        query: () => ({ url: `users/profile` }),
-      }),
+    }),
+    getProfile: builder.query<any, void>({
+      query: () => ({ url: `users/profile` }),
+      providesTags: ['AuthApi'],
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+          try {
+              const { data } = await queryFulfilled;
+              // dispatch(myProfile({ myProfile: data }))
+              // console.log('getprofile isledi');
+          } catch (err) {
+              //   dispatch(messageCreated('Error fetching post!'))
+              // console.log('getprofile islemedi');
+          }
+      },
     }),
   }),
 });
