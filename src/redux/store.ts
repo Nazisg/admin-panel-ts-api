@@ -26,6 +26,7 @@ export const store = configureStore({
       },
     }).concat(middleWares),
 });
+
 setupListeners(store.dispatch);
 
 export const persistor = persistStore(store);
