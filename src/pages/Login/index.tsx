@@ -13,8 +13,8 @@ export default function Login() {
     });
   };
 
-const {user} = useAppSelector((state)=>state.auth)
-console.log(user)
+// const {user} = useAppSelector((state)=>state.auth)
+// console.log(user)
 
 
 

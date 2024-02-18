@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { APIBaseQuery } from "../axiosBase";
 
 interface EmployeesType {
   id: number;
@@ -23,18 +24,7 @@ interface EmployeesType {
 
 export const employeesApi = createApi({
   reducerPath: "employeesApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8085/",
-    prepareHeaders: (headers) => {
-      const token =
-        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQGNyb2N1c29mdC5jb20iLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJpYXQiOjE3MDc5MDQwMzYsImV4cCI6MTcwNzk5MDQzNn0.0VmdiLY0GTa9WwvzZKJhAo8qaHHToH3nsDB1NROvpSk";
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      headers.set("Content-Type", "application/json");
-      return headers;
-    },
-  }),
+  baseQuery: APIBaseQuery,
   endpoints: (builder) => ({
     getEmployees: builder.query<EmployeesType, void>({
       query: () => `users`,
