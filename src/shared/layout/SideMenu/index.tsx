@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import logo from "shared/media/imgs/crocusoft-logo.png";
 import styles from "./SideMenu.module.scss";
+import { useAppSelector } from "src/redux/hooks";
 
 const enum Urls {
   TEAM = "/teams",
@@ -32,6 +33,8 @@ export default function SideMenu() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+  const { roleName } = useAppSelector((state) => state.auth.profile.role);
+
   return (
     <Sider
       className={styles.sideMenu}
@@ -52,19 +55,24 @@ export default function SideMenu() {
         theme="light"
         mode="inline"
         items={[
-          {
-            label: <Link to="/">Employees</Link>,
-            key: "1",
-            icon: <UserOutlined />,
-            className:
-              location.pathname === Urls.EMPLOYEE ? styles.activeLink : "",
-          },
-          {
-            label: <Link to="/teams">Teams</Link>,
-            key: "2",
-            icon: <TeamOutlined />,
-            className: location.pathname === Urls.TEAM ? styles.activeLink : "",
-          },
+          roleName !== "EMPLOYEE"
+            ? {
+                label: <Link to="/">Employees</Link>,
+                key: "1",
+                icon: <UserOutlined />,
+                className:
+                  location.pathname === Urls.EMPLOYEE ? styles.activeLink : "",
+              }
+            : null,
+          roleName !== "EMPLOYEE"
+            ? {
+                label: <Link to="/teams">Teams</Link>,
+                key: "2",
+                icon: <TeamOutlined />,
+                className:
+                  location.pathname === Urls.TEAM ? styles.activeLink : "",
+              }
+            : null,
           {
             label: <Link to="/reports">Daily Report</Link>,
             key: "3",
@@ -72,13 +80,15 @@ export default function SideMenu() {
             className:
               location.pathname === Urls.REPORT ? styles.activeLink : "",
           },
-          {
-            label: <Link to="/projects">Projects</Link>,
-            key: "4",
-            icon: <FolderOutlined />,
-            className:
-              location.pathname === Urls.PROJECT ? styles.activeLink : "",
-          },
+          roleName !== "EMPLOYEE"
+            ? {
+                label: <Link to="/projects">Projects</Link>,
+                key: "4",
+                icon: <FolderOutlined />,
+                className:
+                  location.pathname === Urls.PROJECT ? styles.activeLink : "",
+              }
+            : null,
         ]}
       ></Menu>
     </Sider>

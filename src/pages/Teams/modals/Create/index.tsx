@@ -3,11 +3,16 @@ import { ActionModalProps } from "shared/types";
 import { useCreateTeamsMutation } from "src/redux/api/teams";
 const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
   const [createTeam] = useCreateTeamsMutation();
+  interface TeamType {
+    id: number;
+    teamName: string;
+    status: string;
+  }
   const onFinish = (values: { team: string }) => {
     console.log("Success:", values);
-    createTeam({
-      teamName:values.team
-    })
+    const newTeam: TeamType = { teamName: values.team, id: 0, status: "" }; 
+    createTeam(newTeam);
+    setModalOpen(false); 
   };
 
   return (

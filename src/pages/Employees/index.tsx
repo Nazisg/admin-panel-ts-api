@@ -39,14 +39,14 @@ export default function Employees() {
   };
   const employees =
     data?.content?.map((employee) => ({
-      key: employee.id,
-      id: employee.id, 
-      name: employee.firstName,
-      surname: employee.lastName,
-      mail: employee.mail,
-      team: employee.team?.teamName,
-      role: employee.role?.roleName,
-      status: employee.status,
+      key: employee?.id,
+      id: employee?.id, 
+      name: employee?.firstName,
+      surname: employee?.lastName,
+      mail: employee?.mail,
+      team: employee?.team?.teamName,
+      role: employee?.role?.roleName,
+      status: employee?.status,
     })) ?? [];
   // const [status, setStatus] = useState<"active" | "deactive">("active");
 

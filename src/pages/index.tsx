@@ -1,17 +1,18 @@
 import { ConfigProvider, theme } from "antd";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Auxilliary, Cover, Header, SideMenu } from "shared/index";
 import ForgotPassword from "src/pages/ForgotPassword";
+import { useAppSelector } from "src/redux/hooks";
 import RenderIf from "src/shared/components/RenderIf";
+import Spinner from "src/shared/components/Spinner";
 import Login from "./Login";
 import PrivateRouter from "./PrivateRouter";
-import { useAppSelector } from "src/redux/features/hooks";
 const Router = () => {
   const { defaultAlgorithm, darkAlgorithm } = theme;
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const {user} = useAppSelector((state)=>state.auth)
-console.log(user)
+  const {user: { access_token }, } = useAppSelector((state) => state.auth);
+
   return (
     <ConfigProvider
       theme={{
@@ -21,21 +22,24 @@ console.log(user)
         },
       }}
     >
-      <RenderIf condition={Boolean(user)}>
+      <RenderIf condition={Boolean(access_token)}>
         <Auxilliary>
           <SideMenu />
           <Auxilliary>
             <Header setIsDarkMode={setIsDarkMode} />
             <Cover>
-              <PrivateRouter />
+              <Suspense fallback={<Spinner />}>
+                <PrivateRouter />
+              </Suspense>
             </Cover>
           </Auxilliary>
         </Auxilliary>
       </RenderIf>
-      <RenderIf condition={Boolean(!user)}>
+      <RenderIf condition={Boolean(!access_token)}>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="*" element={<Login />} />
         </Routes>
       </RenderIf>
     </ConfigProvider>

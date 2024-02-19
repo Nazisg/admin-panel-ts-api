@@ -1,19 +1,32 @@
+import { lazy } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import DailyReport from "./DailyReport";
-import Employees from "./Employees";
-import Projects from "./Projects";
-import Teams from "./Teams";
+import { useAppSelector } from "src/redux/hooks";
+const Employees = lazy(() => import("./Employees"));
+const Teams = lazy(() => import("./Teams"));
+const DailyReport = lazy(() => import("./DailyReport"));
+const Projects = lazy(() => import("./Projects"));
 
 export default function PrivateRouter() {
+  const { roleName } = useAppSelector((state) => state.auth.profile.role);
+  console.log(roleName);
+
   return (
-    <>
-      <Routes>
+    <Routes>
+      {roleName !== "EMPLOYEE" ? (
         <Route path="/" element={<Employees />} />
+      ) : null}
+      {roleName !== "EMPLOYEE" ? (
         <Route path="/teams" element={<Teams />} />
+      ) : null}
+      {roleName !== "EMPLOYEE" ? (
         <Route path="/reports" element={<DailyReport />} />
+      ) : (
+        <Route path="/" element={<DailyReport />} />
+      )}
+      {roleName !== "EMPLOYEE" ? (
         <Route path="/projects" element={<Projects />} />
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-    </>
+      ) : null}
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
   );
 }

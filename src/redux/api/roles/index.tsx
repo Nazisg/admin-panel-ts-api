@@ -13,7 +13,8 @@ export const rolesApi = createApi({
 
   endpoints: (builder) => ({
     getRoles: builder.query<RoleType, void>({
-      query: () => `getRoleForSuperAdmin`,
+      query: () => ({ url: `api/roles`, method: "GET" }),
+
     }),
   }),
 });

@@ -13,6 +13,8 @@ import {
 } from "antd";
 import { useState } from "react";
 import { MdOutlineLightMode } from "react-icons/md";
+import { logout } from "src/redux/features/auth/AuthSlice";
+import { useAppDispatch, useAppSelector } from "src/redux/hooks";
 import styles from "./Header.module.scss";
 type ThemeProps = {
   setIsDarkMode: React.Dispatch<React.SetStateAction<boolean>> | undefined;
@@ -50,11 +52,14 @@ const Header: React.FC<ThemeProps> = ({ setIsDarkMode }) => {
       setIsDarkMode((previousValue) => !previousValue);
     }
   };
+  const dispatch = useAppDispatch();
+  const { profile } = useAppSelector((state) => state.auth);
+
   return (
     <Header className={styles.header}>
       <Space>
         <Typography.Title className={styles.title}>
-          Nazrin Isgandarova
+          {profile.firstName} {profile.lastName}
         </Typography.Title>
         <Avatar icon={<UserOutlined />} />
         <Tooltip placement="top" title="Change password">
@@ -65,6 +70,8 @@ const Header: React.FC<ThemeProps> = ({ setIsDarkMode }) => {
         <Button shape="circle" type="primary" ghost onClick={handleClick}>
           <MdOutlineLightMode className={styles.ligth} />
         </Button>
+
+        <button onClick={() => dispatch(logout())}>Log out</button>
       </Space>
       {/* //change password modal */}
       <Modal

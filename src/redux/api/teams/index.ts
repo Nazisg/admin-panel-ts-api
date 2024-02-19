@@ -10,17 +10,19 @@ interface TeamType {
 export const teamsApi = createApi({
   reducerPath: "teamsApi",
   baseQuery: APIBaseQuery,
-
+  tagTypes: ["Teams"],
   endpoints: (builder) => ({
     getTeams: builder.query<TeamType[], void>({
-      query: () => `teams`,
+      query: () => ({ url: `api/teams`, method: "GET" }),
+      providesTags: ["Teams"],
     }),
     createTeams: builder.mutation<TeamType, TeamType>({
       query: (newTeam) => ({
-        url: `teams`,
+        url: `api/teams`,
         method: "POST",
         body: newTeam,
       }),
+      invalidatesTags: ["Teams"],
     }),
   }),
 });

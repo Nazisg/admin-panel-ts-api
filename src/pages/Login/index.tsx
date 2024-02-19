@@ -2,7 +2,7 @@ import { Button, Form, Input, Typography } from "antd";
 import { Link } from "react-router-dom";
 import styles from "./Login.module.scss";
 import { useLoginMutation } from "src/redux/api/auth";
-import { useAppSelector } from "src/redux/features/hooks";
+import { useAppSelector } from "src/redux/hooks";
 
 export default function Login() {
   const [userLogin] = useLoginMutation();
@@ -12,11 +12,6 @@ export default function Login() {
       password: values.password,
     });
   };
-
-// const {user} = useAppSelector((state)=>state.auth)
-// console.log(user)
-
-
 
   return (
     <div className={styles.loginBg}>

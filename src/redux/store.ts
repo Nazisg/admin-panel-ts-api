@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { setupListeners } from "@reduxjs/toolkit/query";
+// import { setupListeners } from "@reduxjs/toolkit/query";
 import {
   FLUSH,
   PAUSE,
@@ -7,18 +7,13 @@ import {
   PURGE,
   REGISTER,
   REHYDRATE,
-  persistReducer,
   persistStore,
 } from "redux-persist";
-import storage from "redux-persist/lib/storage";
-import { reducers as appReducers, middleWares } from "./reducerAndMiddlewares";
-const persistConfig = {
-  key: "root",
-  storage,
-};
-const persistedReducer = persistReducer(persistConfig, appReducers);
+
+import { reducers , middleWares } from "./reducerAndMiddlewares";
+
 export const store = configureStore({
-  reducer: persistedReducer,
+  reducer: reducers,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
@@ -27,7 +22,7 @@ export const store = configureStore({
     }).concat(middleWares),
 });
 
-setupListeners(store.dispatch);
+// setupListeners(store.dispatch);
 
 export const persistor = persistStore(store);
 

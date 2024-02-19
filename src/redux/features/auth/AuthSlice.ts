@@ -2,16 +2,32 @@ import storage from "redux-persist/lib/storage";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { persistReducer } from "redux-persist";
 
-export interface User {
-  email: string;
-  password: string;
-}
-
 export interface AuthState {
   user: {
     id: number | null;
     access_token: string | null;
     refresh_token: string | null;
+  };
+  profile: {
+    id: number | null;
+    firstName: string | null;
+    lastName: string | null;
+    role: {
+      id: number | null;
+      roleName: string | null;
+    };
+    status: string | null;
+    mail: string | null;
+    team: {
+      id: number | null;
+      teamName: string | null;
+    };
+    projects: [
+      {
+        id: number | null;
+        projectName: string | null;
+      }
+    ];
   };
 }
 
@@ -19,17 +35,42 @@ const initialState: AuthState = {
   user: {
     id: null,
     access_token: null,
-    refresh_token: null
-  }
+    refresh_token: null,
+  },
+  profile: {
+    id: null,
+    firstName: null,
+    lastName: null,
+    role: {
+      id: null,
+      roleName: null,
+    },
+    status: null,
+    mail: null,
+    team: {
+      id: null,
+      teamName: null,
+    },
+    projects: [
+      {
+        id: null,
+        projectName: null,
+      }
+    ],
+  },
 };
 
 const authSlice = createSlice({
-  name: 'login',
+  name: "login",
   initialState,
   reducers: {
-    setToken: (state, action: PayloadAction<AuthState['user']>) => {
+    setUser: (state, action: PayloadAction<any>) => {
+      state.profile = action.payload;
+    },
+    setToken: (state, action: PayloadAction<AuthState["user"]>) => {
       state.user = action.payload;
     },
+    logout: () => initialState,
   },
 });
 
@@ -37,11 +78,11 @@ export const reducer = persistReducer(
   {
     key: "CRM:AUTH",
     storage,
-    whitelist: ["user"],
+    whitelist: ["user", "profile"],
   },
   authSlice.reducer
 );
 
-export const { setToken } = authSlice.actions;
+export const { setToken, logout, setUser } = authSlice.actions;
 
-export default authSlice.reducer;
+export default reducer;

@@ -1,6 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { APIBaseQuery } from "../axiosBase";
-import { setToken } from "../../features/auth/AuthSlice";
+import { setToken, setUser } from "../../features/auth/AuthSlice";
+// import { profile } from "src/redux/features/profile/profileSlice";
 
 interface LoginData {
   mail: string;
@@ -14,7 +15,7 @@ export const authApi = createApi({
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (data: LoginData) => ({
-        url: "/api/v1/auth/login",
+        url: "api/v1/auth/login",
         method: "post",
         data,
       }),
@@ -22,29 +23,26 @@ export const authApi = createApi({
         try {
           const { data } = await queryFulfilled;
           dispatch(setToken(data));
-          dispatch(authApi.endpoints.getProfile.initiate(undefined, { forceRefetch: true }))
-         console.log('loginUser isledi');
+          dispatch(authApi.endpoints.getMe.initiate(null))
         } catch (err) {
-            // dispatch(messageCreated('Error fetching post!'))
-          console.log('loginUser islemedi');
+          console.log('loginUser err');
       }
       },
     }),
-    getProfile: builder.query<any, void>({
+    getMe: builder.query<any, null>({
       query: () => ({ url: `users/profile` }),
       providesTags: ['AuthApi'],
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
           try {
               const { data } = await queryFulfilled;
-              // dispatch(myProfile({ myProfile: data }))
-              // console.log('getprofile isledi');
+              dispatch(setUser(data))             
+              console.log(setUser(data));
           } catch (err) {
-              //   dispatch(messageCreated('Error fetching post!'))
-              // console.log('getprofile islemedi');
+              console.log('getprofile err');
           }
       },
     }),
   }),
 });
 
-export const { useLoginMutation, useGetProfileQuery } = authApi;
+export const { useLoginMutation, useGetMeQuery } = authApi;
