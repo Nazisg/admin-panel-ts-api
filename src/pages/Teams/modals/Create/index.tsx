@@ -1,20 +1,20 @@
 import { Button, Flex, Form, Input, Modal } from "antd";
 import { ActionModalProps } from "shared/types";
 import { useCreateTeamsMutation } from "src/redux/api/teams";
+import { useForm } from "react-hook-form";
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
+  const [form] = Form.useForm(); 
   const [createTeam] = useCreateTeamsMutation();
-  interface TeamType {
-    id: number;
-    teamName: string;
-    status: string;
-  }
-  const onFinish = (values: { team: string }) => {
-    console.log("Success:", values);
-    const newTeam: TeamType = { teamName: values.team, id: 0, status: "" }; 
-    createTeam(newTeam);
-    setModalOpen(false); 
-  };
 
+  const onFinish = async (values: { team: string }) => {
+     createTeam({
+      teamName: values.team,
+    });
+    form.resetFields(); 
+    setModalOpen(false);
+  };
   return (
     <Modal
       title="Create Team"

@@ -23,6 +23,8 @@ import { useGetEmployeesFilterQuery } from "src/redux/api/employees";
 import Filter from "src/shared/components/Filter";
 import EmployeeModal from "../Employees/modals/index";
 import styles from "./Employees.module.scss";
+
+
 export default function Employees() {
   const { data } = useGetEmployeesFilterQuery();
   const [modalOpen, setModalOpen] = useState(false);

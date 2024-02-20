@@ -73,13 +73,6 @@ export default function SideMenu() {
                   location.pathname === Urls.TEAM ? styles.activeLink : "",
               }
             : null,
-          {
-            label: <Link to="/reports">Daily Report</Link>,
-            key: "3",
-            icon: <FormOutlined />,
-            className:
-              location.pathname === Urls.REPORT ? styles.activeLink : "",
-          },
           roleName !== "EMPLOYEE"
             ? {
                 label: <Link to="/projects">Projects</Link>,
@@ -89,6 +82,13 @@ export default function SideMenu() {
                   location.pathname === Urls.PROJECT ? styles.activeLink : "",
               }
             : null,
+          {
+            label: <Link to="/reports">Daily Report</Link>,
+            key: "3",
+            icon: <FormOutlined />,
+            className:
+              location.pathname === Urls.REPORT ? styles.activeLink : "",
+          },
         ]}
       ></Menu>
     </Sider>

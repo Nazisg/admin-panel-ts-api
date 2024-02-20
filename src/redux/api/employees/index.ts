@@ -6,6 +6,7 @@ interface EmployeesType {
   firstName: string;
   lastName: string;
   fullName: string;
+  password:string;
   mail: string;
   status: string;
   team: {
@@ -19,7 +20,8 @@ interface EmployeesType {
   projects: {
     id: number;
     projectName: string;
-  }[];
+  };
+  // teamId:number;
 }
 
 export const employeesApi = createApi({
@@ -39,11 +41,11 @@ export const employeesApi = createApi({
       query: (employeeId) => ({ url: `users/${employeeId}`, method: "GET" }),
       providesTags: ["Employees"],
     }),
-    createEmployee: builder.mutation<EmployeesType, void>({
-      query: (newEmployee) => ({
-        url: `users`,
-        method: "POST",
-        body: newEmployee,
+    createEmployee: builder.mutation({
+      query: (data: EmployeesType) => ({
+        url: "users",
+        method: "post",
+        data,
       }),
       invalidatesTags: ["Employees"],
     }),
