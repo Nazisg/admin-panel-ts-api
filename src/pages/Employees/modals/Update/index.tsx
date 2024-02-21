@@ -13,12 +13,25 @@ import { ActionModalProps } from "shared/types";
 import { useGetRolesQuery } from "src/redux/api/roles";
 import { useGetTeamsQuery } from "src/redux/api/teams";
 import { useUpdateEmployeeMutation } from "src/redux/api/employees";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { updateEmployeeSchema } from "src/validation";
 
 const Update: React.FC<ActionModalProps> = ({
   modalOpen,
   setModalOpen,
   selectedEmployeeId,
 }) => {
+  interface FormType {
+    firstName: string;
+    lastName: string;
+    role: {
+      id: string;
+      roleName: string;
+    };
+    mail: string;
+    teamId: string;
+  }
   const [updateEmployee] = useUpdateEmployeeMutation();
   const [form] = Form.useForm();
   const { data: roles } = useGetRolesQuery();
@@ -42,25 +55,29 @@ const Update: React.FC<ActionModalProps> = ({
       });
     });
   }
-  const handleChangeTeams = (value: string | string[]) => {
-    console.log(`Selected: ${value}`);
-  };
-  const handleChangeRole = (value: string | string[]) => {
-    console.log(`Selected: ${value}`);
-  };
-  const onFinish = (values: any) => {
-    // Make sure to include employee ID in values
-    const { selectedEmployeeId, firstName, lastName, mail, role, team } = values;
-    updateEmployee({ selectedEmployeeId, firstName, lastName, mail, role, team })
-      .unwrap()
-      .then(() => {
-        console.log("Employee updated successfully");
-        form.resetFields(); 
-        setModalOpen(false); 
-      })
-      .catch((error) => {
-        console.error("Failed to update employee:", error);
-      });
+  const {
+    handleSubmit,
+    control,
+    getValues,
+    reset,
+    formState: { errors },
+  } = useForm<FormType>({
+    resolver: zodResolver(updateEmployeeSchema),
+  });
+  const onSubmit = (values: any) => {
+    //   const { firstName, lastName, mail, role, team } = values;
+    // const updatedEmployeeData = {
+    //   id: selectedEmployeeId, // Include the employee ID
+    //   firstName,
+    //   lastName,
+    //   mail,
+    //   role,
+    //   team,
+    // };
+    // updateEmployee({
+    //   id: selectedEmployeeId,
+    //   data: updatedEmployeeData,
+    // })
   };
   return (
     <Modal
@@ -75,7 +92,7 @@ const Update: React.FC<ActionModalProps> = ({
       <Form
         name="basic"
         initialValues={{ remember: true }}
-        onFinish={onFinish}
+        onFinish={handleSubmit(onSubmit)}
         autoComplete="off"
         layout="vertical"
       >

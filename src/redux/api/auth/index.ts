@@ -1,7 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { APIBaseQuery } from "../axiosBase";
 import { setToken, setUser } from "../../features/auth/AuthSlice";
-// import { profile } from "src/redux/features/profile/profileSlice";
 
 interface LoginData {
   mail: string;
@@ -11,7 +10,7 @@ interface LoginData {
 export const authApi = createApi({
   reducerPath: "loginApi",
   baseQuery: APIBaseQuery,
-  tagTypes: ['AuthApi'],
+  tagTypes: ["AuthApi"],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (data: LoginData) => ({
@@ -23,23 +22,23 @@ export const authApi = createApi({
         try {
           const { data } = await queryFulfilled;
           dispatch(setToken(data));
-          dispatch(authApi.endpoints.getMe.initiate(null))
+          dispatch(authApi.endpoints.getMe.initiate(null));
         } catch (err) {
-          console.log('loginUser err');
-      }
+          console.log("loginUser err");
+        }
       },
     }),
     getMe: builder.query<any, null>({
       query: () => ({ url: `users/profile` }),
-      providesTags: ['AuthApi'],
+      providesTags: ["AuthApi"],
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
-          try {
-              const { data } = await queryFulfilled;
-              dispatch(setUser(data))             
-              console.log(setUser(data));
-          } catch (err) {
-              console.log('getprofile err');
-          }
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(setUser(data));
+          console.log(setUser(data));
+        } catch (err) {
+          console.log("getprofile err");
+        }
       },
     }),
   }),

@@ -6,7 +6,7 @@ interface EmployeesType {
   firstName: string;
   lastName: string;
   fullName: string;
-  password:string;
+  password: string;
   mail: string;
   status: string;
   team: {
@@ -21,7 +21,7 @@ interface EmployeesType {
     id: number;
     projectName: string;
   };
-  // teamId:number;
+  // teamId:nuber;
 }
 
 export const employeesApi = createApi({
@@ -49,16 +49,31 @@ export const employeesApi = createApi({
       }),
       invalidatesTags: ["Employees"],
     }),
-    updateEmployee: builder.mutation<
+    updateEmployee: builder.mutation< //fail
       EmployeesType,
-      { id: number; post: FormData }
+      { id: number; data: EmployeesType }
     >({
-      query: ({ id, post }) => ({
+      query: ({ id, data }) => ({
         url: `users/${id}`,
         method: "PATCH",
-        // method: 'PUT',
-        body: post,
+        data,
       }),
+      invalidatesTags: ["Employees"],
+    }),
+    deleteEmployee: builder.mutation<string, string | undefined>({
+      query: (id) => ({
+        url: `users/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Employees"],
+    }),
+    resetEmployee: builder.mutation<EmployeesType, any>({
+      query: ({ id, ...rest }) => ({
+        url: `users/${id}/reset-password`,
+        method: "PUT",
+        data: rest,
+      }),
+      invalidatesTags: ["Employees"],
     }),
   }),
 });
@@ -69,4 +84,6 @@ export const {
   useGetEmployeeByIdQuery,
   useCreateEmployeeMutation,
   useUpdateEmployeeMutation,
+  useDeleteEmployeeMutation,
+  useResetEmployeeMutation,
 } = employeesApi;

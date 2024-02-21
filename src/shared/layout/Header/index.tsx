@@ -1,4 +1,10 @@
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  LockOutlined,
+  UserOutlined,
+  PoweroffOutlined,
+  // SunOutlined,
+  // MoonOutlined,
+} from "@ant-design/icons";
 import {
   Avatar,
   Button,
@@ -69,9 +75,20 @@ const Header: React.FC<ThemeProps> = ({ setIsDarkMode }) => {
         </Tooltip>
         <Button shape="circle" type="primary" ghost onClick={handleClick}>
           <MdOutlineLightMode className={styles.ligth} />
+          {/* <MoonOutlined /> */}
+          {/* <SunOutlined /> */}
         </Button>
+        <Tooltip placement="top" title="Logout">
 
-        <button onClick={() => dispatch(logout())}>Log out</button>
+        <Button
+          shape="circle"
+          type="primary"
+          ghost
+          onClick={() => dispatch(logout())}
+        >
+          <PoweroffOutlined />
+        </Button>
+        </Tooltip>
       </Space>
       {/* //change password modal */}
       <Modal

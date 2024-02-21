@@ -1,12 +1,32 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Flex, Form, Input, Modal } from "antd";
+import { Controller, useForm } from "react-hook-form";
 import { ActionModalProps } from "shared/types";
+import { useResetEmployeeMutation } from "src/redux/api/employees";
+import { resetEmployeeSchema } from "src/validation";
 
 const ResetPassword: React.FC<ActionModalProps> = ({
   modalOpen,
   setModalOpen,
+  selectedEmployeeId,
 }) => {
-  const onFinish = (values: any) => {
-    console.log("Success:", values);
+  interface FormType {
+    password: string;
+    newConfirimPassword: string;
+  }
+  const [resetEmployee] = useResetEmployeeMutation();
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<FormType>({
+    resolver: zodResolver(resetEmployeeSchema),
+  });
+  const onSubmit = (data: FormType) => {
+    resetEmployee({ id: selectedEmployeeId, ...data });
+    reset();
+ setModalOpen(false)
   };
   return (
     <Modal
@@ -20,16 +40,46 @@ const ResetPassword: React.FC<ActionModalProps> = ({
     >
       <Form
         name="basic"
-        onFinish={onFinish}
+        onFinish={handleSubmit(onSubmit)}
         autoComplete="off"
         layout="vertical"
       >
-        <Form.Item label="New Password" name="newPassword">
-          <Input placeholder="********" size="large" />
+        <Form.Item label="Password" name="password">
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input.Password
+                size="large"
+                placeholder="********"
+                onBlur={onBlur}
+                onChange={onChange}
+                value={value}
+              />
+            )}
+            name="password"
+          />
         </Form.Item>
-        <Form.Item label="Confirm Password" name="confirmPassword">
-          <Input placeholder="********" size="large" />
+        {errors.password && (
+          <span className="errorMsg">{errors.password.message}</span>
+        )}
+        <Form.Item label="Confirm Password" name="newConfirimPassword">
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input.Password
+                size="large"
+                placeholder="********"
+                onBlur={onBlur}
+                onChange={onChange}
+                value={value}
+              />
+            )}
+            name="newConfirimPassword"
+          />
         </Form.Item>
+        {errors.password && (
+          <span className="errorMsg">{errors.password.message}</span>
+        )}
         <Flex justify="end">
           <Button type="primary" htmlType="submit">
             Reset Password

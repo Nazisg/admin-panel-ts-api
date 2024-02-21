@@ -1,3 +1,4 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Button,
   Col,
@@ -9,14 +10,12 @@ import {
   Select,
   SelectProps,
 } from "antd";
-import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { ActionModalProps } from "shared/types";
 import { useCreateEmployeeMutation } from "src/redux/api/employees";
 import { useGetRolesQuery } from "src/redux/api/roles";
 import { useGetTeamsQuery } from "src/redux/api/teams";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { createEmployeeSchema } from "src/validation";
 
 const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
   interface FormType {
@@ -36,10 +35,6 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
   const { data: teams } = useGetTeamsQuery();
   const optionsTeams: SelectProps["options"] = [];
   const optionsRole: SelectProps["options"] = [];
-  const [formRole, setFormRole] = useState<{
-    id: string;
-    roleName: string;
-  } | null>(null);
 
   if (Array.isArray(teams)) {
     teams?.map((team) => {
@@ -58,51 +53,33 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
       });
     });
   }
-  console.log(optionsRole)
-  const handleChangeTeams = (value: string | string[]) => {
-    console.log(`Selected: ${value}`);
-  };
-
-  const handleChangeRole = (
-    value: string | string[],
-    option: { key: React.Key; label: React.ReactNode }
-  ) => {
-    const role = {
-      id: value,
-      roleName: option.label,
-    };
-    setFormRole(role);
-
-    console.log(`Selected: ${value}, ${option.label}`);
-  };
-
-  const formSchema = z.object({
-    firstName: z.string().min(1, { message: "Firstname is required" }),
-    lastName: z.string().min(1, { message: "Lastname is required" }),
-    password: z
-      .string()
-      .min(8, { message: "Password must be at least 8 characters" }),
-    mail: z
-      .string()
-      .email({ message: "Must be a valid email" })
-      .min(1, { message: "Email is required" }),
-    team: z.string(),
-    role:z.string(),
-  });
-
   const {
     handleSubmit,
     control,
+    getValues,
+    reset,
     formState: { errors },
   } = useForm<FormType>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(createEmployeeSchema),
   });
 
   const onSubmit = (data: FormType) => {
-    createEmployee(data);
-    console.log(data);
+    const selectedRole = roles?.find(
+      (role: { id: string; roleName: string }) =>
+        Number(role.id) === getValues().role
+    );
+    createEmployee({
+      firstName: getValues().firstName,
+      lastName: getValues().lastName,
+      password: getValues().password,
+      role: selectedRole,
+      mail: getValues().mail,
+      teamId: getValues().teamId,
+    });
+    // console.log(data);
+    reset();
+    setModalOpen(false);
   };
-///////////////////////
 
   return (
     <Modal
@@ -113,19 +90,12 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
       onCancel={() => setModalOpen(false)}
       okButtonProps={{ style: { display: "none" } }}
       cancelButtonProps={{ style: { display: "none" } }}
-      footer={[
-        <Button key="no" onClick={()=>setModalOpen(false)} >
-          Cancel
-        </Button>,
-      ]}
-
     >
       <Form
         onFinish={handleSubmit(onSubmit)}
         name="basic"
         autoComplete="off"
         layout="vertical"
-        
       >
         <Row gutter={[16, 16]}>
           <Col span={12}>
@@ -144,7 +114,9 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
                 name="firstName"
               />
             </Form.Item>
-              {errors.firstName && <span>{errors.firstName.message}</span>}
+            {errors.firstName && (
+              <span className="errorMsg">{errors.firstName.message}</span>
+            )}
           </Col>
           <Col span={12}>
             <Form.Item label="Surname" name="lastName">
@@ -162,7 +134,9 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
                 name="lastName"
               />
             </Form.Item>
-              {errors.lastName && <span>{errors.lastName.message}</span>}
+            {errors.lastName && (
+              <span className="errorMsg">{errors.lastName.message}</span>
+            )}
           </Col>
         </Row>
         <Row gutter={[16, 16]}>
@@ -182,7 +156,9 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
                 name="mail"
               />
             </Form.Item>
-              {errors.mail && <span>{errors.mail.message}</span>}
+            {errors.mail && (
+              <span className="errorMsg">{errors.mail.message}</span>
+            )}
           </Col>
           <Col span={12}>
             <Form.Item label="Password" name="password">
@@ -200,7 +176,9 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
                 name="password"
               />
             </Form.Item>
-              {errors.password && <span>{errors.password.message}</span>}
+            {errors.password && (
+              <span className="errorMsg">{errors.password.message}</span>
+            )}
           </Col>
         </Row>
         <Row gutter={[16, 16]}>
@@ -221,7 +199,9 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
                 name="teamId"
               />
             </Form.Item>
-              {errors.teamId && <span>{errors.teamId.message}</span>}
+            {errors.teamId && (
+              <span className="errorMsg">{errors.teamId.message}</span>
+            )}
           </Col>
           <Col span={12}>
             <Form.Item label="Role" name="role">
@@ -240,7 +220,9 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
                 name="role"
               />
             </Form.Item>
-              {errors.role && <span>{errors.role.message}</span>}
+            {errors.role && (
+              <span className="errorMsg">{errors.role.message}</span>
+            )}
           </Col>
         </Row>
         <Flex justify="end">

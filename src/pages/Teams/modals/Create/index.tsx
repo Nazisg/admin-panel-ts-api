@@ -1,18 +1,25 @@
 import { Button, Flex, Form, Input, Modal } from "antd";
 import { ActionModalProps } from "shared/types";
 import { useCreateTeamsMutation } from "src/redux/api/teams";
-import { useForm } from "react-hook-form";
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createTeamSchema } from "src/validation";
 const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
-  const [form] = Form.useForm(); 
   const [createTeam] = useCreateTeamsMutation();
-
-  const onFinish = async (values: { team: string }) => {
-     createTeam({
-      teamName: values.team,
-    });
-    form.resetFields(); 
+  interface FormType {
+    teamName: string;
+  }
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<FormType>({
+    resolver: zodResolver(createTeamSchema),
+  });
+  const onSubmit = async (data: FormType) => {
+    createTeam(data);
+    reset();
     setModalOpen(false);
   };
   return (
@@ -28,17 +35,28 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
       <Form
         name="basic"
         initialValues={{ remember: true }}
-        onFinish={onFinish}
+        onFinish={handleSubmit(onSubmit)}
         autoComplete="off"
         layout="vertical"
       >
-        <Form.Item
-          label="Team"
-          name="team"
-          rules={[{ required: true, message: "" }]}
-        >
-          <Input placeholder="Frontend" size="large" />
+        <Form.Item label="Team" name="team">
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                size="large"
+                placeholder="Frontend"
+                onBlur={onBlur}
+                onChange={onChange}
+                value={value}
+              />
+            )}
+            name="teamName"
+          />
         </Form.Item>
+        {errors.teamName && (
+          <span className="errorMsg">{errors.teamName.message}</span>
+        )}
         <Flex justify="end">
           <Button type="primary" htmlType="submit">
             Create

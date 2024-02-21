@@ -28,6 +28,14 @@ export const teamsApi = createApi({
       }),
       invalidatesTags: ["Teams"],
     }),
+    updateTeams: builder.mutation<TeamType, { id: number; data: TeamType }>({
+      query: ({ id, data }) => ({
+        url: `api/teams/${id}`,
+        method: "PATCH", 
+        data,
+      }),
+      invalidatesTags: ["Teams"],
+    }),
   }),
 });
 
