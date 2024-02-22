@@ -29,9 +29,6 @@ export const resetEmployeeSchema = z.object({
 export const updateEmployeeSchema = z.object({
   firstName: z.string().min(1, { message: "Firstname is required" }),
   lastName: z.string().min(1, { message: "Lastname is required" }),
-  password: z
-    .string()
-    .min(8, { message: "Password must be at least 8 characters" }),
   mail: z
     .string()
     .email({ message: "Must be a valid email" })
@@ -41,4 +38,10 @@ export const updateEmployeeSchema = z.object({
     }),
   teamId: z.number(),
   role: z.number(),
+});
+
+
+export const createProjectSchema = z.object({
+  projectName: z.string(),
+  // userIds: z.array(number),
 });

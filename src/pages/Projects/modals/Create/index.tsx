@@ -2,25 +2,34 @@ import { Button, Flex, Form, Input, Modal, Select, SelectProps } from "antd";
 import { ActionModalProps } from "shared/types";
 import { useCreateProjectMutation } from "src/redux/api/projects";
 import { useGetEmployeesQuery } from "src/redux/api/employees";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createProjectSchema } from "src/validation";
 const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
   const [createProject] = useCreateProjectMutation();
   const { data: employees } = useGetEmployeesQuery();
-  console.log(createProject)
-  const onFinish = async (values: any) => {
-    try {
-      const response = await createProject({
-        projectName: values.projectName,
-        userIds: values.userIds,
-      }).unwrap();
-      console.log("Project created successfully:", response);
-      setModalOpen(false);
-    } catch (error) {
-      console.error("Error creating project:", error);
-    }
+  interface ProjectType {
+    projectName: string;
+    userIds: string[];
+  }
+  const {
+    handleSubmit,
+    control,
+    getValues,
+    reset,
+    formState: { errors },
+  } = useForm<ProjectType>({
+    resolver: zodResolver(createProjectSchema),
+  });
+  const onSubmit = (data: ProjectType) => {
+    // createProject(data);
+    // console.log(data);
+    // reset();
+    setModalOpen(false);
   };
 
   const optionsEmployees: SelectProps["options"] = [];
-  
+
   if (Array.isArray(employees)) {
     employees.map((employee) => {
       optionsEmployees.push({
@@ -29,9 +38,7 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
       });
     });
   }
-  const handleChangeEmployees = (value: string | string[]) => {
-    console.log(`Selected: ${value}`);
-  };
+
 
   return (
     <Modal
@@ -46,30 +53,49 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
       <Form
         name="basic"
         initialValues={{ remember: true }}
-        onFinish={onFinish}
+        onFinish={handleSubmit(onSubmit)}
         autoComplete="off"
         layout="vertical"
       >
-        <Form.Item
-          label="Project Name"
-          name="projectName"
-          rules={[{ required: true, message: "" }]}
-        >
-          <Input placeholder="Plast" size="large" />
-        </Form.Item>
-        <Form.Item
-          label="Employees"
-          name="userIds" 
-          rules={[{ required: true, message: "" }]}
-        >
-          <Select
-            mode="tags"
-            size="large"
-            placeholder="Furniro"
-            onChange={handleChangeEmployees}
-            options={optionsEmployees}
+        <Form.Item label="Project Name" name="projectName">
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                size="large"
+                placeholder="Plast"
+                onBlur={onBlur}
+                onChange={onChange}
+                value={value}
+              />
+            )}
+            name="projectName"
           />
         </Form.Item>
+        {errors.projectName && (
+          <span className="errorMsg">{errors.projectName.message}</span>
+        )}
+        <Form.Item label="Employees" name="userIds">
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Select
+                mode="tags"
+                size="large"
+                placeholder="Nazrin Isgandarova"
+                // onChange={handleChangeEmployees}
+                options={optionsEmployees}
+                onBlur={onBlur}
+                onChange={onChange}
+                value={value}
+              />
+            )}
+            name="userIds"
+          />
+        </Form.Item>
+        {errors.userIds && (
+          <span className="errorMsg">{errors.userIds.message}</span>
+        )}
         <Flex justify="end">
           <Button type="primary" htmlType="submit">
             Create

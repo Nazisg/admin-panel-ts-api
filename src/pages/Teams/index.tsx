@@ -26,6 +26,8 @@ export default function Teams() {
   const [status, setStatus] = useState<
     "view" | "update" | "create" | "delete" | "resetPassword"
   >("view");
+  const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
+
   const handleCreate = () => {
     setModalOpen(true);
     setStatus("create");
@@ -48,7 +50,7 @@ export default function Teams() {
       title: "Action",
       key: "action",
       ellipsis: true,
-      render: () => (
+      render: (_, record) => (
         <Space size="small">
           <ActionButton
             setStatus={setStatus}
@@ -56,6 +58,8 @@ export default function Teams() {
             title="View"
             icon={<EyeOutlined />}
             type="btnView"
+            teamId={record.id}
+            setSelectedTeamId={setSelectedTeamId}
           />
           <ActionButton
             setStatus={setStatus}
@@ -63,6 +67,8 @@ export default function Teams() {
             title="Update"
             icon={<EditOutlined />}
             type="btnUpdate"
+            setSelectedTeamId={setSelectedTeamId}
+            teamId={record.id}
           />
           <ActionButton
             setStatus={setStatus}
@@ -70,6 +76,8 @@ export default function Teams() {
             title="Delete"
             icon={<DeleteOutlined />}
             type="btnDel"
+            setSelectedTeamId={setSelectedTeamId}
+            teamId={record.id}
           />
         </Space>
       ),
@@ -105,6 +113,7 @@ export default function Teams() {
         modalOpen={modalOpen}
         setModalOpen={setModalOpen}
         statusType={status}
+        selectedTeamId={selectedTeamId}
       />
       <Filter
         modalOpen={filterOpen}

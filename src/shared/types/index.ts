@@ -36,7 +36,7 @@ export interface ReportType {
 }
 
 export interface ProjectType {
-  key: React.Key; 
+  key: React.Key;
   // id: number;
   project: string;
   projectName: string;
@@ -44,14 +44,15 @@ export interface ProjectType {
 
 export interface EmployeeType {
   key: React.Key;
+  id: string;
   firstName: string;
   lastName: string;
   fullName: string;
-  name:string;
-  surname:string;
+  name: string;
+  surname: string;
   mail: string;
-  team: string;
-  role: string;
+  team: { teamName: string };
+  role: { roleName: string };
   status: boolean;
 }
 
@@ -71,7 +72,8 @@ export interface TableProps {
 export interface ActionModalProps {
   modalOpen: boolean;
   setModalOpen: Dispatch<SetStateAction<boolean>>;
-  selectedEmployeeId: number | null 
+  selectedEmployeeId: number | null;
+  selectedTeamId: number | null;
 }
 
 export interface ActionButtonProps {
@@ -80,6 +82,9 @@ export interface ActionButtonProps {
   title: string;
   employeeId: number;
   setSelectedEmployeeId:any;
+  teamId: number;
+  setSelectedTeamId:any;
+
   setModalOpen: Dispatch<SetStateAction<boolean>>;
   setStatus: Dispatch<
     SetStateAction<"view" | "delete" | "update" | "create" | "resetPassword">

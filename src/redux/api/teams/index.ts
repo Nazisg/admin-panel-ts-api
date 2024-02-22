@@ -20,7 +20,11 @@ export const teamsApi = createApi({
       query: () => ({ url: `api/teams`, method: "GET" }),
       providesTags: ["Teams"],
     }),
-    createTeams: builder.mutation({
+    getTeamById: builder.query<TeamType, number>({
+      query: (id) => ({ url: `api/teams/${id}`, method: "GET" }),
+      providesTags: ["Teams"],
+    }),
+    createTeam: builder.mutation({
       query: (data: TeamPostData) => ({
         url: "api/teams",
         method: "post",
@@ -28,15 +32,28 @@ export const teamsApi = createApi({
       }),
       invalidatesTags: ["Teams"],
     }),
-    updateTeams: builder.mutation<TeamType, { id: number; data: TeamType }>({
+    updateTeam: builder.mutation<TeamType, { id: number; data: TeamType }>({
       query: ({ id, data }) => ({
         url: `api/teams/${id}`,
-        method: "PATCH", 
+        method: "PATCH",
         data,
+      }),
+      invalidatesTags: ["Teams"],
+    }),
+    deleteTeam: builder.mutation<string, string | undefined>({
+      query: (id) => ({
+        url: `api/teams/${id}`,
+        method: "DELETE",
       }),
       invalidatesTags: ["Teams"],
     }),
   }),
 });
 
-export const { useGetTeamsQuery, useCreateTeamsMutation } = teamsApi;
+export const {
+  useGetTeamsQuery,
+  useCreateTeamMutation,
+  useUpdateTeamMutation,
+  useDeleteTeamMutation,
+  useGetTeamByIdQuery,
+} = teamsApi;

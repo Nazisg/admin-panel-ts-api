@@ -10,6 +10,7 @@ import {
   Button,
   Flex,
   Space,
+  message,
   Table,
   TableColumnsType,
   Tag,
@@ -23,7 +24,7 @@ import { useGetEmployeesFilterQuery } from "src/redux/api/employees";
 import Filter from "src/shared/components/Filter";
 import EmployeeModal from "../Employees/modals/index";
 import styles from "./Employees.module.scss";
-
+import { useUpdateStatusMutation } from "src/redux/api/employees";
 
 export default function Employees() {
   const { data } = useGetEmployeesFilterQuery();
@@ -34,7 +35,17 @@ export default function Employees() {
   const [status, setStatus] = useState<
     "view" | "delete" | "update" | "create" | "resetPassword"
   >("view");
-
+  // interface DataType {
+  //   id: string;
+  //   key: React.Key;
+  //   firstName: string;
+  //   lastName: string;
+  //   mail: string;
+  //   team: { teamName: string };
+  //   role: { roleName: string };
+  //   status: string;
+  // }
+  
   const handleCreate = () => {
     setModalOpen(true);
     setStatus("create");
@@ -50,7 +61,20 @@ export default function Employees() {
       role: employee?.role?.roleName,
       status: employee?.status,
     })) ?? [];
-  // const [status, setStatus] = useState<"active" | "deactive">("active");
+
+  const [updateStatus] =useUpdateStatusMutation()
+  const handleClickStatus = (id: string) => {
+		const user: EmployeeType | undefined = (data?.content as EmployeeType[])?.find(
+			(item: { id: string }) => item.id === id
+		);
+
+		const newStatus = user?.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+		updateStatus({
+			userId: id,
+			newStatus: newStatus,
+		});
+    message.success('Status updated successfully');
+	};
 
   const columns: TableColumnsType<EmployeeType> = [
     {
@@ -84,9 +108,9 @@ export default function Employees() {
       dataIndex: "status",
       key: "status",
       ellipsis: true,
-      render: (_, { status }) => (
-        <Tag color={status ? "green" : "red"}>
-          {status ? "ACTIVE" : "DEACTIVE"}
+      render: (_, record) => (
+        <Tag className={styles.statusbtn} color={record.status === "ACTIVE" ? "green" : "red"} onClick={() => handleClickStatus(record.id)}>
+          {record.status}
         </Tag>
       ),
     },

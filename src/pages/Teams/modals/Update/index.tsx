@@ -1,25 +1,24 @@
 import { Button, Flex, Form, Input, Modal, Select, SelectProps } from "antd";
 import { ActionModalProps } from "shared/types";
-
+import { useGetEmployeesQuery } from "src/redux/api/employees";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 const Update: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
   const onFinish = (values: any) => {
     console.log("Success:", values);
   };
+  const { data: employees } = useGetEmployeesQuery();
+
   const optionsEmployees: SelectProps["options"] = [];
-  const employees = [
-    { id: "1", employeeName: "Nazrin Isgandarova" },
-    { id: "2", employeeName: "Rahman Aliyev" },
-    { id: "3", employeeName: "Lala Agayeva" },
-  ];
-  employees.map((employee) => {
-    optionsEmployees.push({
-      value: employee.id,
-      label: employee.employeeName,
+
+  if (Array.isArray(employees)) {
+    employees?.map((employee) => {
+      optionsEmployees.push({
+        value: employee.id,
+        label: employee.fullName,
+      });
     });
-  });
-  const handleChangeEmployees = (value: string | string[]) => {
-    console.log(`Selected: ${value}`);
-  };
+  }
 
   return (
     <Modal
@@ -53,8 +52,8 @@ const Update: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
           <Select
             mode="tags"
             size="large"
-            placeholder="Furniro"
-            onChange={handleChangeEmployees}
+            placeholder="Nazrin Isgandarova"
+            // onChange={handleChangeEmployees}
             options={optionsEmployees}
           />
         </Form.Item>
