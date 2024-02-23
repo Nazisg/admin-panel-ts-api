@@ -10,7 +10,10 @@ interface EmployeesType {
   mail: string;
   status: string;
   newStatus?: string;
-  userId?:number;
+  userId?: number;
+  teamId: number;
+  email: string;
+  roleId: number;
   team: {
     id: number;
     teamName: string;
@@ -23,7 +26,6 @@ interface EmployeesType {
     id: number;
     projectName: string;
   };
-  // teamId:nuber;
 }
 
 export const employeesApi = createApi({
@@ -36,7 +38,28 @@ export const employeesApi = createApi({
       providesTags: ["Employees"],
     }),
     getEmployeesFilter: builder.query<EmployeesType, void>({
-      query: () => ({ url: `users/filters`, method: "GET" }),
+      query: () => ({ url: `users/filters?`, method: "GET" }),
+      // query: ({ firstName, lastName,teamId,status,projectIds }) => {
+      // 	let url = `users/filters?`;
+
+      // 	if (firstName) {
+      // 		url += `&firstName=${firstName}`;
+      // 	}
+      // 	if (lastName) {
+      // 		url += `&lastName=${lastName}`;
+      // 	}
+      // 	if(teamId){
+      // 		url+=`&teamId=${teamId}`
+      // 	}
+      // 	if(status){
+      // 		url+=`&status=${status}`
+      // 	}
+
+      // 	if(projectIds){
+      // 		url+=`&projectIds=${projectIds}`
+      // 	}
+      // 	return { url };
+      // },
       providesTags: ["Employees"],
     }),
     getEmployeeById: builder.query<EmployeesType, number>({
@@ -52,13 +75,15 @@ export const employeesApi = createApi({
       invalidatesTags: ["Employees"],
     }),
     updateEmployee: builder.mutation({
-			query: ({id, ...rest }) => ({
-				url: `users/${id}`,
-				method: "PUT",
-				data: rest,
-			}),
-			invalidatesTags: ["Employees"],
-		}),
+      query: ({ id, ...rest }) => {
+        return {
+          url: `users/${id}`,
+          method: "PUT",
+          data: rest,
+        }
+      },
+      invalidatesTags: ["Employees"],
+    }),
     deleteEmployee: builder.mutation<string, string | undefined>({
       query: (id) => ({
         url: `users/${id}`,
@@ -75,19 +100,27 @@ export const employeesApi = createApi({
       invalidatesTags: ["Employees"],
     }),
     getStatusList: builder.query<[], void>({
-			query: () => ({
-				url: "users/status/list",
-			}),
+      query: () => ({
+        url: "users/status/list",
+      }),
       providesTags: ["Employees"],
-		}),
+    }),
     updateStatus: builder.mutation<EmployeesType, any>({
-			query: ({ userId, newStatus, ...rest }) => ({
-				url: `users/${userId}/status?newStatus=${newStatus}`,
-				method: "PUT",
-				data: rest,
-			}),
-			invalidatesTags: ["Employees"],
-		}),
+      query: ({ userId, newStatus, ...rest }) => ({
+        url: `users/${userId}/status?newStatus=${newStatus}`,
+        method: "PUT",
+        data: rest,
+      }),
+      invalidatesTags: ["Employees"],
+    }),
+    changePassword: builder.mutation<string, EmployeesType>({
+      query: ({ ...rest }) => ({
+        url: `users/change-password`,
+        method: "PUT",
+        data: rest,
+      }),
+      invalidatesTags: ["Employees"],
+    }),
   }),
 });
 
@@ -101,4 +134,5 @@ export const {
   useResetEmployeeMutation,
   useGetStatusListQuery,
   useUpdateStatusMutation,
+  useChangePasswordMutation,
 } = employeesApi;

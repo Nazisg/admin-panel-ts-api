@@ -7,7 +7,7 @@ const View: React.FC<ActionModalProps> = ({
   setModalOpen,
   selectedTeamId,
 }) => {
-  const { data } = useGetTeamByIdQuery(selectedTeamId);
+  const { data: team } = useGetTeamByIdQuery(selectedTeamId as any);
   return (
     <Drawer
       title="View Team"
@@ -15,10 +15,10 @@ const View: React.FC<ActionModalProps> = ({
       open={modalOpen}
     >
       <Descriptions layout="vertical" bordered column={1}>
-        <Descriptions.Item label="Team">{data?.name}</Descriptions.Item>
+        <Descriptions.Item label="Team">{team?.name}</Descriptions.Item>
         <Descriptions.Item label="Employees">
           <Flex wrap="wrap" gap={6}>
-            {data?.users?.map((user) => (
+            {team?.users?.map((user) => (
               <Tag key={user.id}>
                 {user?.firstName} {user?.lastName}
               </Tag>

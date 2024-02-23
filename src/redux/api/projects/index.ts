@@ -27,6 +27,10 @@ export const projectsApi = createApi({
       query: () => ({ url: `api/project/search`, method: "GET" }),
       providesTags: ["Projects"],
     }),
+    getProjectById: builder.query<ProjectType, number>({
+      query: (id) => ({ url: `api/project/${id}`, method: "GET" }),
+      providesTags: ["Projects"],
+    }),
     createProject: builder.mutation({
       query: (data: ProjectType) => ({
         url: "api/project",
@@ -35,15 +39,14 @@ export const projectsApi = createApi({
       }),
       invalidatesTags: ["Projects"],
     }),
-    updateProject: builder.mutation<
-      ProjectType,
-      { id: number; data: ProjectType }
-    >({
-      query: ({ id, data }) => ({
-        url: `api/project/${id}`,
-        method: "PATCH",
-        data,
-      }),
+    updateProject: builder.mutation({
+      query: ({ id, ...rest }) => {
+        return {
+          url: `api/project/${id}`,
+          method: "PUT",
+          data: rest,
+        }
+      },
       invalidatesTags: ["Projects"],
     }),
   }),
@@ -54,4 +57,5 @@ export const {
   useGetProjectsFilterQuery,
   useCreateProjectMutation,
   useUpdateProjectMutation,
+  useGetProjectByIdQuery,
 } = projectsApi;

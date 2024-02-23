@@ -7,11 +7,12 @@ const ProjectModal: React.FC<ModalProps> = ({
   statusType,
   modalOpen,
   setModalOpen,
+  selectedProjectId={selectedProjectId}
 }) => {
   const status = {
-    view: <View modalOpen={modalOpen} setModalOpen={setModalOpen} />,
-    update: <Update modalOpen={modalOpen} setModalOpen={setModalOpen} />,
-    create: <Create modalOpen={modalOpen} setModalOpen={setModalOpen} />,
+    view: <View modalOpen={modalOpen} setModalOpen={setModalOpen} selectedProjectId={selectedProjectId}/>,
+    update: <Update modalOpen={modalOpen} setModalOpen={setModalOpen} selectedProjectId={selectedProjectId}/>,
+    create: <Create modalOpen={modalOpen} setModalOpen={setModalOpen} selectedProjectId={selectedProjectId}/>,
   };
   return statusType !== "resetPassword"
     ? //@ts-ignore

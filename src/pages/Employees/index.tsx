@@ -27,7 +27,29 @@ import styles from "./Employees.module.scss";
 import { useUpdateStatusMutation } from "src/redux/api/employees";
 
 export default function Employees() {
-  const { data } = useGetEmployeesFilterQuery();
+  interface DataType {
+    id: string;
+    key: React.Key;
+    firstName: string;
+    lastName: string;
+    mail: string;
+    team: { teamName: string };
+    role: { roleName: string };
+    status: string;
+    action: React.ReactNode;
+  }
+  
+  const { data } = useGetEmployeesFilterQuery(
+    // {
+
+		// firstName: firstName,
+		// lastName:lastName,
+		// teamId:teamId,
+		// status:status,
+		// projectIds:projectIds
+
+  // }
+  );
   const [modalOpen, setModalOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<number | null>(null); 

@@ -11,6 +11,8 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   setStatus,
   employeeId,
   teamId,
+  projectId,
+  setSelectedProjectId,
   setSelectedEmployeeId,
   setSelectedTeamId
 }) => {
@@ -37,7 +39,7 @@ const enum Urls {
           setStatus(status[title]);
           location.pathname === Urls.EMPLOYEE ? setSelectedEmployeeId(employeeId): null;
           location.pathname === Urls.TEAM ?     setSelectedTeamId(teamId):null
-          // location.pathname === Urls.PROJECT ? setSelectedTeamId(teamId):null
+          location.pathname === Urls.PROJECT ? setSelectedProjectId(projectId):null
         }}
         shape="circle"
         className={styles[type]}

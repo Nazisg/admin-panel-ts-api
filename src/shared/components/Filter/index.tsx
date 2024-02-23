@@ -1,5 +1,8 @@
 import { DatePicker, Drawer, Form, Input, Select, SelectProps } from "antd";
 import { FilterProps } from "shared/types";
+import { useGetEmployeesQuery } from "src/redux/api/employees";
+import { useGetProjectsQuery } from "src/redux/api/projects";
+import { useGetTeamsQuery } from "src/redux/api/teams";
 
 const Filter: React.FC<FilterProps> = ({
   modalOpen,
@@ -10,40 +13,34 @@ const Filter: React.FC<FilterProps> = ({
   const optionsTeams: SelectProps["options"] = [];
   const optionsProject: SelectProps["options"] = [];
   const optionsEmployees: SelectProps["options"] = [];
+  const { data: teams } = useGetTeamsQuery();
+  const { data: projects } = useGetProjectsQuery();
+  const { data: employees } = useGetEmployeesQuery();
 
-  const teams = [
-    { id: "1", teamName: "Frontend" },
-    { id: "2", teamName: "Backend" },
-    { id: "3", teamName: "Mobile" },
-  ];
-  const projects = [
-    { id: "1", projectName: "Plast" },
-    { id: "2", projectName: "Furniro" },
-    { id: "3", projectName: "DailyReport" },
-  ];
-  const employees = [
-    { id: "1", employeeName: "Nazrin Isgandarova" },
-    { id: "2", employeeName: "Rahman Aliyev" },
-    { id: "3", employeeName: "Lala Agayeva" },
-  ];
-  teams.map((team) => {
-    optionsTeams.push({
-      value: team.id,
-      label: team.teamName,
+  if (Array.isArray(teams)) {
+    teams?.map((team) => {
+      optionsTeams.push({
+        value: team.id,
+        label: team.teamName,
+      });
     });
-  });
-  projects.map((project) => {
-    optionsProject.push({
-      value: project.id,
-      label: project.projectName,
+  }
+  if (Array.isArray(projects)) {
+    projects?.map((project) => {
+      optionsProject.push({
+        value: project.id,
+        label: project.projectName,
+      });
     });
-  });
-  employees.map((employee) => {
-    optionsEmployees.push({
-      value: employee.id,
-      label: employee.employeeName,
+  }
+  if (Array.isArray(employees)) {
+    employees?.map((employee) => {
+      optionsEmployees.push({
+        value: employee.id,
+        label: employee.fullName,
+      });
     });
-  });
+  }
   const handleChangeTeams = (value: string | string[]) => {
     console.log(`Selected: ${value}`);
   };
@@ -53,10 +50,19 @@ const Filter: React.FC<FilterProps> = ({
   const handleChangeEmployees = (value: string | string[]) => {
     console.log(`Selected: ${value}`);
   };
+  // const onFinish = (values) => {
+  //   console.log(values)
+  // }
+
   const status = {
     employee: (
       <>
-        <Form name="basic" autoComplete="off" layout="vertical">
+        <Form
+          // onFinish={onFinish}
+          name="basic"
+          autoComplete="off"
+          layout="vertical"
+        >
           <Form.Item label="Teams" name="teams">
             <Select
               mode="tags"

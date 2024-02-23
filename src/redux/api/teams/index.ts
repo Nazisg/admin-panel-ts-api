@@ -33,11 +33,13 @@ export const teamsApi = createApi({
       invalidatesTags: ["Teams"],
     }),
     updateTeam: builder.mutation<TeamType, { id: number; data: TeamType }>({
-      query: ({ id, data }) => ({
-        url: `api/teams/${id}`,
-        method: "PATCH",
-        data,
-      }),
+      query: ({ id, ...rest }) => {
+        return {
+          url: `api/teams/${id}`,
+          method: "PUT",
+          data: rest,
+        }
+      },
       invalidatesTags: ["Teams"],
     }),
     deleteTeam: builder.mutation<string, string | undefined>({

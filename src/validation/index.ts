@@ -18,7 +18,7 @@ export const createEmployeeSchema = z.object({
 });
 
 export const createTeamSchema = z.object({
-  teamName: z.string(),
+  teamName: z.string().min(1, { message: "Team name is required" }),
 });
 
 export const resetEmployeeSchema = z.object({
@@ -29,7 +29,7 @@ export const resetEmployeeSchema = z.object({
 export const updateEmployeeSchema = z.object({
   firstName: z.string().min(1, { message: "Firstname is required" }),
   lastName: z.string().min(1, { message: "Lastname is required" }),
-  mail: z
+  email: z
     .string()
     .email({ message: "Must be a valid email" })
     .min(1, { message: "Email is required" })
@@ -37,11 +37,12 @@ export const updateEmployeeSchema = z.object({
       message: "Email must end with @crocusoft.com",
     }),
   teamId: z.number(),
-  role: z.number(),
+  roleId: z.number(),
 });
 
 
 export const createProjectSchema = z.object({
-  projectName: z.string(),
-  // userIds: z.array(number),
+  projectName: z.string().min(1, { message: "Project name is required" }),
+  // userIds: z.string(),
 });
+

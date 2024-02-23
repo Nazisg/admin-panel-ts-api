@@ -1,25 +1,67 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Flex, Form, Input, Modal, Select, SelectProps } from "antd";
+import { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { ActionModalProps } from "shared/types";
+import { useGetEmployeesQuery } from "src/redux/api/employees";
+import {
+  useGetProjectByIdQuery,
+  useUpdateProjectMutation,
+} from "src/redux/api/projects";
+import { createProjectSchema } from "src/validation";
 
-const Update: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
-  const onFinish = (values: any) => {
-    console.log("Success:", values);
-  };
-  const optionsEmployees: SelectProps["options"] = [];
-  const employees = [
-    { id: "1", employeeName: "Nazrin Isgandarova" },
-    { id: "2", employeeName: "Rahman Aliyev" },
-    { id: "3", employeeName: "Lala Agayeva" },
-  ];
-  employees.map((employee) => {
-    optionsEmployees.push({
-      value: employee.id,
-      label: employee.employeeName,
-    });
+const Update: React.FC<ActionModalProps> = ({
+  modalOpen,
+  setModalOpen,
+  selectedProjectId,
+}) => {
+  interface FormType {
+    projectName: string;
+    employees:string[];
+
+    userIdsToAdd:any; //change
+  }
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+    reset,
+  } = useForm<FormType>({
+    resolver: zodResolver(createProjectSchema),
   });
-  const handleChangeEmployees = (value: string | string[]) => {
-    console.log(`Selected: ${value}`);
+  const { data: employees } = useGetEmployeesQuery();
+  const { data: project } = useGetProjectByIdQuery(selectedProjectId as any);
+console.log(project)
+  const optionsEmployees: SelectProps["options"] = [];
+
+  if (Array.isArray(employees)) {
+    employees?.map((employee) => {
+      optionsEmployees.push({
+        value: employee.id,
+        label: employee.fullName,
+      });
+    });
+  }
+  // console.log(employees)
+  const [updateProject] = useUpdateProjectMutation();
+  useEffect(() => {
+    if (project) {
+      reset({
+        projectName: project.projectName,
+        employees:project.users?.map(user=>user.id)
+      });
+    }
+  }, [project, reset]);
+  const onSubmit = (formData: FormType) => {
+    updateProject({
+      id: selectedProjectId,
+		//  userIdsToAdd: formData.userIdsToAdd,
+			projectName: formData.projectName,
+
+    });
+    setModalOpen(false);
   };
+  console.log(project)
 
   return (
     <Modal
@@ -33,31 +75,50 @@ const Update: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
     >
       <Form
         name="basic"
-        onFinish={onFinish}
+        initialValues={{ remember: true }}
+        onFinish={handleSubmit(onSubmit)}
         autoComplete="off"
         layout="vertical"
       >
-        <Form.Item
-          label="Project Name"
-          name="projectName"
-          rules={[{ required: true, message: "" }]}
-        >
-          <Input placeholder="Plast" size="large" />
-        </Form.Item>
-
-        <Form.Item
-          label="Employees"
-          name="employees"
-          rules={[{ required: true, message: "" }]}
-        >
-          <Select
-            mode="tags"
-            size="large"
-            placeholder="Furniro"
-            onChange={handleChangeEmployees}
-            options={optionsEmployees}
+        <Form.Item label="Project Name" name="projectName">
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                size="large"
+                placeholder="Plast"
+                onBlur={onBlur}
+                onChange={onChange}
+                value={value}
+              />
+            )}
+            name="projectName"
           />
         </Form.Item>
+        {errors.projectName && (
+          <span className="errorMsg">{errors.projectName.message}</span>
+        )}
+
+        <Form.Item label="Employees" name="employees">
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Select
+                mode="tags"
+                size="large"
+                placeholder="Nazrin Isgandarova"
+                onChange={onChange}
+                options={optionsEmployees}
+                onBlur={onBlur}
+                value={value}
+              />
+            )}
+            name="employees"
+          />
+        </Form.Item>
+        {errors.employees && (
+          <span className="errorMsg">{errors.employees.message}</span>
+        )}
 
         <Flex justify="end">
           <Button type="primary" htmlType="submit">

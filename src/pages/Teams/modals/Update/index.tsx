@@ -1,24 +1,46 @@
 import { Button, Flex, Form, Input, Modal, Select, SelectProps } from "antd";
 import { ActionModalProps } from "shared/types";
-import { useGetEmployeesQuery } from "src/redux/api/employees";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-const Update: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
-  const onFinish = (values: any) => {
-    console.log("Success:", values);
-  };
-  const { data: employees } = useGetEmployeesQuery();
-
-  const optionsEmployees: SelectProps["options"] = [];
-
-  if (Array.isArray(employees)) {
-    employees?.map((employee) => {
-      optionsEmployees.push({
-        value: employee.id,
-        label: employee.fullName,
-      });
-    });
+import { createTeamSchema } from "src/validation";
+import { useEffect } from "react";
+import { useGetTeamByIdQuery, useUpdateTeamMutation } from "src/redux/api/teams";
+const Update: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen ,selectedTeamId}) => {
+  interface FormType {
+    name: string;
+    teamName:string;
   }
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+    reset,
+  } = useForm<FormType>({
+    resolver: zodResolver(createTeamSchema),
+  });
+  const {data:team} = useGetTeamByIdQuery(selectedTeamId as any)
+  console.log(team)
+  
+  useEffect(() => {
+    if (team) {
+      reset({
+        teamName: team.name,
+      });
+    }
+  }, [team, reset]);
+  const [updateTeam] = useUpdateTeamMutation()
+
+    const onSubmit = (formData: FormType) => {
+      const requestData = {
+        teamName: formData.teamName,
+      };
+  
+      updateTeam({
+        id: selectedTeamId,
+        ...requestData,
+      });
+      setModalOpen(false)
+    };
 
   return (
     <Modal
@@ -33,30 +55,28 @@ const Update: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
       <Form
         name="basic"
         initialValues={{ remember: true }}
-        onFinish={onFinish}
+        onFinish={handleSubmit(onSubmit)}
         autoComplete="off"
         layout="vertical"
       >
-        <Form.Item
-          label="Team"
-          name="teams"
-          rules={[{ required: true, message: "" }]}
-        >
-          <Input placeholder="Frontend" size="large" />
-        </Form.Item>
-        <Form.Item
-          label="Employees"
-          name="employees"
-          rules={[{ required: true, message: "" }]}
-        >
-          <Select
-            mode="tags"
-            size="large"
-            placeholder="Nazrin Isgandarova"
-            // onChange={handleChangeEmployees}
-            options={optionsEmployees}
+       <Form.Item label="Team" name="team">
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                size="large"
+                placeholder="Frontend"
+                onBlur={onBlur}
+                onChange={onChange}
+                value={value}
+              />
+            )}
+            name="teamName"
           />
         </Form.Item>
+        {errors.teamName && (
+          <span className="errorMsg">{errors.teamName.message}</span>
+        )}
 
         <Flex justify="end">
           <Button type="primary" htmlType="submit">

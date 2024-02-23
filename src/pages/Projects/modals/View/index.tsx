@@ -1,7 +1,13 @@
-import { Descriptions, Drawer } from "antd";
+import { Descriptions, Drawer, Flex, Tag } from "antd";
 import { ActionModalProps } from "shared/types";
+import { useGetProjectByIdQuery } from "src/redux/api/projects";
 
-const View: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
+const View: React.FC<ActionModalProps> = ({
+  modalOpen,
+  setModalOpen,
+  selectedProjectId,
+}) => {
+  const { data: project } = useGetProjectByIdQuery(selectedProjectId as any);
   return (
     <Drawer
       title="View Project"
@@ -9,9 +15,17 @@ const View: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
       open={modalOpen}
     >
       <Descriptions layout="vertical" bordered column={1}>
-        <Descriptions.Item label="Project">Frontend</Descriptions.Item>
+        <Descriptions.Item label="Project">
+          {project?.projectName}
+        </Descriptions.Item>
         <Descriptions.Item label="Employees">
-          Nazrin Isgandarova, Rahman Aliyev
+          <Flex wrap="wrap" gap={6}>
+            {project?.users?.map((user) => (
+              <Tag key={user.id}>
+                {user?.firstName} {user?.lastName}
+              </Tag>
+            ))}
+          </Flex>
         </Descriptions.Item>
       </Descriptions>
     </Drawer>

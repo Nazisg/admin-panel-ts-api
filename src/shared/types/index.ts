@@ -74,15 +74,18 @@ export interface ActionModalProps {
   setModalOpen: Dispatch<SetStateAction<boolean>>;
   selectedEmployeeId: number | null;
   selectedTeamId: number | null;
+  selectedProjectId: number | null;
+
 }
 
 export interface ActionButtonProps {
   icon: JSX.Element;
   type: string;
   title: string;
-  employeeId: number;
+  employeeId: number | string;
   setSelectedEmployeeId:any;
-  teamId: number;
+  teamId: number | string;
+  projectId: number | string;
   setSelectedTeamId:any;
 
   setModalOpen: Dispatch<SetStateAction<boolean>>;

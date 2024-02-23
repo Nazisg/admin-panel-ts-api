@@ -29,6 +29,8 @@ export default function Projects() {
     "view" | "delete" | "update" | "create" | "resetPassword"
   >("view");
   console.log(useGetProjectsFilterQuery())
+  const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null);
+
   const projects =
     data?.content?.map((project) => ({
       key: project.id,
@@ -52,7 +54,7 @@ export default function Projects() {
       title: "Action",
       key: "action",
       ellipsis: true,
-      render: () => (
+      render: (_, record) => (
         <Space size="small">
           <ActionButton
             setStatus={setStatus}
@@ -60,6 +62,8 @@ export default function Projects() {
             title="View"
             icon={<EyeOutlined />}
             type="btnView"
+            projectId={record.id}
+            setSelectedProjectId={setSelectedProjectId}
           />
           <ActionButton
             setStatus={setStatus}
@@ -67,6 +71,8 @@ export default function Projects() {
             title="Update"
             icon={<EditOutlined />}
             type="btnUpdate"
+            projectId={record.id}
+            setSelectedProjectId={setSelectedProjectId}
           />
         </Space>
       ),
@@ -111,6 +117,7 @@ export default function Projects() {
         modalOpen={modalOpen}
         setModalOpen={setModalOpen}
         statusType={status}
+        selectedProjectId={selectedProjectId}
       />
       <Filter
         modalOpen={filterOpen}

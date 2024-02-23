@@ -24,12 +24,9 @@ import { useEffect } from "react";
 interface FormType {
   firstName: string;
   lastName: string;
-  role: {
-    id: string;
-    roleName: string;
-  };
-  mail: string;
-  teamId: string;
+  roleId: number | string;
+  email: string;
+  teamId: number | string;
 }
 
 const Update: React.FC<ActionModalProps> = ({
@@ -37,22 +34,31 @@ const Update: React.FC<ActionModalProps> = ({
   setModalOpen,
   selectedEmployeeId,
 }) => {
-  const [form] = Form.useForm(); // Initialize form
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+    reset,
+  } = useForm<FormType>({
+    resolver: zodResolver(updateEmployeeSchema),
+  });
 
-  const { data: employee, isLoading } =
-    useGetEmployeeByIdQuery(selectedEmployeeId);
+  console.log(errors);
+
+  const [form] = Form.useForm();
+  const { data: employee } = useGetEmployeeByIdQuery(selectedEmployeeId as any);
 
   useEffect(() => {
     if (employee) {
-      form.setFieldsValue({
+      reset({
         firstName: employee.firstName,
         lastName: employee.lastName,
-        mail: employee.mail,
-        role: employee.role ? employee.role.id : "", // Assuming role is optional
-        teamId: employee.team ? employee.team.id : "", // Assuming team is optional
+        email: employee.mail,
+        roleId: employee.role?.id || "",
+        teamId: employee.team?.id || "",
       });
     }
-  }, [employee, form]);
+  }, [employee, reset]);
 
   const [updateEmployee] = useUpdateEmployeeMutation();
 
@@ -79,18 +85,18 @@ const Update: React.FC<ActionModalProps> = ({
     });
   }
 
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<FormType>({
-    resolver: zodResolver(updateEmployeeSchema),
-  });
-
   const onSubmit = (formData: FormType) => {
+    const requestData = {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      roleId: formData.roleId,
+      teamId: formData.teamId,
+    };
+
     updateEmployee({
       id: selectedEmployeeId,
-      ...formData,
+      ...requestData,
     });
   };
 
@@ -156,7 +162,7 @@ const Update: React.FC<ActionModalProps> = ({
         </Row>
         <Row gutter={[16, 16]}>
           <Col span={12}>
-            <Form.Item label="Mail" name="mail">
+            <Form.Item label="Mail" name="email">
               <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
@@ -168,15 +174,15 @@ const Update: React.FC<ActionModalProps> = ({
                     value={value}
                   />
                 )}
-                name="mail"
+                name="email"
               />
             </Form.Item>
-            {errors.mail && (
-              <span className="errorMsg">{errors.mail.message}</span>
+            {errors.email && (
+              <span className="errorMsg">{errors.email.message}</span>
             )}
           </Col>
           <Col span={12}>
-            <Form.Item label="Role" name="role">
+            <Form.Item label="Role" name="roleId">
               <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
@@ -189,11 +195,11 @@ const Update: React.FC<ActionModalProps> = ({
                     placeholder="Employee"
                   />
                 )}
-                name="role"
+                name="roleId"
               />
             </Form.Item>
-            {errors.role && (
-              <span className="errorMsg">{errors.role.message}</span>
+            {errors.roleId && (
+              <span className="errorMsg">{errors.roleId.message}</span>
             )}
           </Col>
         </Row>

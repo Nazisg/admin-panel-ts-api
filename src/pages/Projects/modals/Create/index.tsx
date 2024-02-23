@@ -22,9 +22,9 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
     resolver: zodResolver(createProjectSchema),
   });
   const onSubmit = (data: ProjectType) => {
-    // createProject(data);
-    // console.log(data);
-    // reset();
+    createProject(data);
+    console.log(data);
+    reset();
     setModalOpen(false);
   };
 
