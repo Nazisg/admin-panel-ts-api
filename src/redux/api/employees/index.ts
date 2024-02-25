@@ -38,7 +38,7 @@ export const employeesApi = createApi({
       providesTags: ["Employees"],
     }),
     getEmployeesFilter: builder.query<EmployeesType, void>({
-      query: () => ({ url: `users/filters?`, method: "GET" }),
+      query: () => ({ url: `users/filters?pageSize=1000`, method: "GET" }),
       // query: ({ firstName, lastName,teamId,status,projectIds }) => {
       // 	let url = `users/filters?`;
 

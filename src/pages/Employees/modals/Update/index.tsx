@@ -8,6 +8,7 @@ import {
   Row,
   Select,
   SelectProps,
+  message,
 } from "antd";
 import { ActionModalProps } from "shared/types";
 import { useGetRolesQuery } from "src/redux/api/roles";
@@ -60,8 +61,8 @@ const Update: React.FC<ActionModalProps> = ({
     }
   }, [employee, reset]);
 
-  const [updateEmployee] = useUpdateEmployeeMutation();
-
+  const [updateEmployee, { isSuccess }] = useUpdateEmployeeMutation();
+console.log(isSuccess)
   const { data: roles } = useGetRolesQuery();
   const { data: teams } = useGetTeamsQuery();
   const optionsTeams: SelectProps["options"] = [];
@@ -98,7 +99,16 @@ const Update: React.FC<ActionModalProps> = ({
       id: selectedEmployeeId,
       ...requestData,
     });
+    
+   
   };
+
+	useEffect(() => {
+		if (isSuccess) {
+      setModalOpen(false)
+			message.success("editData");
+		}
+	}, [isSuccess]);
 
   return (
     <Modal
