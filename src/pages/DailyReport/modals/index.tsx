@@ -7,10 +7,11 @@ const ReportModal: React.FC<ModalProps> = ({
   statusType,
   modalOpen,
   setModalOpen,
+  selectedReportId
 }) => {
   const status = {
-    view: <View modalOpen={modalOpen} setModalOpen={setModalOpen} />,
-    update: <Update modalOpen={modalOpen} setModalOpen={setModalOpen} />,
+    view: <View modalOpen={modalOpen} setModalOpen={setModalOpen} selectedReportId={selectedReportId}/>,
+    update: <Update modalOpen={modalOpen} setModalOpen={setModalOpen} selectedReportId={selectedReportId}/>,
     create: <Create modalOpen={modalOpen} setModalOpen={setModalOpen} />,
   };
   return statusType !== "resetPassword" && statusType !== "delete"

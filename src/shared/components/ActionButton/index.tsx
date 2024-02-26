@@ -1,7 +1,8 @@
 import { Button, Tooltip } from "antd";
-import { ActionButtonProps } from "shared/types";
-import styles from "./ActionButton.module.scss";
 import { useLocation } from "react-router-dom";
+import { ActionButtonProps } from "shared/types";
+import { useAppSelector } from "src/redux/hooks";
+import styles from "./ActionButton.module.scss";
 
 const ActionButton: React.FC<ActionButtonProps> = ({
   icon,
@@ -12,9 +13,11 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   employeeId,
   teamId,
   projectId,
+  reportId,
   setSelectedProjectId,
   setSelectedEmployeeId,
-  setSelectedTeamId
+  setSelectedTeamId,
+  setSelectedReportId,
 }) => {
   const status = {
     View: "view",
@@ -22,14 +25,15 @@ const ActionButton: React.FC<ActionButtonProps> = ({
     Delete: "delete",
     ResetPassword: "resetPassword",
   };
-  
-const enum Urls {
-  TEAM = "/teams",
-  PROJECT = "/projects",
-  REPORT = "/reports",
-  EMPLOYEE = "/",
-}
-  const location = useLocation()
+
+  const enum Urls {
+    TEAM = "/teams",
+    PROJECT = "/projects",
+    REPORT = "/reports",
+    EMPLOYEE = "/",
+  }
+  const location = useLocation();
+  const role = useAppSelector((state) => state.auth.profile.role.roleName);
   return (
     <Tooltip placement="top" title={title}>
       <Button
@@ -37,9 +41,16 @@ const enum Urls {
           setModalOpen(true);
           // @ts-ignore
           setStatus(status[title]);
-          location.pathname === Urls.EMPLOYEE ? setSelectedEmployeeId(employeeId): null;
-          location.pathname === Urls.TEAM ?     setSelectedTeamId(teamId):null
-          location.pathname === Urls.PROJECT ? setSelectedProjectId(projectId):null
+          location.pathname === Urls.EMPLOYEE && role === "SUPER_ADMIN"
+            ? setSelectedEmployeeId(employeeId)
+            : null;
+          location.pathname === Urls.TEAM ? setSelectedTeamId(teamId) : null;
+          location.pathname === Urls.PROJECT
+            ? setSelectedProjectId(projectId)
+            : null;
+          location.pathname === Urls.EMPLOYEE && role === "EMPLOYEE"
+            ? setSelectedReportId(reportId)
+            : null;
         }}
         shape="circle"
         className={styles[type]}

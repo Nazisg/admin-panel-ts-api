@@ -57,16 +57,6 @@ export default function Employees() {
   const [status, setStatus] = useState<
     "view" | "delete" | "update" | "create" | "resetPassword"
   >("view");
-  // interface DataType {
-  //   id: string;
-  //   key: React.Key;
-  //   firstName: string;
-  //   lastName: string;
-  //   mail: string;
-  //   team: { teamName: string };
-  //   role: { roleName: string };
-  //   status: string;
-  // }
   
   const handleCreate = () => {
     setModalOpen(true);

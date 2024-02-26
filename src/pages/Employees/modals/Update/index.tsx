@@ -106,7 +106,7 @@ console.log(isSuccess)
 	useEffect(() => {
 		if (isSuccess) {
       setModalOpen(false)
-			message.success("editData");
+			message.success("Employee updated succeccfully");
 		}
 	}, [isSuccess]);
 

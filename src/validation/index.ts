@@ -46,3 +46,8 @@ export const createProjectSchema = z.object({
   // userIds: z.string(),
 });
 
+
+export const createReportSchema = z.object({
+  projectId: z.number().min(1, { message: "Project name is required" }),
+  reportText: z.string().min(1, { message: "Report text is required" }),
+})

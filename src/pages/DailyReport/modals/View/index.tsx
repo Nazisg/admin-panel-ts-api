@@ -1,7 +1,10 @@
 import { Descriptions, Drawer } from "antd";
 import { ActionModalProps } from "shared/types";
+import { useGetReportByIdQuery } from "src/redux/api/reports";
 
-const View: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
+const View: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen,selectedReportId}) => {
+  const {data: report} = useGetReportByIdQuery(selectedReportId)
+  console.log(selectedReportId)
   return (
     <Drawer
       title="View Employee"

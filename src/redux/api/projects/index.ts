@@ -24,7 +24,7 @@ export const projectsApi = createApi({
       providesTags: ["Projects"],
     }),
     getProjectsFilter: builder.query<ProjectType, void>({
-      query: () => ({ url: `api/project/search`, method: "GET" }),
+      query: () => ({ url: `api/project/search?size=1000`, method: "GET" }),
       providesTags: ["Projects"],
     }),
     getProjectById: builder.query<ProjectType, number>({

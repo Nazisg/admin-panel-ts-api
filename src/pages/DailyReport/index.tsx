@@ -17,10 +17,11 @@ import {
 import { useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import { ReportType } from "shared/types";
+import { useGetReportsAdminQuery } from "src/redux/api/reports";
 import ActionButton from "src/shared/components/ActionButton";
 import Filter from "src/shared/components/Filter";
-import ReportModal from "./modals";
 import styles from "./DailyReport.module.scss";
+import ReportModal from "./modals";
 
 export default function DailyReport() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -28,6 +29,7 @@ export default function DailyReport() {
   const [status, setStatus] = useState<
     "view" | "update" | "create" | "delete" | "resetPassword"
   >("view");
+  const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
 
   const handleCreate = () => {
     setModalOpen(true);
@@ -36,10 +38,16 @@ export default function DailyReport() {
 
   const columns: TableColumnsType<ReportType> = [
     {
-      title: "Employee",
-      dataIndex: "employee",
+      title: "Name",
+      dataIndex: "firstName",
+      sorter: (a, b) => a.firstName.localeCompare(b.firstName),
       ellipsis: true,
-      sorter: (a, b) => a.employee.localeCompare(b.employee),
+    },
+    {
+      title: "Surname",
+      dataIndex: "lastName",
+      sorter: (a, b) => a.lastName.localeCompare(b.lastName),
+      ellipsis: true,
     },
     {
       title: "Project",
@@ -50,18 +58,19 @@ export default function DailyReport() {
       title: "Created Date",
       dataIndex: "createdDate",
       ellipsis: true,
+      render: (text) => text.slice(0, 10),
     },
     {
       title: "Note",
       dataIndex: "note",
       ellipsis: true,
-      render: (text) => <p>{text.slice(0, 20) + "..."}</p>,
+      render: (text) => text.slice(0, 20) + "...",
     },
     {
       title: "Action",
       key: "action",
       ellipsis: true,
-      render: () => (
+      render: (_, record) => (
         <Space size="small">
           <ActionButton
             setStatus={setStatus}
@@ -69,6 +78,8 @@ export default function DailyReport() {
             title="View"
             icon={<EyeOutlined />}
             type="btnView"
+            reportId={record.id}
+            setSelectedReportId={setSelectedReportId}
           />
           <ActionButton
             setStatus={setStatus}
@@ -76,35 +87,29 @@ export default function DailyReport() {
             title="Update"
             icon={<EditOutlined />}
             type="btnUpdate"
+            reportId={record.id}
+            setSelectedReportId={setSelectedReportId}
           />
         </Space>
       ),
     },
   ];
-  const data: ReportType[] = [
-    {
-      key: "1",
-      employee: "Nazrin Isgandarova",
-      projectName: "Furniro",
-      createdDate: "2023-11-20",
-      note: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dui leo, cursus id malesuada sit amet, ultricies sed nisi.  ",
-    },
-    {
-      key: "2",
-      employee: "Rahman Aliyev",
-      projectName: "CRM",
-      createdDate: "2023-11-20",
-      note: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dui leo, cursus id malesuada sit amet, ultricies sed nisi. Maecenas a velit elementum, tincidunt arcu facilisis, luctus massa.",
-    },
-    {
-      key: "3",
-      employee: "Sevic Musali",
-      projectName: "Plast",
-      createdDate: "2023-10-27",
-      note: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dui leo, cursus id malesuada sit amet, ultricies sed nisi. Maecenas a velit elementum, tincidunt arcu facilisis, luctus massa.",
-    },
-  ];
 
+  const { data: reportsAdmin } = useGetReportsAdminQuery();
+  const { data: reportUser } = useGetReportsAdminQuery();
+  console.log(reportsAdmin);
+  console.log(reportUser);
+
+  const reportsAdminTable =
+    reportsAdmin?.content?.map((report) => ({
+      key: report?.id,
+      id: report?.id,
+      firstName: report?.firstName,
+      lastName: report?.lastName,
+      projectName: report?.project?.projectName,
+      createdDate: report?.localDateTime,
+      note: report?.reportText,
+    })) ?? [];
   return (
     <>
       <Flex align="baseline" gap="small" className={styles.header}>
@@ -143,15 +148,19 @@ export default function DailyReport() {
       </Flex>
       <Table
         bordered
+        size="large"
         className="table"
+        // pagination={{ pageSize: 10 }}
         scroll={{ y: "350px", x: "auto" }}
         columns={columns}
-        dataSource={data}
+        loading={reportsAdminTable === undefined}
+        dataSource={reportsAdminTable}
       />
       <ReportModal
         modalOpen={modalOpen}
         setModalOpen={setModalOpen}
         statusType={status}
+        selectedReportId={selectedReportId}
       />
       <Filter
         modalOpen={filterOpen}

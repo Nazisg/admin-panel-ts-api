@@ -1,54 +1,58 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { APIBaseQuery } from "../axiosBase";
 
-interface EmployeeTypes {
-  firstName: string;
-  id: string;
-  lastName: string;
-  mail: string;
-  status: string;
-  team: { id: string; teamName: string };
-}
-interface ProjectType {
-  projectName: string;
-  users: EmployeeTypes[];
+interface ReportType {
+  reportText: string;
+  projectId: number;
 }
 
-export const projectsApi = createApi({
-  reducerPath: "projectsApi",
+export const reportsApi = createApi({
+  reducerPath: "reportsApi",
   baseQuery: APIBaseQuery,
-  tagTypes: ["Projects"],
+  tagTypes: ["Reports"],
   endpoints: (builder) => ({
-    getProjects: builder.query<ProjectType, void>({
-      query: () => ({ url: `api/project`, method: "GET" }),
-      providesTags: ["Projects"],
+    getReportsAdmin: builder.query<ReportType, void>({
+      query: () => ({ url: `api/report/admin/filtir`, method: "GET" }),
+      providesTags: ["Reports"],
     }),
-    getProjectsFilter: builder.query<ProjectType, void>({
-      query: () => ({ url: `api/project/search`, method: "GET" }),
-      providesTags: ["Projects"],
+    getReportsUser: builder.query<ReportType, void>({
+      query: () => ({ url: `api/report/user/reports`, method: "GET" }),
+      providesTags: ["Reports"],
     }),
-    createProject: builder.mutation({
-      query: (data: ProjectType) => ({
-        url: "api/project",
+    getReportsExport: builder.query<ReportType, void>({
+      query: () => ({ url: `api/report/export-excel`, method: "GET" }),
+      providesTags: ["Reports"],
+    }),
+    getReportById: builder.query<ReportType, number>({
+      query: (id) => ({ url: `api/report/${id}`, method: "GET" }),
+      providesTags: ["Reports"],
+    }),
+    createReport: builder.mutation({
+      query: (data: ReportType) => ({
+        url: "api/report/reports",
         method: "post",
         data,
       }),
-      invalidatesTags: ["Projects"],
+      invalidatesTags: ["Reports"],
     }),
-    updateProject: builder.mutation({
-      query: ({ id, ...rest }) => ({
-        url: `api/project/${id}`,
-        method: "PUT",
-        data: rest,
-      }),
-      invalidatesTags: ["Projects"],
+    updateReport: builder.mutation({
+      query: ({ id, ...rest }) => {
+        return {
+          url: `api/project/${id}`,
+          method: "PUT",
+          data: rest,
+        };
+      },
+      invalidatesTags: ["Reports"],
     }),
   }),
 });
 
 export const {
-  useGetProjectsQuery,
-  useGetProjectsFilterQuery,
-  useCreateProjectMutation,
-  useUpdateProjectMutation,
-} = projectsApi;
+  useGetReportByIdQuery,
+  useGetReportsAdminQuery,
+  useGetReportsExportQuery,
+  useGetReportsUserQuery,
+  useCreateReportMutation,
+  useUpdateReportMutation,
+} = reportsApi;

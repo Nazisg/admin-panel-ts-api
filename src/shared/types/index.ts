@@ -75,7 +75,7 @@ export interface ActionModalProps {
   selectedEmployeeId: number | null;
   selectedTeamId: number | null;
   selectedProjectId: number | null;
-
+  selectedReportId: number | null;
 }
 
 export interface ActionButtonProps {
@@ -83,10 +83,13 @@ export interface ActionButtonProps {
   type: string;
   title: string;
   employeeId: number | string;
-  setSelectedEmployeeId:any;
   teamId: number | string;
   projectId: number | string;
+  reportId:number | string;
+  setSelectedEmployeeId:any;
+  setSelectedProjectId: number | null | any
   setSelectedTeamId:any;
+  setSelectedReportId: number| null | any
 
   setModalOpen: Dispatch<SetStateAction<boolean>>;
   setStatus: Dispatch<
