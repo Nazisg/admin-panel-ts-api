@@ -2,8 +2,15 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { APIBaseQuery } from "../axiosBase";
 
 interface ReportType {
-  reportText: string;
-  projectId: number;
+  reportText?: string;
+  projectId?: number;
+  firstName?: string;
+  lastName?: string;
+  project?: {
+    projectName?: string;
+  };
+  localDateTime?: string | any;
+  // content?:[]
 }
 
 export const reportsApi = createApi({
@@ -30,15 +37,16 @@ export const reportsApi = createApi({
     createReport: builder.mutation({
       query: (data: ReportType) => ({
         url: "api/report/reports",
-        method: "post",
+        method: "POST",
         data,
       }),
       invalidatesTags: ["Reports"],
     }),
     updateReport: builder.mutation({
       query: ({ id, ...rest }) => {
+        console.log(id, ...rest )
         return {
-          url: `api/project/${id}`,
+          url: `api/report/${id}`,
           method: "PUT",
           data: rest,
         };

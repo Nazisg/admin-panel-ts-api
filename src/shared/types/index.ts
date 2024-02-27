@@ -4,6 +4,10 @@ export interface ModalProps {
   statusType: "view" | "delete" | "update" | "create" | "resetPassword";
   modalOpen: boolean;
   setModalOpen: Dispatch<SetStateAction<boolean>>;
+  selectedEmployeeId?: number | null;
+  selectedTeamId?: number | null;
+  selectedProjectId?: number | null;
+  selectedReportId?: number | null;
 }
 
 export interface FilterProps {
@@ -33,6 +37,8 @@ export interface ReportType {
   note: string;
   projectName: string;
   createdDate: string;
+  firstName?: string | any;
+  lastName?:string | any;
 }
 
 export interface ProjectType {

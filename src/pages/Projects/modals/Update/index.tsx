@@ -31,7 +31,6 @@ const Update: React.FC<ActionModalProps> = ({
   });
   const { data: employees } = useGetEmployeesQuery();
   const { data: project } = useGetProjectByIdQuery(selectedProjectId as any);
-console.log(project)
   const optionsEmployees: SelectProps["options"] = [];
 
   if (Array.isArray(employees)) {
@@ -42,7 +41,6 @@ console.log(project)
       });
     });
   }
-  // console.log(employees)
   const [updateProject] = useUpdateProjectMutation();
   useEffect(() => {
     if (project) {
@@ -61,7 +59,6 @@ console.log(project)
     });
     setModalOpen(false);
   };
-  console.log(project)
 
   return (
     <Modal

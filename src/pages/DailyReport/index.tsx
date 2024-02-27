@@ -22,6 +22,7 @@ import ActionButton from "src/shared/components/ActionButton";
 import Filter from "src/shared/components/Filter";
 import styles from "./DailyReport.module.scss";
 import ReportModal from "./modals";
+import { useAppSelector } from "src/redux/hooks";
 
 export default function DailyReport() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -64,7 +65,7 @@ export default function DailyReport() {
       title: "Note",
       dataIndex: "note",
       ellipsis: true,
-      render: (text) => text.slice(0, 20) + "...",
+      render: (text) => (text.length >= 20 ? text.slice(0, 20) + "..." : text),
     },
     {
       title: "Action",
@@ -81,15 +82,17 @@ export default function DailyReport() {
             reportId={record.id}
             setSelectedReportId={setSelectedReportId}
           />
-          <ActionButton
-            setStatus={setStatus}
-            setModalOpen={setModalOpen}
-            title="Update"
-            icon={<EditOutlined />}
-            type="btnUpdate"
-            reportId={record.id}
-            setSelectedReportId={setSelectedReportId}
-          />
+          {role === "EMPLOYEE" ? (
+            <ActionButton
+              setStatus={setStatus}
+              setModalOpen={setModalOpen}
+              title="Update"
+              icon={<EditOutlined />}
+              type="btnUpdate"
+              reportId={record.id}
+              setSelectedReportId={setSelectedReportId}
+            />
+          ) : null}
         </Space>
       ),
     },
@@ -97,8 +100,7 @@ export default function DailyReport() {
 
   const { data: reportsAdmin } = useGetReportsAdminQuery();
   const { data: reportUser } = useGetReportsAdminQuery();
-  console.log(reportsAdmin);
-  console.log(reportUser);
+  const role = useAppSelector((state) => state.auth.profile.role.roleName);
 
   const reportsAdminTable =
     reportsAdmin?.content?.map((report) => ({
@@ -130,19 +132,28 @@ export default function DailyReport() {
             Filter
           </Button>
           <Flex gap="small">
-            <Button icon={<UploadOutlined />} ghost type="primary" size="large">
-              Export
-            </Button>
-            <Tooltip placement="top" title="Create">
+            {role !== "EMPLOYEE" ? (
               <Button
-                onClick={handleCreate}
+                icon={<UploadOutlined />}
+                ghost
                 type="primary"
-                shape="circle"
-                icon={<PlusOutlined />}
                 size="large"
-                className="create-btn"
-              ></Button>
-            </Tooltip>
+              >
+                Export
+              </Button>
+            ) : null}
+            {role === "EMPLOYEE" ? (
+              <Tooltip placement="top" title="Create">
+                <Button
+                  onClick={handleCreate}
+                  type="primary"
+                  shape="circle"
+                  icon={<PlusOutlined />}
+                  size="large"
+                  className="create-btn"
+                ></Button>
+              </Tooltip>
+            ) : null}
           </Flex>
         </Flex>
       </Flex>
