@@ -1,46 +1,64 @@
-import { Button, Flex, Form, Input, Modal, Select, SelectProps } from "antd";
-import { ActionModalProps } from "shared/types";
-import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createTeamSchema } from "src/validation";
+import { Button, Flex, Form, Input, Modal, Select, SelectProps } from "antd";
 import { useEffect } from "react";
-import { useGetTeamByIdQuery, useUpdateTeamMutation } from "src/redux/api/teams";
-const Update: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen ,selectedTeamId}) => {
+import { Controller, useForm } from "react-hook-form";
+import { ActionModalProps } from "shared/types";
+import { useGetEmployeesQuery } from "src/redux/api/employees";
+import {
+  useGetTeamByIdQuery,
+  useUpdateTeamMutation,
+} from "src/redux/api/teams";
+import { createTeamSchema } from "src/validation";
+const Update: React.FC<ActionModalProps> = ({
+  modalOpen,
+  setModalOpen,
+  selectedTeamId,
+}) => {
   interface FormType {
     name: string;
-    teamName:string;
+    teamName: string;
+    employees: number[];
   }
   const {
     handleSubmit,
     control,
     formState: { errors },
     reset,
+    getValues,
   } = useForm<FormType>({
     resolver: zodResolver(createTeamSchema),
   });
-  const {data:team} = useGetTeamByIdQuery(selectedTeamId as any)
-  console.log(team)
-  
+  const { data: team } = useGetTeamByIdQuery(selectedTeamId as any);
+  const { data: employees } = useGetEmployeesQuery();
+  const optionsEmployees: SelectProps["options"] = [];
+
+  if (Array.isArray(employees)) {
+    employees?.map((employee) => {
+      optionsEmployees.push({
+        value: employee.id,
+        label: employee.fullName,
+      });
+    });
+  }
   useEffect(() => {
     if (team) {
       reset({
         teamName: team.name,
+        employees: team.users?.map((user) => user.id),
       });
     }
   }, [team, reset]);
-  const [updateTeam] = useUpdateTeamMutation()
+  const [updateTeam] = useUpdateTeamMutation();
 
-    const onSubmit = (formData: FormType) => {
-      const requestData = {
-        teamName: formData.teamName,
-      };
-  
-      updateTeam({
-        id: selectedTeamId,
-        ...requestData,
-      });
-      setModalOpen(false)
-    };
+  const onSubmit = () => {
+    const values = getValues();
+    updateTeam({
+      id: selectedTeamId,
+      addId: values.employees,
+      teamName: values.teamName,
+    });
+    setModalOpen(false);
+  };
 
   return (
     <Modal
@@ -59,7 +77,7 @@ const Update: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen ,selectedT
         autoComplete="off"
         layout="vertical"
       >
-       <Form.Item label="Team" name="team">
+        <Form.Item label="Team" name="teamName">
           <Controller
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
@@ -77,7 +95,26 @@ const Update: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen ,selectedT
         {errors.teamName && (
           <span className="errorMsg">{errors.teamName.message}</span>
         )}
-
+        <Form.Item label="Employees" name="employees">
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Select
+                mode="tags"
+                size="large"
+                placeholder="Nazrin Isgandarova"
+                onChange={onChange}
+                options={optionsEmployees}
+                onBlur={onBlur}
+                value={value}
+              />
+            )}
+            name="employees"
+          />
+        </Form.Item>
+        {errors.employees && (
+          <span className="errorMsg">{errors.employees.message}</span>
+        )}
         <Flex justify="end">
           <Button type="primary" htmlType="submit">
             Update

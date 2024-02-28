@@ -17,15 +17,14 @@ const Update: React.FC<ActionModalProps> = ({
 }) => {
   interface FormType {
     projectName: string;
-    employees:string[];
-
-    userIdsToAdd:any; //change
+    employees: string[];
   }
   const {
     handleSubmit,
     control,
     formState: { errors },
     reset,
+    getValues,
   } = useForm<FormType>({
     resolver: zodResolver(createProjectSchema),
   });
@@ -41,21 +40,23 @@ const Update: React.FC<ActionModalProps> = ({
       });
     });
   }
+
   const [updateProject] = useUpdateProjectMutation();
   useEffect(() => {
     if (project) {
       reset({
         projectName: project.projectName,
-        employees:project.users?.map(user=>user.id)
+        employees: project.users?.map((user) => user.id),
       });
     }
   }, [project, reset]);
-  const onSubmit = (formData: FormType) => {
+
+  const onSubmit = () => {
+    const values = getValues();
     updateProject({
       id: selectedProjectId,
-		//  userIdsToAdd: formData.userIdsToAdd,
-			projectName: formData.projectName,
-
+      addId: values.employees,
+      projectName: values.projectName,
     });
     setModalOpen(false);
   };
@@ -95,7 +96,6 @@ const Update: React.FC<ActionModalProps> = ({
         {errors.projectName && (
           <span className="errorMsg">{errors.projectName.message}</span>
         )}
-
         <Form.Item label="Employees" name="employees">
           <Controller
             control={control}

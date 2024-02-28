@@ -40,14 +40,19 @@ export const updateEmployeeSchema = z.object({
   roleId: z.number(),
 });
 
-
 export const createProjectSchema = z.object({
   projectName: z.string().min(1, { message: "Project name is required" }),
-  // userIds: z.string(),
 });
-
 
 export const createReportSchema = z.object({
   projectId: z.number().min(1, { message: "Project name is required" }),
   reportText: z.string().min(1, { message: "Report text is required" }),
-})
+});
+
+export const changePasswordEmployeeSchema = z.object({
+  oldpassword: z.string().min(1, { message: "Old Password is required" }),
+  newPassword: z.string().min(1, { message: "New Password is required" }),
+  newConfirimPassword: z
+    .string()
+    .min(1, { message: "New Confirim Password is required" }),
+});

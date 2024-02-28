@@ -1,10 +1,15 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { APIBaseQuery } from "../axiosBase";
-
+interface EmployeeTypes {
+  id: number;
+}
 interface TeamType {
   id: number;
   teamName: string;
   status: string;
+  name: string;
+  users: EmployeeTypes[];
+  employees: number[] | string[] | any;
 }
 
 interface TeamPostData {
@@ -32,13 +37,17 @@ export const teamsApi = createApi({
       }),
       invalidatesTags: ["Teams"],
     }),
-    updateTeam: builder.mutation<TeamType, { id: number; data: TeamType }>({
-      query: ({ id, ...rest }) => {
+    updateTeam: builder.mutation({
+      query: ({ addId, id, ...rest }) => {
+        let userIdsToAddQuery = "";
+        for (const userId of addId) {
+          userIdsToAddQuery += `&userIdsToAdd=${userId}`;
+        }
         return {
-          url: `api/teams/${id}`,
+          url: `api/teams/${id}?${userIdsToAddQuery}`,
           method: "PUT",
           data: rest,
-        }
+        };
       },
       invalidatesTags: ["Teams"],
     }),

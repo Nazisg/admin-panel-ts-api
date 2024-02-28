@@ -80,7 +80,7 @@ export const employeesApi = createApi({
           url: `users/${id}`,
           method: "PUT",
           data: rest,
-        }
+        };
       },
       invalidatesTags: ["Employees"],
     }),
@@ -114,11 +114,13 @@ export const employeesApi = createApi({
       invalidatesTags: ["Employees"],
     }),
     changePassword: builder.mutation<string, EmployeesType>({
-      query: ({ ...rest }) => ({
-        url: `users/change-password`,
-        method: "PUT",
-        data: rest,
-      }),
+      query: ({ ...rest }) => {
+        return {
+          url: `users/change-password`,
+          method: "PUT",
+          data: rest,
+        };
+      },
       invalidatesTags: ["Employees"],
     }),
   }),

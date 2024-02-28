@@ -40,12 +40,16 @@ export const projectsApi = createApi({
       invalidatesTags: ["Projects"],
     }),
     updateProject: builder.mutation({
-      query: ({ id, ...rest }) => {
+      query: ({ addId, id, ...rest }) => {
+        let userIdsToAddQuery = "";
+        for (const userId of addId) {
+          userIdsToAddQuery += `&userIdsToAdd=${userId}`;
+        }
         return {
-          url: `api/project/${id}`,
+          url: `api/project/${id}?${userIdsToAddQuery}`,
           method: "PUT",
           data: rest,
-        }
+        };
       },
       invalidatesTags: ["Projects"],
     }),

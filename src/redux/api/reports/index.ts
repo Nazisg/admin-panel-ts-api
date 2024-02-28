@@ -7,10 +7,10 @@ interface ReportType {
   firstName?: string;
   lastName?: string;
   project?: {
+    id: number;
     projectName?: string;
   };
   localDateTime?: string | any;
-  // content?:[]
 }
 
 export const reportsApi = createApi({
@@ -19,11 +19,17 @@ export const reportsApi = createApi({
   tagTypes: ["Reports"],
   endpoints: (builder) => ({
     getReportsAdmin: builder.query<ReportType, void>({
-      query: () => ({ url: `api/report/admin/filtir`, method: "GET" }),
+      query: () => ({
+        url: `api/report/admin/filtir?pageSize=1000`,
+        method: "GET",
+      }),
       providesTags: ["Reports"],
     }),
     getReportsUser: builder.query<ReportType, void>({
-      query: () => ({ url: `api/report/user/reports`, method: "GET" }),
+      query: () => ({
+        url: `api/report/user/reports?pageSize=1000`,
+        method: "GET",
+      }),
       providesTags: ["Reports"],
     }),
     getReportsExport: builder.query<ReportType, void>({
@@ -44,7 +50,6 @@ export const reportsApi = createApi({
     }),
     updateReport: builder.mutation({
       query: ({ id, ...rest }) => {
-        console.log(id, ...rest )
         return {
           url: `api/report/${id}`,
           method: "PUT",

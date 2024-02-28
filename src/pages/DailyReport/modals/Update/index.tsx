@@ -18,6 +18,7 @@ const Update: React.FC<ActionModalProps> = ({
 }) => {
   interface FormType {
     reportText: string;
+    projectId: number | string;
   }
   const {
     handleSubmit,
@@ -28,31 +29,23 @@ const Update: React.FC<ActionModalProps> = ({
     resolver: zodResolver(createReportSchema),
   });
   const { data: report } = useGetReportByIdQuery(selectedReportId as number);
-  console.log(report);
   const [updateReport] = useUpdateReportMutation();
   useEffect(() => {
     if (report) {
       reset({
+        projectId: report?.project?.id,
         reportText: report?.reportText,
       });
     }
   }, [report, reset]);
-  const onSubmit = (formData: FormType) => {
-    // updateReport({
-      //   id: selectedReportId,
-      //   reportText: formData.reportText,
-      // });
-      
-      const requestData = {
-        teamName: formData.reportText,
-      };
-    
-      updateReport({
-        id: selectedReportId,
-        ...requestData,
-      });
-      console.log(formData.reportText);
-      setModalOpen(false);
+  const onSubmit = (data: FormType) => {
+    const strippedReportText = data.reportText.replace(/<[^>]+>/g, "");
+
+    updateReport({
+      id: selectedReportId,
+      reportText: strippedReportText,
+    });
+    setModalOpen(false);
   };
   return (
     <Modal
