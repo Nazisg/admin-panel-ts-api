@@ -15,24 +15,26 @@ import {
 } from "antd";
 import { useState } from "react";
 import { ProjectType } from "shared/types";
+import { useGetProjectsFilterQuery } from "src/redux/api/projects";
 import ActionButton from "src/shared/components/ActionButton";
 import Filter from "src/shared/components/Filter";
 import styles from "./Projects.module.scss";
 import ProjectModal from "./modals/";
-import { useGetProjectsFilterQuery } from "src/redux/api/projects";
 
 export default function Projects() {
-  const { data } = useGetProjectsFilterQuery();
+  const [query, setQuery] = useState("");
+  const { data: ProjectData } = useGetProjectsFilterQuery(query);
   const [modalOpen, setModalOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [status, setStatus] = useState<
     "view" | "delete" | "update" | "create" | "resetPassword"
   >("view");
-  console.log(useGetProjectsFilterQuery())
-  const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null);
-
+  console.log(useGetProjectsFilterQuery());
+  const [selectedProjectId, setSelectedProjectId] = useState<number | null>(
+    null
+  );
   const projects =
-    data?.content?.map((project) => ({
+    ProjectData?.content?.map((project) => ({
       key: project.id,
       id: project.id,
       project: project.projectName,
@@ -42,6 +44,7 @@ export default function Projects() {
     setModalOpen(true);
     setStatus("create");
   };
+  
   const columns: TableColumnsType<ProjectType> = [
     {
       key: "Project",
@@ -110,7 +113,7 @@ export default function Projects() {
         className="table"
         scroll={{ y: "350px", x: "auto" }}
         columns={columns}
-        loading={data === undefined}
+        loading={ProjectData === undefined}
         dataSource={projects}
       />
       <ProjectModal
@@ -123,6 +126,7 @@ export default function Projects() {
         modalOpen={filterOpen}
         setModalOpen={setFilterOpen}
         statusType="project"
+        setQuery={setQuery}
       />
     </>
   );

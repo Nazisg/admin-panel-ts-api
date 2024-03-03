@@ -18,22 +18,25 @@ export const reportsApi = createApi({
   baseQuery: APIBaseQuery,
   tagTypes: ["Reports"],
   endpoints: (builder) => ({
-    getReportsAdmin: builder.query<ReportType, void>({
-      query: () => ({
-        url: `api/report/admin/filtir?pageSize=1000`,
+    getReportsAdmin: builder.query<ReportType, string>({
+      query: (query) => ({
+        url: `api/report/admin/filtir?${query}`,
         method: "GET",
       }),
       providesTags: ["Reports"],
     }),
-    getReportsUser: builder.query<ReportType, void>({
-      query: () => ({
-        url: `api/report/user/reports?pageSize=1000`,
+    getReportsUser: builder.query<ReportType, string>({
+      query: (query) => ({
+        url: `api/report/user/reports?${query}`,
         method: "GET",
       }),
       providesTags: ["Reports"],
     }),
-    getReportsExport: builder.query<ReportType, void>({
-      query: () => ({ url: `api/report/export-excel`, method: "GET" }),
+    getReportsExport: builder.query<ReportType, string>({
+      query: (query) => ({
+        url: `api/report/export-excel?${query}`,
+        method: "GET",
+      }),
       providesTags: ["Reports"],
     }),
     getReportById: builder.query<ReportType, number>({

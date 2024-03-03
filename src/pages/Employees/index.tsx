@@ -25,8 +25,10 @@ import Filter from "src/shared/components/Filter";
 import EmployeeModal from "../Employees/modals/index";
 import styles from "./Employees.module.scss";
 import { useUpdateStatusMutation } from "src/redux/api/employees";
+import { useSelector } from "react-redux";
 
 export default function Employees() {
+  const [query, setQuery] = useState('')
   interface DataType {
     id: string;
     key: React.Key;
@@ -38,34 +40,25 @@ export default function Employees() {
     status: string;
     action: React.ReactNode;
   }
-  
-  const { data } = useGetEmployeesFilterQuery(
-    // {
-
-		// firstName: firstName,
-		// lastName:lastName,
-		// teamId:teamId,
-		// status:status,
-		// projectIds:projectIds
-
-  // }
-  );
+  const { data:employeeData } = useGetEmployeesFilterQuery(query);
   const [modalOpen, setModalOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState<number | null>(null); 
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<number | null>(
+    null
+  );
 
   const [status, setStatus] = useState<
     "view" | "delete" | "update" | "create" | "resetPassword"
   >("view");
-  
+
   const handleCreate = () => {
     setModalOpen(true);
     setStatus("create");
   };
   const employees =
-    data?.content?.map((employee) => ({
+  employeeData?.content?.map((employee) => ({
       key: employee?.id,
-      id: employee?.id, 
+      id: employee?.id,
       name: employee?.firstName,
       surname: employee?.lastName,
       mail: employee?.mail,
@@ -74,19 +67,19 @@ export default function Employees() {
       status: employee?.status,
     })) ?? [];
 
-  const [updateStatus] =useUpdateStatusMutation()
+  const [updateStatus] = useUpdateStatusMutation();
   const handleClickStatus = (id: string) => {
-		const user: EmployeeType | undefined = (data?.content as EmployeeType[])?.find(
-			(item: { id: string }) => item.id === id
-		);
+    const user: EmployeeType | undefined = (
+      employeeData?.content as EmployeeType[]
+    )?.find((item: { id: string }) => item.id === id);
 
-		const newStatus = user?.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
-		updateStatus({
-			userId: id,
-			newStatus: newStatus,
-		});
-    message.success('Status updated successfully');
-	};
+    const newStatus = user?.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+    updateStatus({
+      userId: id,
+      newStatus: newStatus,
+    });
+    message.success("Status updated successfully");
+  };
 
   const columns: TableColumnsType<EmployeeType> = [
     {
@@ -109,6 +102,8 @@ export default function Employees() {
       title: "Teams",
       dataIndex: "team",
       ellipsis: true,
+      sorter: (a, b) => (a.name && b.name) ? a.name.localeCompare(b.name) : 0,
+
     },
     {
       title: "Role",
@@ -121,7 +116,11 @@ export default function Employees() {
       key: "status",
       ellipsis: true,
       render: (_, record) => (
-        <Tag className={styles.statusbtn} color={record.status === "ACTIVE" ? "green" : "red"} onClick={() => handleClickStatus(record.id)}>
+        <Tag
+          className={styles.statusbtn}
+          color={record.status === "ACTIVE" ? "green" : "red"}
+          onClick={() => handleClickStatus(record.id)}
+        >
           {record.status}
         </Tag>
       ),
@@ -137,7 +136,7 @@ export default function Employees() {
             title="View"
             type="btnView"
             icon={<EyeOutlined />}
-            employeeId={record.id} 
+            employeeId={record.id}
             setSelectedEmployeeId={setSelectedEmployeeId}
           />
           <ActionButton
@@ -146,7 +145,7 @@ export default function Employees() {
             title="Update"
             icon={<EditOutlined />}
             type="btnUpdate"
-            employeeId={record.id} 
+            employeeId={record.id}
             setSelectedEmployeeId={setSelectedEmployeeId}
           />
           <ActionButton
@@ -155,7 +154,7 @@ export default function Employees() {
             title="ResetPassword"
             icon={<LockOutlined />}
             type="btnReset"
-            employeeId={record.id} 
+            employeeId={record.id}
             setSelectedEmployeeId={setSelectedEmployeeId}
           />
           <ActionButton
@@ -164,7 +163,7 @@ export default function Employees() {
             title="Delete"
             icon={<DeleteOutlined />}
             type="btnDel"
-            employeeId={record.id} 
+            employeeId={record.id}
             setSelectedEmployeeId={setSelectedEmployeeId}
           />
         </Space>
@@ -211,13 +210,14 @@ export default function Employees() {
         pagination={{ pageSize: 10 }}
         scroll={{ y: "350px", x: "auto" }}
         columns={columns}
-        loading={data === undefined}
+        loading={employeeData === undefined}
         dataSource={employees}
       />
       <Filter
         modalOpen={filterOpen}
         setModalOpen={setFilterOpen}
         statusType="employee"
+        setQuery={setQuery}
       />
     </>
   );

@@ -56,3 +56,23 @@ export const changePasswordEmployeeSchema = z.object({
     .string()
     .min(1, { message: "New Confirim Password is required" }),
 });
+
+export const filterSchema = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
+  status: z.string(),
+  teamId: z.array(z.number()),
+  projectIds: z.array(z.number()),
+});
+
+export const mailSchema = z.object({
+  email: z.string(),
+});
+
+export const otpSchema = z.object({
+  otp: z.array(z.string()),
+});
+export const confirmPasswordSchema = z.object({
+  newPassword: z.string(),
+  confirmNewPassword: z.string(),
+});

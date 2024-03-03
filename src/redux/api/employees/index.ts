@@ -2,30 +2,34 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { APIBaseQuery } from "../axiosBase";
 
 interface EmployeesType {
-  id: number;
-  firstName: string;
-  lastName: string;
-  fullName: string;
-  password: string;
-  mail: string;
-  status: string;
+  id?: number;
+  firstName?: string;
+  lastName?: string;
+  fullName?: string;
+  password?: string;
+  mail?: string;
+  status?: string;
   newStatus?: string;
   userId?: number;
-  teamId: number;
-  email: string;
-  roleId: number;
-  team: {
+  teamId?: number;
+  email?: string;
+  roleId?: number;
+  team?: {
     id: number;
     teamName: string;
   };
-  role: {
+  role?: {
     id: number;
     roleName: string;
   };
-  projects: {
+  projects?: {
     id: number;
     projectName: string;
   };
+  oldpassword?: string;
+  newPassword?: string;
+  newConfirimPassword?: string;
+  projectIds?: number[];
 }
 
 export const employeesApi = createApi({
@@ -37,29 +41,11 @@ export const employeesApi = createApi({
       query: () => ({ url: `users`, method: "GET" }),
       providesTags: ["Employees"],
     }),
-    getEmployeesFilter: builder.query<EmployeesType, void>({
-      query: () => ({ url: `users/filters?pageSize=1000`, method: "GET" }),
-      // query: ({ firstName, lastName,teamId,status,projectIds }) => {
-      // 	let url = `users/filters?`;
-
-      // 	if (firstName) {
-      // 		url += `&firstName=${firstName}`;
-      // 	}
-      // 	if (lastName) {
-      // 		url += `&lastName=${lastName}`;
-      // 	}
-      // 	if(teamId){
-      // 		url+=`&teamId=${teamId}`
-      // 	}
-      // 	if(status){
-      // 		url+=`&status=${status}`
-      // 	}
-
-      // 	if(projectIds){
-      // 		url+=`&projectIds=${projectIds}`
-      // 	}
-      // 	return { url };
-      // },
+    getEmployeesFilter: builder.query<EmployeesType[], string>({
+      query: (query) => ({
+        url: `users/filters?${query}`,
+        method: "GET",
+      }),
       providesTags: ["Employees"],
     }),
     getEmployeeById: builder.query<EmployeesType, number>({
@@ -128,6 +114,7 @@ export const employeesApi = createApi({
 
 export const {
   useGetEmployeesQuery,
+  useLazyGetEmployeesFilterQuery,
   useGetEmployeesFilterQuery,
   useGetEmployeeByIdQuery,
   useCreateEmployeeMutation,

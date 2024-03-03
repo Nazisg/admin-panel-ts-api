@@ -26,6 +26,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src", "src/pages/DailyReport/modals/View"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

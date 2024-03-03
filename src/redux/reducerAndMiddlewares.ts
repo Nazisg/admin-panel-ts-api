@@ -1,10 +1,12 @@
-import authSlice from "./features/auth/AuthSlice";
 import { authApi } from "./api/auth";
 import { employeesApi } from "./api/employees";
+import { otpApi } from "./api/otp";
 import { projectsApi } from "./api/projects";
-import { teamsApi } from "./api/teams";
+import { reportsApi } from "./api/reports";
 import { rolesApi } from "./api/roles";
-import {reportsApi} from "./api/reports"
+import { teamsApi } from "./api/teams";
+import authSlice from "./features/auth/AuthSlice";
+
 export const reducers = {
   auth: authSlice,
   [authApi.reducerPath]: authApi.reducer,
@@ -13,6 +15,7 @@ export const reducers = {
   [teamsApi.reducerPath]: teamsApi.reducer,
   [reportsApi.reducerPath]: reportsApi.reducer,
   [rolesApi.reducerPath]: rolesApi.reducer,
+  [otpApi.reducerPath]: otpApi.reducer,
 };
 
 export const middleWares = [
@@ -22,4 +25,5 @@ export const middleWares = [
   teamsApi.middleware,
   rolesApi.middleware,
   reportsApi.middleware,
+  otpApi.middleware,
 ];

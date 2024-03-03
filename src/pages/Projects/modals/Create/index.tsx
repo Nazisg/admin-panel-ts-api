@@ -10,7 +10,7 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
   const { data: employees } = useGetEmployeesQuery();
   interface ProjectType {
     projectName: string;
-    userIds: string[];
+    userIds: number[];
   }
   const {
     handleSubmit,
@@ -21,9 +21,11 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
   } = useForm<ProjectType>({
     resolver: zodResolver(createProjectSchema),
   });
-  const onSubmit = (data: ProjectType) => {
-    createProject(data);
-    console.log(data);
+  const onSubmit = () => {
+    createProject({
+      projectName: getValues().projectName,
+      userIds: getValues().userIds
+    });
     reset();
     setModalOpen(false);
   };
@@ -80,10 +82,9 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
               <Select
-                mode="tags"
-                size="large"
+              mode="multiple"
+              size="large"
                 placeholder="Nazrin Isgandarova"
-                // onChange={handleChangeEmployees}
                 options={optionsEmployees}
                 onBlur={onBlur}
                 onChange={onChange}

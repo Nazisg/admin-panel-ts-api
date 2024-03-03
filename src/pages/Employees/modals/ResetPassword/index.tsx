@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Flex, Form, Input, Modal } from "antd";
+import { Button, Flex, Form, Input, Modal, message } from "antd";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { ActionModalProps } from "shared/types";
 import { useResetEmployeeMutation } from "src/redux/api/employees";
@@ -14,7 +15,7 @@ const ResetPassword: React.FC<ActionModalProps> = ({
     password: string;
     newConfirimPassword: string;
   }
-  const [resetEmployee] = useResetEmployeeMutation();
+  const [resetEmployee, { isSuccess }] = useResetEmployeeMutation();
   const {
     handleSubmit,
     control,
@@ -25,9 +26,16 @@ const ResetPassword: React.FC<ActionModalProps> = ({
   });
   const onSubmit = (data: FormType) => {
     resetEmployee({ id: selectedEmployeeId, ...data });
-    reset();
- setModalOpen(false)
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      setModalOpen(false);
+      reset();
+      message.success("Password reseted successfully");
+    }
+  }, []);
+  
   return (
     <Modal
       title="Reset Password"

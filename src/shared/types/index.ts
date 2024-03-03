@@ -13,6 +13,7 @@ export interface ModalProps {
 export interface FilterProps {
   modalOpen: boolean;
   setModalOpen: Dispatch<SetStateAction<boolean>>;
+  setQuery:string | any;
   statusType:
     | "employee"
     | "team"
@@ -20,6 +21,7 @@ export interface FilterProps {
     | "report"
     | "resetPassword"
     | any;
+
 }
 
 export interface TeamType {

@@ -48,7 +48,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
           location.pathname === Urls.PROJECT
             ? setSelectedProjectId(projectId)
             : null;
-          location.pathname === Urls.EMPLOYEE && role === "EMPLOYEE"
+          location.pathname === Urls.EMPLOYEE && role === "EMPLOYEE" || location.pathname === Urls.REPORT
             ? setSelectedReportId(reportId)
             : null;
         }}

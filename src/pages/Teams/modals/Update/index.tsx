@@ -49,7 +49,7 @@ const Update: React.FC<ActionModalProps> = ({
     }
   }, [team, reset]);
   const [updateTeam] = useUpdateTeamMutation();
-
+console.log(team)
   const onSubmit = () => {
     const values = getValues();
     updateTeam({
@@ -100,8 +100,8 @@ const Update: React.FC<ActionModalProps> = ({
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
               <Select
-                mode="tags"
-                size="large"
+              mode="multiple"
+              size="large"
                 placeholder="Nazrin Isgandarova"
                 onChange={onChange}
                 options={optionsEmployees}

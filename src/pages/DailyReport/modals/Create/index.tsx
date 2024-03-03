@@ -89,7 +89,6 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
               <ReactQuill
                 theme="snow"
                 value={value}
-                //  onChange={setValue}
                 onChange={onChange}
                 onBlur={onBlur}
               />

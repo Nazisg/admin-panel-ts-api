@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { persistReducer } from "redux-persist";
 
 export interface AuthState {
+  employeeData:any
   user: {
     id: number | null;
     access_token: string | null;
@@ -32,6 +33,7 @@ export interface AuthState {
 }
 
 const initialState: AuthState = {
+  employeeData : [],
   user: {
     id: null,
     access_token: null,
@@ -67,6 +69,9 @@ const authSlice = createSlice({
     setUser: (state, action: PayloadAction<any>) => {
       state.profile = action.payload;
     },
+    setEmployeeData: (state, action: PayloadAction<any>) => {
+      state.employeeData = action.payload;
+    },
     setToken: (state, action: PayloadAction<AuthState["user"]>) => {
       state.user = action.payload;
     },
@@ -83,6 +88,6 @@ export const reducer = persistReducer(
   authSlice.reducer
 );
 
-export const { setToken, logout, setUser } = authSlice.actions;
+export const { setToken, logout, setUser,setEmployeeData } = authSlice.actions;
 
 export default reducer;

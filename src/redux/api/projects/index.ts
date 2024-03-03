@@ -23,8 +23,15 @@ export const projectsApi = createApi({
       query: () => ({ url: `api/project`, method: "GET" }),
       providesTags: ["Projects"],
     }),
-    getProjectsFilter: builder.query<ProjectType, void>({
+    getProjectsSelect: builder.query<ProjectType, void>({
       query: () => ({ url: `api/project/search?size=1000`, method: "GET" }),
+      providesTags: ["Projects"],
+    }),
+    getProjectsFilter: builder.query<ProjectType, void>({
+      query: (query) => ({
+        url: `api/project/search?${query}`,
+        method: "GET",
+      }),
       providesTags: ["Projects"],
     }),
     getProjectById: builder.query<ProjectType, number>({
@@ -62,4 +69,5 @@ export const {
   useCreateProjectMutation,
   useUpdateProjectMutation,
   useGetProjectByIdQuery,
+  useGetProjectsSelectQuery,
 } = projectsApi;

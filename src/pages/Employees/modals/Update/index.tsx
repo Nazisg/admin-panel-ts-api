@@ -21,6 +21,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateEmployeeSchema } from "src/validation";
 import { useEffect } from "react";
+import { useAppSelector } from "src/redux/hooks";
 
 interface FormType {
   firstName: string;
@@ -67,6 +68,7 @@ console.log(isSuccess)
   const { data: teams } = useGetTeamsQuery();
   const optionsTeams: SelectProps["options"] = [];
   const optionsRole: SelectProps["options"] = [];
+  const role = useAppSelector((state) => state.auth.profile.role.roleName);
 
   if (Array.isArray(teams)) {
     teams.forEach((team) => {
@@ -77,8 +79,16 @@ console.log(isSuccess)
     });
   }
 
-  if (Array.isArray(roles)) {
-    roles.forEach((role) => {
+  const filteredRoles = roles
+    ? role === "SUPER_ADMIN"
+      ? roles.filter((role: { id: number }) => role.id > 1 && role.id !== 3)
+      : role === "ADMIN"
+      ? roles.filter((role: { id: number }) => role.id > 3)
+      : []
+    : [];
+
+  if (Array.isArray(filteredRoles)) {
+    filteredRoles.map((role) => {
       optionsRole.push({
         value: role.id,
         label: role.roleName,

@@ -101,8 +101,8 @@ const Update: React.FC<ActionModalProps> = ({
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
               <Select
-                mode="tags"
-                size="large"
+              mode="multiple"
+              size="large"
                 placeholder="Nazrin Isgandarova"
                 onChange={onChange}
                 options={optionsEmployees}

@@ -1,20 +1,34 @@
-import { Modal } from "antd";
+import { Modal, message } from "antd";
 import React from "react";
 import { ActionModalProps } from "shared/types";
-import { useDeleteEmployeeMutation } from "src/redux/api/employees";
-const Delete: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen, selectedEmployeeId }) => {
+import {
+  useDeleteEmployeeMutation,
+  useGetEmployeeByIdQuery,
+} from "src/redux/api/employees";
+const Delete: React.FC<ActionModalProps> = ({
+  modalOpen,
+  setModalOpen,
+  selectedEmployeeId,
+}) => {
+
   const [deleteEmployee] = useDeleteEmployeeMutation();
+  const { data: employee } = useGetEmployeeByIdQuery(
+    selectedEmployeeId as number
+  );
+
   const handleDelete = () => {
     if (selectedEmployeeId !== null) {
-      deleteEmployee(String(selectedEmployeeId)); 
+      deleteEmployee(String(selectedEmployeeId));
     }
-    setModalOpen(false)
+    setModalOpen(false);
+    message.success("Employee deleted successfully");
   };
- return (
+
+  return (
     <>
       <Modal
-        // centered
-        title="Do you want to delete this employee?"
+        centered
+        title={`Do you want to delete ${employee?.firstName} ${employee?.lastName}?`}
         open={modalOpen}
         onCancel={() => setModalOpen(false)}
         onOk={handleDelete}

@@ -17,7 +17,10 @@ import {
 import { useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import { ReportType } from "shared/types";
-import { useGetReportsAdminQuery } from "src/redux/api/reports";
+import {
+  useGetReportsAdminQuery,
+  useGetReportsExportQuery,
+} from "src/redux/api/reports";
 import ActionButton from "src/shared/components/ActionButton";
 import Filter from "src/shared/components/Filter";
 import styles from "./DailyReport.module.scss";
@@ -25,6 +28,7 @@ import ReportModal from "./modals";
 import { useAppSelector } from "src/redux/hooks";
 
 export default function DailyReport() {
+  const [query, setQuery] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [status, setStatus] = useState<
@@ -36,20 +40,24 @@ export default function DailyReport() {
     setModalOpen(true);
     setStatus("create");
   };
-
+  const role = useAppSelector((state: any) => state.auth.profile.role.roleName);
   const columns: TableColumnsType<ReportType> = [
-    {
-      title: "Name",
-      dataIndex: "firstName",
-      sorter: (a, b) => a.firstName.localeCompare(b.firstName),
-      ellipsis: true,
-    },
-    {
-      title: "Surname",
-      dataIndex: "lastName",
-      sorter: (a, b) => a.lastName.localeCompare(b.lastName),
-      ellipsis: true,
-    },
+    ...(role !== "EMPLOYEE"
+      ? [
+          {
+            title: "Name",
+            dataIndex: "firstName",
+            sorter: (a, b) => a.firstName.localeCompare(b.firstName),
+            ellipsis: true,
+          },
+          {
+            title: "Surname",
+            dataIndex: "lastName",
+            sorter: (a, b) => a.lastName.localeCompare(b.lastName),
+            ellipsis: true,
+          },
+        ]
+      : []),
     {
       title: "Project",
       dataIndex: "projectName",
@@ -82,7 +90,7 @@ export default function DailyReport() {
             reportId={record.id}
             setSelectedReportId={setSelectedReportId}
           />
-          {role === "EMPLOYEE" ? (
+          {role === "EMPLOYEE" && (
             <ActionButton
               setStatus={setStatus}
               setModalOpen={setModalOpen}
@@ -92,26 +100,36 @@ export default function DailyReport() {
               reportId={record.id}
               setSelectedReportId={setSelectedReportId}
             />
-          ) : null}
+          )}
         </Space>
       ),
     },
   ];
 
-  const { data: reportsAdmin } = useGetReportsAdminQuery();
-  const { data: reportUser } = useGetReportsAdminQuery();
-  const role = useAppSelector((state) => state.auth.profile.role.roleName);
-
-  const reportsAdminTable =
-    reportsAdmin?.content?.map((report) => ({
-      key: report?.id,
-      id: report?.id,
-      firstName: report?.firstName,
-      lastName: report?.lastName,
-      projectName: report?.project?.projectName,
-      createdDate: report?.localDateTime,
-      note: report?.reportText,
-    })) ?? [];
+  const { data: reportAdmin } = useGetReportsAdminQuery(query);
+  const { data: reportUser } = useGetReportsAdminQuery(query);
+  const { data: exportExcel } = useGetReportsExportQuery(query);
+  console.log(useGetReportsExportQuery(query));
+  const reportsTable =
+    role === "EMPLOYEE"
+      ? (reportUser?.content ?? []).map((report) => ({
+          key: report?.id,
+          id: report?.id,
+          firstName: report?.firstName,
+          lastName: report?.lastName,
+          projectName: report?.project?.projectName,
+          createdDate: report?.localDateTime,
+          note: report?.reportText,
+        }))
+      : (reportAdmin?.content ?? []).map((report) => ({
+          key: report?.id,
+          id: report?.id,
+          firstName: report?.firstName,
+          lastName: report?.lastName,
+          projectName: report?.project?.projectName,
+          createdDate: report?.localDateTime,
+          note: report?.reportText,
+        }));
   return (
     <>
       <Flex align="baseline" gap="small" className={styles.header}>
@@ -164,8 +182,8 @@ export default function DailyReport() {
         // pagination={{ pageSize: 10 }}
         scroll={{ y: "350px", x: "auto" }}
         columns={columns}
-        loading={reportsAdminTable === undefined}
-        dataSource={reportsAdminTable}
+        loading={reportUser === undefined || reportAdmin === undefined}
+        dataSource={reportsTable}
       />
       <ReportModal
         modalOpen={modalOpen}
@@ -177,6 +195,7 @@ export default function DailyReport() {
         modalOpen={filterOpen}
         setModalOpen={setFilterOpen}
         statusType="report"
+        setQuery={setQuery}
       />
     </>
   );

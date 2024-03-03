@@ -9,12 +9,15 @@ import {
   Row,
   Select,
   SelectProps,
+  message,
 } from "antd";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { ActionModalProps } from "shared/types";
 import { useCreateEmployeeMutation } from "src/redux/api/employees";
 import { useGetRolesQuery } from "src/redux/api/roles";
 import { useGetTeamsQuery } from "src/redux/api/teams";
+import { useAppSelector } from "src/redux/hooks";
 import { createEmployeeSchema } from "src/validation";
 
 const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
@@ -30,11 +33,12 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
     teamId: string;
   }
 
-  const [createEmployee] = useCreateEmployeeMutation();
+  const [createEmployee, { isSuccess }] = useCreateEmployeeMutation();
   const { data: roles } = useGetRolesQuery();
   const { data: teams } = useGetTeamsQuery();
   const optionsTeams: SelectProps["options"] = [];
   const optionsRole: SelectProps["options"] = [];
+  const role = useAppSelector((state) => state.auth.profile.role.roleName);
 
   if (Array.isArray(teams)) {
     teams?.map((team) => {
@@ -44,9 +48,16 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
       });
     });
   }
+  const filteredRoles = roles
+    ? role === "SUPER_ADMIN"
+      ? roles.filter((role: { id: number }) => role.id > 1 && role.id !== 3)
+      : role === "ADMIN"
+      ? roles.filter((role: { id: number }) => role.id > 3)
+      : []
+    : [];
 
-  if (Array.isArray(roles)) {
-    roles.forEach((role) => {
+  if (Array.isArray(filteredRoles)) {
+    filteredRoles.map((role) => {
       optionsRole.push({
         value: role.id,
         label: role.roleName,
@@ -63,7 +74,7 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
     resolver: zodResolver(createEmployeeSchema),
   });
 
-  const onSubmit = (data: FormType) => {
+  const onSubmit = () => {
     const selectedRole = roles?.find(
       (role: { id: string; roleName: string }) =>
         Number(role.id) === getValues().role
@@ -76,10 +87,15 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
       mail: getValues().mail,
       teamId: getValues().teamId,
     });
-    // console.log(data);
-    reset();
-    setModalOpen(false);
   };
+  console.log(useCreateEmployeeMutation())
+  useEffect(() => {
+    if (isSuccess) {
+      setModalOpen(false);
+      reset();
+      message.success("Employee added successfully");
+    }
+  }, [isSuccess]);
 
   return (
     <Modal

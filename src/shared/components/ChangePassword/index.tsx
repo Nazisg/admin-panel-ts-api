@@ -18,7 +18,7 @@ const ChangePassword: FunctionComponent<ChangePasswordProps> = ({
     newPassword: string;
     newConfirimPassword: string;
   }
-  const [resetEmployee] = useChangePasswordMutation();
+  const [changePassword] = useChangePasswordMutation();
 
   const {
     handleSubmit,
@@ -29,8 +29,8 @@ const ChangePassword: FunctionComponent<ChangePasswordProps> = ({
     resolver: zodResolver(changePasswordEmployeeSchema),
   });
   const onSubmit = (data: FormType) => {
-    resetEmployee(data);
-    console.log(data)
+    changePassword(data);
+    // reset()
   };
   return (
     <Modal
@@ -49,7 +49,7 @@ const ChangePassword: FunctionComponent<ChangePasswordProps> = ({
         layout="vertical"
       >
         <Form.Item label="Old Password" name="oldpassword">
-        <Controller
+          <Controller
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
               <Input.Password
@@ -67,7 +67,7 @@ const ChangePassword: FunctionComponent<ChangePasswordProps> = ({
           <span className="errorMsg">{errors.oldpassword.message}</span>
         )}
         <Form.Item label="New Password" name="newPassword">
-        <Controller
+          <Controller
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
               <Input.Password
@@ -85,7 +85,7 @@ const ChangePassword: FunctionComponent<ChangePasswordProps> = ({
           <span className="errorMsg">{errors.newPassword.message}</span>
         )}
         <Form.Item label="Confirm Password" name="newConfirimPassword">
-        <Controller
+          <Controller
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
               <Input.Password

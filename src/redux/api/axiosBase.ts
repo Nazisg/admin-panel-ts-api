@@ -1,4 +1,5 @@
 import { BaseQueryFn } from "@reduxjs/toolkit/query";
+import { message } from "antd";
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 
 const baseURL = `${import.meta.env.VITE_BASE_URL}`;
@@ -44,11 +45,14 @@ export const axiosBaseQuery =
   };
 export const APIBaseQueryInterceptor = axiosBaseQuery({
   baseURL: baseURL,
-    headers: (headers: AxiosRequestConfig["headers"] = {}, { getState }: { getState: () => any }) => {
-    const { auth } = getState()
-  
+  headers: (
+    headers: AxiosRequestConfig["headers"] = {},
+    { getState }: { getState: () => any }
+  ) => {
+    const { auth } = getState();
+
     if (auth?.user?.access_token) {
-      console.log()
+      console.log();
       headers["Authorization"] = `Bearer ${auth?.user?.access_token}`;
     }
     return headers;
@@ -58,6 +62,10 @@ export const APIBaseQuery = async (args: any, api: any, extraOptions: any) => {
   let result = await APIBaseQueryInterceptor(args, api, extraOptions);
   if (result.error) {
     console.log("Error an occured");
+    console.log(result.error);
+    if (result.error && result.error.data && result.error.data.message) {
+      message.error(result.error?.data?.message);
+    }
   }
   return result;
 };

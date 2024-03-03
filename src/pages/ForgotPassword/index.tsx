@@ -4,20 +4,7 @@ import styles from "./ForgotPassword.module.scss";
 import ChangePassword from "./steps/ChangePassword";
 import Email from "./steps/Email";
 import OTP from "./steps/OTP";
-const steps = [
-  {
-    title: "Email",
-    content: <Email />,
-  },
-  {
-    title: "OTP",
-    content: <OTP />,
-  },
-  {
-    title: "Change Password",
-    content: <ChangePassword />,
-  },
-];
+
 
 const ForgotPassword: React.FC = () => {
   const { token } = theme.useToken();
@@ -31,6 +18,20 @@ const ForgotPassword: React.FC = () => {
     setCurrent(current - 1);
   };
 
+  const steps = [
+    {
+      title: "Email",
+      content: <Email onNext={next} />,
+    },
+    {
+      title: "OTP",
+      content: <OTP onNext={next}/>,
+    },
+    {
+      title: "Change Password",
+      content: <ChangePassword onNext={next}/>,
+    },
+  ];
   const items = steps.map((item) => ({ key: item.title, title: item.title }));
 
   const contentStyle: React.CSSProperties = {
