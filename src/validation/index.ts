@@ -17,6 +17,19 @@ export const createEmployeeSchema = z.object({
   role: z.number(),
 });
 
+export const loginSchema = z.object({
+  password: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters" }),
+  mail: z
+    .string()
+    .email({ message: "Must be a valid email" })
+    .min(1, { message: "Email is required" })
+    .refine((value) => value.endsWith("@crocusoft.com"), {
+      message: "Email must end with @crocusoft.com",
+    }),
+});
+
 export const createTeamSchema = z.object({
   teamName: z.string().min(1, { message: "Team name is required" }),
 });
@@ -33,9 +46,10 @@ export const updateEmployeeSchema = z.object({
     .string()
     .email({ message: "Must be a valid email" })
     .min(1, { message: "Email is required" })
-    .refine((value) => value.endsWith("@crocusoft.com"), {
-      message: "Email must end with @crocusoft.com",
-    }),
+    // .refine((value) => value.endsWith("@crocusoft.com"), {
+    //   message: "Email must end with @crocusoft.com",
+    // }),
+    ,
   teamId: z.number(),
   roleId: z.number(),
 });

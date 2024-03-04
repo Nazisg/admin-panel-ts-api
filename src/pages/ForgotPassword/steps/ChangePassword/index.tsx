@@ -1,24 +1,23 @@
-import { Button, Form, Input, Typography } from "antd";
-import styles from "./ChangePassword.module.scss";
-import { useConfirmPasswordMutation } from "src/redux/api/otp";
-import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { confirmPasswordSchema } from "src/validation";
+import { Button, Form, Input, Typography } from "antd";
 import { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useConfirmPasswordMutation } from "src/redux/api/otp";
+import { confirmPasswordSchema } from "src/validation";
+import styles from "./ChangePassword.module.scss";
 
-const ChangePassword = ({ onNext }) => {
+const ChangePassword = ({ onNext, mail }) => {
   const navigate = useNavigate();
 
   interface FormType {
     newPassword: string;
     confirmNewPassword: string;
   }
-  const [confirmPassword, { isSuccess }] = useConfirmPasswordMutation();
+  const [confirmPassword, { isSuccess }] = useConfirmPasswordMutation(mail);
   const {
     handleSubmit,
     control,
-    getValues,
     formState: { errors },
   } = useForm<FormType>({
     resolver: zodResolver(confirmPasswordSchema),
@@ -29,15 +28,12 @@ const ChangePassword = ({ onNext }) => {
       navigate("/login");
     }
   }, [isSuccess]);
-
   const onSubmit = async (data: FormType) => {
-    console.log(data.newPassword);
-    console.log(data.confirmNewPassword);
     confirmPassword({
-      newPassword: getValues().newPassword,
-      confirmNewPassword: getValues().confirmNewPassword,
+      mail: mail,
+      newPassword: data.newPassword,
+      confirmNewPassword: data.confirmNewPassword,
     });
-    // confirmPassword(data)
   };
   return (
     <Typography className={styles.changePage}>

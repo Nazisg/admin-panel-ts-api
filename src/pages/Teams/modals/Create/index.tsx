@@ -1,11 +1,12 @@
-import { Button, Flex, Form, Input, Modal } from "antd";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, Flex, Form, Input, Modal, message } from "antd";
+import { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { ActionModalProps } from "shared/types";
 import { useCreateTeamMutation } from "src/redux/api/teams";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { createTeamSchema } from "src/validation";
 const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
-  const [createTeam] = useCreateTeamMutation();
+  const [createTeam, { isSuccess }] = useCreateTeamMutation();
   interface FormType {
     teamName: string;
   }
@@ -17,11 +18,19 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
   } = useForm<FormType>({
     resolver: zodResolver(createTeamSchema),
   });
+
   const onSubmit = async (data: FormType) => {
     createTeam(data);
-    reset();
-    setModalOpen(false);
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      setModalOpen(false);
+      reset();
+      message.success("Team created successfully");
+    }
+  }, [isSuccess]);
+
   return (
     <Modal
       title="Create Team"

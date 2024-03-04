@@ -19,6 +19,7 @@ import ActionButton from "src/shared/components/ActionButton";
 import Filter from "src/shared/components/Filter";
 import { TeamType } from "src/shared/types";
 import TeamModal from "./modals/index";
+import { useAppSelector } from "src/redux/hooks";
 export default function Teams() {
   const { data } = useGetTeamsQuery();
   const [modalOpen, setModalOpen] = useState(false);
@@ -27,7 +28,7 @@ export default function Teams() {
     "view" | "update" | "create" | "delete" | "resetPassword"
   >("view");
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
-
+  const role = useAppSelector((state) => state.auth.profile.role.roleName);
   const handleCreate = () => {
     setModalOpen(true);
     setStatus("create");
@@ -45,6 +46,7 @@ export default function Teams() {
       title: "Team",
       dataIndex: "team",
       ellipsis: true,
+      sorter: (a, b) => (a.team && b.team ? a.team.localeCompare(b.team) : 0),
     },
     {
       title: "Action",
@@ -61,15 +63,19 @@ export default function Teams() {
             teamId={record.id}
             setSelectedTeamId={setSelectedTeamId}
           />
-          <ActionButton
-            setStatus={setStatus}
-            setModalOpen={setModalOpen}
-            title="Update"
-            icon={<EditOutlined />}
-            type="btnUpdate"
-            setSelectedTeamId={setSelectedTeamId}
-            teamId={record.id}
-          />
+          {role === "SUPER_ADMIN" || role === "ADMIN" ? (
+            <ActionButton
+              setStatus={setStatus}
+              setModalOpen={setModalOpen}
+              title="Update"
+              icon={<EditOutlined />}
+              type="btnUpdate"
+              setSelectedTeamId={setSelectedTeamId}
+              teamId={record.id}
+            />
+          ) : null}
+                    {role === "SUPER_ADMIN" || role === "ADMIN" ? (
+
           <ActionButton
             setStatus={setStatus}
             setModalOpen={setModalOpen}
@@ -78,7 +84,7 @@ export default function Teams() {
             type="btnDel"
             setSelectedTeamId={setSelectedTeamId}
             teamId={record.id}
-          />
+          />):null}
         </Space>
       ),
     },
@@ -89,6 +95,8 @@ export default function Teams() {
       <Flex justify="space-between" align="baseline">
         <Typography.Title className="title">Teams</Typography.Title>
         <Flex justify="flex-end" align="center" gap="middle">
+        {role === "SUPER_ADMIN" || role === "ADMIN" ? (
+
           <Tooltip placement="top" title="Create">
             <Button
               onClick={handleCreate}
@@ -98,7 +106,7 @@ export default function Teams() {
               size="large"
               className="create-btn"
             ></Button>
-          </Tooltip>
+          </Tooltip>):null}
         </Flex>
       </Flex>
       <Table

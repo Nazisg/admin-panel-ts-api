@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Flex, Form, Input, Modal } from "antd";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useChangePasswordMutation } from "src/redux/api/employees";
 import { changePasswordEmployeeSchema } from "src/validation";
@@ -18,20 +18,33 @@ const ChangePassword: FunctionComponent<ChangePasswordProps> = ({
     newPassword: string;
     newConfirimPassword: string;
   }
-  const [changePassword] = useChangePasswordMutation();
+  const [changePassword, { isSuccess }] = useChangePasswordMutation();
 
   const {
     handleSubmit,
     control,
     reset,
+    getValues,
     formState: { errors },
   } = useForm<FormType>({
     resolver: zodResolver(changePasswordEmployeeSchema),
   });
-  const onSubmit = (data: FormType) => {
-    changePassword(data);
-    // reset()
+  
+  const onSubmit = () => {
+    changePassword({
+      oldpassword: getValues().oldpassword,
+      newPassword: getValues().newPassword,
+      newConfirimPassword: getValues().newConfirimPassword,
+    });
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      setIsModalOpen(false);
+      reset();
+    }
+  }, [isSuccess]);
+
   return (
     <Modal
       open={isModalOpen}

@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Flex, Form, Modal, Select, SelectProps } from "antd";
-import React from "react";
+import { Button, Flex, Form, Modal, Select, SelectProps, message } from "antd";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -14,10 +14,19 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
     projectId: number;
     reportText: string;
   }
-  const { data: projects } = useGetProjectsQuery();
-
-  console.log(projects);
   const optionsProject: SelectProps["options"] = [];
+  const { data: projects } = useGetProjectsQuery();
+  const [createReport, { isSuccess }] = useCreateReportMutation();
+  
+  const {
+    handleSubmit,
+    control,
+    reset,
+    getValues,
+    formState: { errors },
+  } = useForm<FormType>({
+    resolver: zodResolver(createReportSchema),
+  });
 
   if (Array.isArray(projects)) {
     projects?.map((project) => {
@@ -27,25 +36,23 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
       });
     });
   }
-  const {
-    handleSubmit,
-    control,
-    getValues,
-    formState: { errors },
-  } = useForm<FormType>({
-    resolver: zodResolver(createReportSchema),
-  });
 
-  const [createReport] = useCreateReportMutation();
   const onSubmit = (data: FormType) => {
-    const strippedReportText = data.reportText.replace(/<[^>]+>/g, '');
-
+    const strippedReportText = data.reportText.replace(/<[^>]+>/g, "");
     createReport({
       projectId: getValues().projectId,
       reportText: strippedReportText,
     });
-    setModalOpen(false);
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      setModalOpen(false);
+      reset();
+      message.success("Report created successfully");
+    }
+  }, [isSuccess]);
+
   return (
     <Modal
       title="Create Report"

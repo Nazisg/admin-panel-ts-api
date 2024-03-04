@@ -1,13 +1,16 @@
-import { Button, Flex, Form, Input, Modal, Select, SelectProps } from "antd";
-import { ActionModalProps } from "shared/types";
-import { useCreateProjectMutation } from "src/redux/api/projects";
-import { useGetEmployeesQuery } from "src/redux/api/employees";
-import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, Flex, Form, Input, Modal, Select, SelectProps } from "antd";
+import { Controller, useForm } from "react-hook-form";
+import { ActionModalProps } from "shared/types";
+import { useGetEmployeesQuery } from "src/redux/api/employees";
+import { useCreateProjectMutation } from "src/redux/api/projects";
 import { createProjectSchema } from "src/validation";
+
 const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
   const [createProject] = useCreateProjectMutation();
   const { data: employees } = useGetEmployeesQuery();
+  const optionsEmployees: SelectProps["options"] = [];
+
   interface ProjectType {
     projectName: string;
     userIds: number[];
@@ -21,16 +24,15 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
   } = useForm<ProjectType>({
     resolver: zodResolver(createProjectSchema),
   });
+
   const onSubmit = () => {
     createProject({
       projectName: getValues().projectName,
-      userIds: getValues().userIds
+      userIds: getValues().userIds,
     });
     reset();
     setModalOpen(false);
   };
-
-  const optionsEmployees: SelectProps["options"] = [];
 
   if (Array.isArray(employees)) {
     employees.map((employee) => {
@@ -40,7 +42,6 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
       });
     });
   }
-
 
   return (
     <Modal
@@ -82,8 +83,8 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
               <Select
-              mode="multiple"
-              size="large"
+                mode="multiple"
+                size="large"
                 placeholder="Nazrin Isgandarova"
                 options={optionsEmployees}
                 onBlur={onBlur}

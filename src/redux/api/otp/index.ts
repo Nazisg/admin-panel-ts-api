@@ -15,25 +15,23 @@ export const otpApi = createApi({
       query: (otp) => ({
         url: "users/forget-password-otp",
         method: "POST",
-        data: {otp},
+        data: { otp },
       }),
     }),
     confirmPassword: builder.mutation({
-      query: (data) => {
+      query: ({ mail, ...data }) => {
+        console.log(mail);
         return {
-          url: "users/confirm-password",
+          url: `users/confirm-password?mail=${encodeURIComponent(mail)}`,
           method: "PUT",
-          data
+          data,
         };
       },
     }),
   }),
 });
 
-export const {
-  useMailMutation,
-  useOtpMutation,
-  useConfirmPasswordMutation,
-} = otpApi;
+export const { useMailMutation, useOtpMutation, useConfirmPasswordMutation } =
+  otpApi;
 
 export default otpApi;

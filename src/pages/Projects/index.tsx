@@ -20,19 +20,25 @@ import ActionButton from "src/shared/components/ActionButton";
 import Filter from "src/shared/components/Filter";
 import styles from "./Projects.module.scss";
 import ProjectModal from "./modals/";
+import { useAppSelector } from "src/redux/hooks";
 
 export default function Projects() {
   const [query, setQuery] = useState("");
   const { data: ProjectData } = useGetProjectsFilterQuery(query);
   const [modalOpen, setModalOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
+  const role = useAppSelector((state)=>state.auth.profile.role.roleName)
   const [status, setStatus] = useState<
     "view" | "delete" | "update" | "create" | "resetPassword"
   >("view");
-  console.log(useGetProjectsFilterQuery());
   const [selectedProjectId, setSelectedProjectId] = useState<number | null>(
     null
   );
+  const handleCreate = () => {
+    setModalOpen(true);
+    setStatus("create");
+  };
+
   const projects =
     ProjectData?.content?.map((project) => ({
       key: project.id,
@@ -40,11 +46,6 @@ export default function Projects() {
       project: project.projectName,
     })) ?? [];
 
-  const handleCreate = () => {
-    setModalOpen(true);
-    setStatus("create");
-  };
-  
   const columns: TableColumnsType<ProjectType> = [
     {
       key: "Project",
@@ -68,6 +69,8 @@ export default function Projects() {
             projectId={record.id}
             setSelectedProjectId={setSelectedProjectId}
           />
+                    {role === "SUPER_ADMIN" || role === "ADMIN" ? (
+
           <ActionButton
             setStatus={setStatus}
             setModalOpen={setModalOpen}
@@ -76,7 +79,7 @@ export default function Projects() {
             type="btnUpdate"
             projectId={record.id}
             setSelectedProjectId={setSelectedProjectId}
-          />
+          />):null}
         </Space>
       ),
     },
@@ -96,6 +99,8 @@ export default function Projects() {
           >
             Filter
           </Button>
+          {role === "SUPER_ADMIN" || role === "ADMIN" ? (
+
           <Tooltip placement="top" title="Create">
             <Button
               onClick={handleCreate}
@@ -105,7 +110,7 @@ export default function Projects() {
               size="large"
               className="create-btn"
             ></Button>
-          </Tooltip>
+          </Tooltip>):null}
         </Flex>
       </Flex>
       <Table

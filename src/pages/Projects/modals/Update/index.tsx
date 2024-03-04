@@ -1,5 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Flex, Form, Input, Modal, Select, SelectProps } from "antd";
+import {
+  Button,
+  Flex,
+  Form,
+  Input,
+  Modal,
+  Select,
+  SelectProps,
+  message,
+} from "antd";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { ActionModalProps } from "shared/types";
@@ -19,6 +28,10 @@ const Update: React.FC<ActionModalProps> = ({
     projectName: string;
     employees: string[];
   }
+  const { data: employees } = useGetEmployeesQuery();
+  const { data: project } = useGetProjectByIdQuery(selectedProjectId as any);
+  const optionsEmployees: SelectProps["options"] = [];
+
   const {
     handleSubmit,
     control,
@@ -28,9 +41,6 @@ const Update: React.FC<ActionModalProps> = ({
   } = useForm<FormType>({
     resolver: zodResolver(createProjectSchema),
   });
-  const { data: employees } = useGetEmployeesQuery();
-  const { data: project } = useGetProjectByIdQuery(selectedProjectId as any);
-  const optionsEmployees: SelectProps["options"] = [];
 
   if (Array.isArray(employees)) {
     employees?.map((employee) => {
@@ -41,7 +51,7 @@ const Update: React.FC<ActionModalProps> = ({
     });
   }
 
-  const [updateProject] = useUpdateProjectMutation();
+  const [updateProject, { isSuccess }] = useUpdateProjectMutation();
   useEffect(() => {
     if (project) {
       reset({
@@ -58,9 +68,13 @@ const Update: React.FC<ActionModalProps> = ({
       addId: values.employees,
       projectName: values.projectName,
     });
-    setModalOpen(false);
   };
-
+  useEffect(() => {
+    if (isSuccess) {
+      setModalOpen(false);
+      message.success("Project updated successfully");
+    }
+  }, [isSuccess]);
   return (
     <Modal
       title="Update Project"
@@ -101,8 +115,8 @@ const Update: React.FC<ActionModalProps> = ({
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
               <Select
-              mode="multiple"
-              size="large"
+                mode="multiple"
+                size="large"
                 placeholder="Nazrin Isgandarova"
                 onChange={onChange}
                 options={optionsEmployees}

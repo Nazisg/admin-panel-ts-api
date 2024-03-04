@@ -10,25 +10,27 @@ import {
   Button,
   Flex,
   Space,
-  message,
   Table,
   TableColumnsType,
   Tag,
   Tooltip,
   Typography,
+  message,
 } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ActionButton from "shared/components/ActionButton/index";
 import { EmployeeType } from "shared/types";
-import { useGetEmployeesFilterQuery } from "src/redux/api/employees";
+import {
+  useGetEmployeesFilterQuery,
+  useUpdateStatusMutation,
+} from "src/redux/api/employees";
 import Filter from "src/shared/components/Filter";
 import EmployeeModal from "../Employees/modals/index";
 import styles from "./Employees.module.scss";
-import { useUpdateStatusMutation } from "src/redux/api/employees";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "src/redux/hooks";
 
 export default function Employees() {
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState("");
   interface DataType {
     id: string;
     key: React.Key;
@@ -40,9 +42,10 @@ export default function Employees() {
     status: string;
     action: React.ReactNode;
   }
-  const { data:employeeData } = useGetEmployeesFilterQuery(query);
+  const { data: employeeData } = useGetEmployeesFilterQuery(query);
   const [modalOpen, setModalOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
+  const role = useAppSelector((state) => state.auth.profile.role.roleName);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<number | null>(
     null
   );
@@ -56,7 +59,7 @@ export default function Employees() {
     setStatus("create");
   };
   const employees =
-  employeeData?.content?.map((employee) => ({
+    employeeData?.content?.map((employee) => ({
       key: employee?.id,
       id: employee?.id,
       name: employee?.firstName,
@@ -67,7 +70,7 @@ export default function Employees() {
       status: employee?.status,
     })) ?? [];
 
-  const [updateStatus] = useUpdateStatusMutation();
+  const [updateStatus, { isSuccess }] = useUpdateStatusMutation();
   const handleClickStatus = (id: string) => {
     const user: EmployeeType | undefined = (
       employeeData?.content as EmployeeType[]
@@ -78,8 +81,12 @@ export default function Employees() {
       userId: id,
       newStatus: newStatus,
     });
-    message.success("Status updated successfully");
   };
+  useEffect(() => {
+    if (isSuccess) {
+      message.success("Status updated successfully");
+    }
+  }, [isSuccess]);
 
   const columns: TableColumnsType<EmployeeType> = [
     {
@@ -102,8 +109,7 @@ export default function Employees() {
       title: "Teams",
       dataIndex: "team",
       ellipsis: true,
-      sorter: (a, b) => (a.name && b.name) ? a.name.localeCompare(b.name) : 0,
-
+      sorter: (a, b) => (a.name && b.name ? a.name.localeCompare(b.name) : 0),
     },
     {
       title: "Role",
@@ -139,33 +145,39 @@ export default function Employees() {
             employeeId={record.id}
             setSelectedEmployeeId={setSelectedEmployeeId}
           />
-          <ActionButton
-            setStatus={setStatus}
-            setModalOpen={setModalOpen}
-            title="Update"
-            icon={<EditOutlined />}
-            type="btnUpdate"
-            employeeId={record.id}
-            setSelectedEmployeeId={setSelectedEmployeeId}
-          />
-          <ActionButton
-            setStatus={setStatus}
-            setModalOpen={setModalOpen}
-            title="ResetPassword"
-            icon={<LockOutlined />}
-            type="btnReset"
-            employeeId={record.id}
-            setSelectedEmployeeId={setSelectedEmployeeId}
-          />
-          <ActionButton
-            setStatus={setStatus}
-            setModalOpen={setModalOpen}
-            title="Delete"
-            icon={<DeleteOutlined />}
-            type="btnDel"
-            employeeId={record.id}
-            setSelectedEmployeeId={setSelectedEmployeeId}
-          />
+          {role === "SUPER_ADMIN" || role === "ADMIN" ? (
+            <ActionButton
+              setStatus={setStatus}
+              setModalOpen={setModalOpen}
+              title="Update"
+              icon={<EditOutlined />}
+              type="btnUpdate"
+              employeeId={record.id}
+              setSelectedEmployeeId={setSelectedEmployeeId}
+            />
+          ) : null}
+          {role === "SUPER_ADMIN" || role === "ADMIN" ? (
+            <ActionButton
+              setStatus={setStatus}
+              setModalOpen={setModalOpen}
+              title="ResetPassword"
+              icon={<LockOutlined />}
+              type="btnReset"
+              employeeId={record.id}
+              setSelectedEmployeeId={setSelectedEmployeeId}
+            />
+          ) : null}
+          {role === "SUPER_ADMIN" || role === "ADMIN" ? (
+            <ActionButton
+              setStatus={setStatus}
+              setModalOpen={setModalOpen}
+              title="Delete"
+              icon={<DeleteOutlined />}
+              type="btnDel"
+              employeeId={record.id}
+              setSelectedEmployeeId={setSelectedEmployeeId}
+            />
+          ) : null}
         </Space>
       ),
     },
@@ -182,6 +194,7 @@ export default function Employees() {
       <Flex align="baseline" gap="small" className={styles.header}>
         <Typography.Title className="title">Employees</Typography.Title>
         <Flex gap="small" justify="flex-end">
+
           <Button
             onClick={() => setFilterOpen(true)}
             icon={<FilterOutlined />}
@@ -191,6 +204,8 @@ export default function Employees() {
           >
             Filter
           </Button>
+          {role === "SUPER_ADMIN" || role === "ADMIN" ? (
+
           <Tooltip placement="top" title="Create">
             <Button
               onClick={handleCreate}
@@ -201,6 +216,7 @@ export default function Employees() {
               className="create-btn"
             ></Button>
           </Tooltip>
+          ):null}
         </Flex>
       </Flex>
       <Table

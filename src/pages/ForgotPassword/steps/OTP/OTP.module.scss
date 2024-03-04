@@ -1,5 +1,5 @@
 .otpPage {
-  padding: 10% 0;
+  padding: 7% 0;
   min-height: 18rem;
   display: flex;
   align-items: center;
@@ -8,5 +8,17 @@
   .otpForm {
     width: 80%;
     max-width: 400px;
+    .title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #817f7f;
+      .time {
+        color: #6743c1;
+      }
+      .link {
+        color: #6743c1;
+        cursor: pointer;
+      }
+    }
   }
 }

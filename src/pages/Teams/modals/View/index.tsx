@@ -14,7 +14,7 @@ const View: React.FC<ActionModalProps> = ({
       onClose={() => setModalOpen(false)}
       open={modalOpen}
     >
-      <Descriptions layout="vertical" bordered column={1}>
+      <Descriptions bordered column={1}>
         <Descriptions.Item label="Team">{team?.name}</Descriptions.Item>
         <Descriptions.Item label="Employees">
           <Flex wrap="wrap" gap={6}>

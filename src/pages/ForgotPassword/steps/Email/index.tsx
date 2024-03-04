@@ -1,12 +1,12 @@
-import { Button, Form, Input, Typography } from "antd";
-import styles from "./Email.module.scss";
-import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { mailSchema, otpSchema } from "src/validation";
+import { Button, Form, Input, Typography } from "antd";
+import { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { useMailMutation } from "src/redux/api/otp";
-import { useEffect, useState } from "react";
+import { mailSchema } from "src/validation";
+import styles from "./Email.module.scss";
 
-const Email = ({ onNext }) => {
+const Email = ({ onNext, setMail }) => {
   interface FormType {
     email: string;
   }
@@ -20,7 +20,6 @@ const Email = ({ onNext }) => {
   } = useForm<FormType>({
     resolver: zodResolver(mailSchema),
   });
-
   useEffect(() => {
     if (isSuccess) {
       onNext();
@@ -29,6 +28,7 @@ const Email = ({ onNext }) => {
 
   const onSubmit = async () => {
     mail(getValues().email);
+    setMail(getValues().email);
   };
 
   return (

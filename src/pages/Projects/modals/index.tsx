@@ -2,12 +2,11 @@ import { ModalProps } from "shared/types";
 import Create from "./Create";
 import Update from "./Update";
 import View from "./View";
-
 const ProjectModal: React.FC<ModalProps> = ({
   statusType,
   modalOpen,
   setModalOpen,
-  selectedProjectId={selectedProjectId}
+  selectedProjectId
 }) => {
   const status = {
     view: <View modalOpen={modalOpen} setModalOpen={setModalOpen} selectedProjectId={selectedProjectId}/>,
@@ -15,7 +14,7 @@ const ProjectModal: React.FC<ModalProps> = ({
     create: <Create modalOpen={modalOpen} setModalOpen={setModalOpen} selectedProjectId={selectedProjectId}/>,
   };
   return statusType !== "resetPassword"
-    ? //@ts-ignore
+    ? 
       status[statusType]
     : null;
 };

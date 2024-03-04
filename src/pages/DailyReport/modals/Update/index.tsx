@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Flex, Form, Modal } from "antd";
+import { Button, Flex, Form, Modal, message } from "antd";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import ReactQuill from "react-quill";
@@ -16,10 +16,13 @@ const Update: React.FC<ActionModalProps> = ({
   setModalOpen,
   selectedReportId,
 }) => {
+  const { data: report } = useGetReportByIdQuery(selectedReportId as number);
+  const [updateReport, { isSuccess }] = useUpdateReportMutation();
   interface FormType {
     reportText: string;
     projectId: number | string;
   }
+
   const {
     handleSubmit,
     control,
@@ -28,8 +31,7 @@ const Update: React.FC<ActionModalProps> = ({
   } = useForm<FormType>({
     resolver: zodResolver(createReportSchema),
   });
-  const { data: report } = useGetReportByIdQuery(selectedReportId as number);
-  const [updateReport] = useUpdateReportMutation();
+
   useEffect(() => {
     if (report) {
       reset({
@@ -38,15 +40,22 @@ const Update: React.FC<ActionModalProps> = ({
       });
     }
   }, [report, reset]);
+
   const onSubmit = (data: FormType) => {
     const strippedReportText = data.reportText.replace(/<[^>]+>/g, "");
-
     updateReport({
       id: selectedReportId,
       reportText: strippedReportText,
     });
-    setModalOpen(false);
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      setModalOpen(false);
+      message.success("Report updated successfully");
+    }
+  }, [isSuccess]);
+
   return (
     <Modal
       title="Update Report"

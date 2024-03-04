@@ -100,11 +100,11 @@ export const employeesApi = createApi({
       invalidatesTags: ["Employees"],
     }),
     changePassword: builder.mutation<string, EmployeesType>({
-      query: ({ ...rest }) => {
+      query: (data) => {
         return {
           url: `users/change-password`,
           method: "PUT",
-          data: rest,
+          data
         };
       },
       invalidatesTags: ["Employees"],

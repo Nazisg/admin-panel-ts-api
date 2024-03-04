@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Flex, Form, Input, Modal, Select, SelectProps } from "antd";
+import { Button, Flex, Form, Input, Modal, Select, SelectProps, message } from "antd";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { ActionModalProps } from "shared/types";
@@ -48,7 +48,7 @@ const Update: React.FC<ActionModalProps> = ({
       });
     }
   }, [team, reset]);
-  const [updateTeam] = useUpdateTeamMutation();
+  const [updateTeam, {isSuccess}] = useUpdateTeamMutation();
 console.log(team)
   const onSubmit = () => {
     const values = getValues();
@@ -57,9 +57,13 @@ console.log(team)
       addId: values.employees,
       teamName: values.teamName,
     });
-    setModalOpen(false);
   };
-
+  useEffect(() => {
+    if (isSuccess) {
+      setModalOpen(false);
+      message.success("Team updated successfully");
+    }
+  }, [isSuccess]);
   return (
     <Modal
       title="Update Team"

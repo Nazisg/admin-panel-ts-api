@@ -5,11 +5,11 @@ import ChangePassword from "./steps/ChangePassword";
 import Email from "./steps/Email";
 import OTP from "./steps/OTP";
 
-
 const ForgotPassword: React.FC = () => {
   const { token } = theme.useToken();
   const [current, setCurrent] = useState(0);
-
+  const [mail, setMail] = useState("");
+  console.log(mail)
   const next = () => {
     setCurrent(current + 1);
   };
@@ -21,15 +21,15 @@ const ForgotPassword: React.FC = () => {
   const steps = [
     {
       title: "Email",
-      content: <Email onNext={next} />,
+      content: <Email onNext={next} setMail={setMail}/>,
     },
     {
       title: "OTP",
-      content: <OTP onNext={next}/>,
+      content: <OTP onNext={next} />,
     },
     {
       title: "Change Password",
-      content: <ChangePassword onNext={next}/>,
+      content: <ChangePassword onNext={next}  mail={mail}/>,
     },
   ];
   const items = steps.map((item) => ({ key: item.title, title: item.title }));

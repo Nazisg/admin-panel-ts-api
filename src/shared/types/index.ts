@@ -27,6 +27,7 @@ export interface FilterProps {
 export interface TeamType {
   key: React.Key;
   teamName: string;
+  team?:string;
   // employees: {
   //   name: string;
   //   surname: string;

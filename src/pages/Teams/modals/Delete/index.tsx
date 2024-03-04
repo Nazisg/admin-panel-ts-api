@@ -1,18 +1,28 @@
-import { Modal } from "antd";
+import { Modal, message } from "antd";
 import { ActionModalProps } from "shared/types";
-import { useDeleteTeamMutation } from "src/redux/api/teams";
+import {
+  useDeleteTeamMutation,
+  useGetTeamByIdQuery,
+} from "src/redux/api/teams";
 
-const Delete: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen, selectedTeamId }) => {
+const Delete: React.FC<ActionModalProps> = ({
+  modalOpen,
+  setModalOpen,
+  selectedTeamId,
+}) => {
   const [deleteTeam] = useDeleteTeamMutation();
+  const { data: team } = useGetTeamByIdQuery(selectedTeamId as number);
+
   const handleDelete = () => {
-      deleteTeam(String(selectedTeamId));
- 
+    deleteTeam(String(selectedTeamId));
     setModalOpen(false);
+    message.success("Team deleted successfully");
   };
+
   return (
     <Modal
-      // centered
-      title="Do you want to delete this Team?"
+      centered
+      title={`Do you want to delete ${team?.name}?`}
       open={modalOpen}
       onCancel={() => setModalOpen(false)}
       onOk={handleDelete}

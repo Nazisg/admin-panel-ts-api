@@ -20,6 +20,7 @@ import { ReportType } from "shared/types";
 import {
   useGetReportsAdminQuery,
   useGetReportsExportQuery,
+  useGetReportsUserQuery,
 } from "src/redux/api/reports";
 import ActionButton from "src/shared/components/ActionButton";
 import Filter from "src/shared/components/Filter";
@@ -107,19 +108,18 @@ export default function DailyReport() {
   ];
 
   const { data: reportAdmin } = useGetReportsAdminQuery(query);
-  const { data: reportUser } = useGetReportsAdminQuery(query);
+  const { data: reportUser } = useGetReportsUserQuery(query);
+  console.log(reportUser, " reportUser");
   const { data: exportExcel } = useGetReportsExportQuery(query);
-  console.log(useGetReportsExportQuery(query));
+  console.log(useGetReportsExportQuery(query), "exportExcel");
   const reportsTable =
     role === "EMPLOYEE"
-      ? (reportUser?.content ?? []).map((report) => ({
-          key: report?.id,
-          id: report?.id,
-          firstName: report?.firstName,
-          lastName: report?.lastName,
-          projectName: report?.project?.projectName,
-          createdDate: report?.localDateTime,
-          note: report?.reportText,
+      ? (reportUser?.content ?? []).map((reportU) => ({
+          key: reportU?.id,
+          id: reportU?.id,
+          projectName: reportU?.project?.projectName,
+          createdDate: reportU?.localDateTime,
+          note: reportU?.reportText,
         }))
       : (reportAdmin?.content ?? []).map((report) => ({
           key: report?.id,
@@ -130,6 +130,8 @@ export default function DailyReport() {
           createdDate: report?.localDateTime,
           note: report?.reportText,
         }));
+
+  const handleExport = () => {};
   return (
     <>
       <Flex align="baseline" gap="small" className={styles.header}>
@@ -156,6 +158,7 @@ export default function DailyReport() {
                 ghost
                 type="primary"
                 size="large"
+                onClick={handleExport}
               >
                 Export
               </Button>
