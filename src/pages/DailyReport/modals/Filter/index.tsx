@@ -12,7 +12,6 @@ export default function FilterReport({ setQuery }) {
   const { data: employees } = useGetEmployeesQuery();
   const { data: projects } = useGetProjectsSelectQuery();
   const role = useAppSelector((state) => state.auth.profile.role.roleName);
-  console.log(role);
   interface FormType {
     userIds: number[];
     startDate: string;
@@ -39,7 +38,6 @@ export default function FilterReport({ setQuery }) {
   const { handleSubmit, control } = useForm<FormType>({});
 
   const onSubmit: SubmitHandler<FormType> = (data) => {
-    console.log(data);
     const fields = [];
     if (data.userIds) {
       data.userIds.forEach((userId) => {
@@ -61,7 +59,6 @@ export default function FilterReport({ setQuery }) {
     }
 
     setQuery(fields.join("&"));
-    console.log(fields.join("&"));
   };
   return (
     <Form

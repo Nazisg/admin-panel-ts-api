@@ -13,7 +13,7 @@ export const createEmployeeSchema = z.object({
     .refine((value) => value.endsWith("@crocusoft.com"), {
       message: "Email must end with @crocusoft.com",
     }),
-  teamId: z.number(),
+  // teamId: z.number(),
   role: z.number(),
 });
 

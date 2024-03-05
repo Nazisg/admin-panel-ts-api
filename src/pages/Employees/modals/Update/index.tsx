@@ -45,7 +45,6 @@ const Update: React.FC<ActionModalProps> = ({
     resolver: zodResolver(updateEmployeeSchema),
   });
 
-  console.log(errors);
 
   const [form] = Form.useForm();
   const { data: employee } = useGetEmployeeByIdQuery(selectedEmployeeId as any);
@@ -63,7 +62,6 @@ const Update: React.FC<ActionModalProps> = ({
   }, [employee, reset]);
 
   const [updateEmployee, { isSuccess }] = useUpdateEmployeeMutation();
-console.log(isSuccess)
   const { data: roles } = useGetRolesQuery();
   const { data: teams } = useGetTeamsQuery();
   const optionsTeams: SelectProps["options"] = [];

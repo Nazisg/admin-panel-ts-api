@@ -63,6 +63,7 @@ export interface EmployeeType {
   team: { teamName: string };
   role: { roleName: string };
   status: boolean;
+  totalElements:number | any 
 }
 
 export interface RenderIfProps {

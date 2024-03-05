@@ -14,6 +14,7 @@ import {
   Tooltip,
   Typography,
 } from "antd";
+import { saveAs } from "file-saver";
 import { useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import { ReportType } from "shared/types";
@@ -22,14 +23,16 @@ import {
   useGetReportsExportQuery,
   useGetReportsUserQuery,
 } from "src/redux/api/reports";
+import { useAppSelector } from "src/redux/hooks";
 import ActionButton from "src/shared/components/ActionButton";
 import Filter from "src/shared/components/Filter";
+import * as XLSX from "xlsx";
 import styles from "./DailyReport.module.scss";
 import ReportModal from "./modals";
-import { useAppSelector } from "src/redux/hooks";
 
 export default function DailyReport() {
   const [query, setQuery] = useState("");
+  const [pagination, setPagination] = useState({ pageNumber: 1, pageSize: 10 });
   const [modalOpen, setModalOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [status, setStatus] = useState<
@@ -109,9 +112,7 @@ export default function DailyReport() {
 
   const { data: reportAdmin } = useGetReportsAdminQuery(query);
   const { data: reportUser } = useGetReportsUserQuery(query);
-  console.log(reportUser, " reportUser");
   const { data: exportExcel } = useGetReportsExportQuery(query);
-  console.log(useGetReportsExportQuery(query), "exportExcel");
   const reportsTable =
     role === "EMPLOYEE"
       ? (reportUser?.content ?? []).map((reportU) => ({
@@ -131,7 +132,32 @@ export default function DailyReport() {
           note: report?.reportText,
         }));
 
-  const handleExport = () => {};
+  const handleExport = () => {
+    const exportData = reportsTable.map((report) => ({
+      Name: report.firstName ? `${report.firstName} ${report.lastName}` : "",
+      Project: report.projectName,
+      "Created Date": report.createdDate,
+      Note: report.note,
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+    });
+
+    saveAs(data, "daily_reports.xlsx");
+  };
+  const handleTableChange = (pagination: any) => {
+    setPagination({
+      pageNumber: pagination.current,
+      pageSize: pagination.pageSize,
+    });
+
+    const queryString = `pageNumber=${pagination.current}&pageSize=${pagination.pageSize}`;
+    setQuery(queryString);
+  };
   return (
     <>
       <Flex align="baseline" gap="small" className={styles.header}>
@@ -182,7 +208,14 @@ export default function DailyReport() {
         bordered
         size="large"
         className="table"
-        // pagination={{ pageSize: 10 }}
+        pagination={{
+          ...pagination,
+          total:
+            role === "EMPLOYEE"
+              ? reportUser?.totalElements
+              : reportAdmin?.totalElements,
+        }}
+        onChange={handleTableChange}
         scroll={{ y: "350px", x: "auto" }}
         columns={columns}
         loading={reportUser === undefined || reportAdmin === undefined}

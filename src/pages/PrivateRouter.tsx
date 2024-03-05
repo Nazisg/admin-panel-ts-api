@@ -7,23 +7,23 @@ const DailyReport = lazy(() => import("./DailyReport"));
 const Projects = lazy(() => import("./Projects"));
 
 export default function PrivateRouter() {
-  const { roleName } = useAppSelector((state) => state.auth.profile.role);
-  console.log(roleName);
+  const role = useAppSelector((state) => state.auth.profile.role.roleName);
+  console.log(role);
 
   return (
     <Routes>
-      {roleName !== "EMPLOYEE" ? (
+      {role !== "EMPLOYEE" ? (
         <Route path="/" element={<Employees />} />
       ) : null}
-      {roleName !== "EMPLOYEE" ? (
+      {role !== "EMPLOYEE" ? (
         <Route path="/teams" element={<Teams />} />
       ) : null}
-      {roleName !== "EMPLOYEE" ? (
+      {role !== "EMPLOYEE" ? (
         <Route path="/reports" element={<DailyReport />} />
       ) : (
         <Route path="/" element={<DailyReport />} />
       )}
-      {roleName !== "EMPLOYEE" ? (
+      {role !== "EMPLOYEE" ? (
         <Route path="/projects" element={<Projects />} />
       ) : null}
       <Route path="*" element={<Navigate to="/" />} />

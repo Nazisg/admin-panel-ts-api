@@ -24,32 +24,22 @@ import {
   useGetEmployeesFilterQuery,
   useUpdateStatusMutation,
 } from "src/redux/api/employees";
+import { useAppSelector } from "src/redux/hooks";
 import Filter from "src/shared/components/Filter";
 import EmployeeModal from "../Employees/modals/index";
 import styles from "./Employees.module.scss";
-import { useAppSelector } from "src/redux/hooks";
 
 export default function Employees() {
+  const [pagination, setPagination] = useState({ pageNumber: 1, pageSize: 10 });
   const [query, setQuery] = useState("");
-  interface DataType {
-    id: string;
-    key: React.Key;
-    firstName: string;
-    lastName: string;
-    mail: string;
-    team: { teamName: string };
-    role: { roleName: string };
-    status: string;
-    action: React.ReactNode;
-  }
   const { data: employeeData } = useGetEmployeesFilterQuery(query);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const role = useAppSelector((state) => state.auth.profile.role.roleName);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<number | null>(
     null
   );
-
   const [status, setStatus] = useState<
     "view" | "delete" | "update" | "create" | "resetPassword"
   >("view");
@@ -58,6 +48,7 @@ export default function Employees() {
     setModalOpen(true);
     setStatus("create");
   };
+
   const employees =
     employeeData?.content?.map((employee) => ({
       key: employee?.id,
@@ -182,7 +173,15 @@ export default function Employees() {
       ),
     },
   ];
+  const handleTableChange = (pagination: any) => {
+    setPagination({
+      pageNumber: pagination.current,
+      pageSize: pagination.pageSize,
+    });
 
+    const queryString = `pageNumber=${pagination.current}&pageSize=${pagination.pageSize}`;
+    setQuery(queryString);
+  };
   return (
     <>
       <EmployeeModal
@@ -194,7 +193,6 @@ export default function Employees() {
       <Flex align="baseline" gap="small" className={styles.header}>
         <Typography.Title className="title">Employees</Typography.Title>
         <Flex gap="small" justify="flex-end">
-
           <Button
             onClick={() => setFilterOpen(true)}
             icon={<FilterOutlined />}
@@ -205,29 +203,32 @@ export default function Employees() {
             Filter
           </Button>
           {role === "SUPER_ADMIN" || role === "ADMIN" ? (
-
-          <Tooltip placement="top" title="Create">
-            <Button
-              onClick={handleCreate}
-              type="primary"
-              shape="circle"
-              icon={<PlusOutlined />}
-              size="large"
-              className="create-btn"
-            ></Button>
-          </Tooltip>
-          ):null}
+            <Tooltip placement="top" title="Create">
+              <Button
+                onClick={handleCreate}
+                type="primary"
+                shape="circle"
+                icon={<PlusOutlined />}
+                size="large"
+                className="create-btn"
+              ></Button>
+            </Tooltip>
+          ) : null}
         </Flex>
       </Flex>
       <Table
         bordered
         size="large"
         className="table"
-        pagination={{ pageSize: 10 }}
+        pagination={{
+          ...pagination,
+          total: employeeData?.totalElements,
+        }}
         scroll={{ y: "350px", x: "auto" }}
         columns={columns}
         loading={employeeData === undefined}
         dataSource={employees}
+        onChange={handleTableChange}
       />
       <Filter
         modalOpen={filterOpen}

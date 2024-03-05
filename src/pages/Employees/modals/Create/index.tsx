@@ -30,7 +30,7 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
       roleName: string;
     };
     mail: string;
-    teamId: string;
+    teamId: number | null | string;
   }
 
   const [createEmployee, { isSuccess }] = useCreateEmployeeMutation();
@@ -88,7 +88,6 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
       teamId: getValues().teamId,
     });
   };
-  console.log(useCreateEmployeeMutation())
   useEffect(() => {
     if (isSuccess) {
       setModalOpen(false);

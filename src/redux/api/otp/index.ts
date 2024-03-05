@@ -20,7 +20,6 @@ export const otpApi = createApi({
     }),
     confirmPassword: builder.mutation({
       query: ({ mail, ...data }) => {
-        console.log(mail);
         return {
           url: `users/confirm-password?mail=${encodeURIComponent(mail)}`,
           method: "PUT",

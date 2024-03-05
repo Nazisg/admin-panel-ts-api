@@ -69,9 +69,6 @@ const authSlice = createSlice({
     setUser: (state, action: PayloadAction<any>) => {
       state.profile = action.payload;
     },
-    setEmployeeData: (state, action: PayloadAction<any>) => {
-      state.employeeData = action.payload;
-    },
     setToken: (state, action: PayloadAction<AuthState["user"]>) => {
       state.user = action.payload;
     },
@@ -88,6 +85,6 @@ export const reducer = persistReducer(
   authSlice.reducer
 );
 
-export const { setToken, logout, setUser,setEmployeeData } = authSlice.actions;
+export const { setToken, logout, setUser } = authSlice.actions;
 
 export default reducer;

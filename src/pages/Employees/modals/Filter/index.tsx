@@ -3,14 +3,18 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useGetProjectsSelectQuery } from "src/redux/api/projects";
 import { useGetTeamsQuery } from "src/redux/api/teams";
 
-export default function FilterEmployee({ setQuery }) {
+interface FilterEmployeeProps {
+  setQuery: (query: string) => void;
+}
+
+const FilterEmployee: React.FC<FilterEmployeeProps> = ({ setQuery }) => {
   const optionsTeams: SelectProps["options"] = [];
   const optionsProject: SelectProps["options"] = [];
   const { data: teams } = useGetTeamsQuery();
   const { data: projects } = useGetProjectsSelectQuery();
 
   if (Array.isArray(teams)) {
-    teams?.map((team) => {
+    teams.forEach((team) => {
       optionsTeams.push({
         value: team.id,
         label: team.teamName,
@@ -18,7 +22,7 @@ export default function FilterEmployee({ setQuery }) {
     });
   }
 
-  projects?.content?.map((project) => {
+  projects?.content?.forEach((project) => {
     optionsProject.push({
       value: project.id,
       label: project.projectName,
@@ -46,6 +50,7 @@ export default function FilterEmployee({ setQuery }) {
     }
     setQuery(fields.join("&"));
   };
+
   return (
     <Form
       onFinish={handleSubmit(onSubmit)}
@@ -123,3 +128,5 @@ export default function FilterEmployee({ setQuery }) {
     </Form>
   );
 }
+
+export default FilterEmployee;

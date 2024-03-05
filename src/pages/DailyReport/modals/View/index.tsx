@@ -8,8 +8,6 @@ const View: React.FC<ActionModalProps> = ({
   selectedReportId,
 }) => {
   const { data: report } = useGetReportByIdQuery(selectedReportId as any);
-  console.log(report)
-  console.log(selectedReportId)
   return (
     <Drawer
       title="View Employee"

@@ -24,7 +24,7 @@ export const authApi = createApi({
           dispatch(setToken(data));
           dispatch(authApi.endpoints.getMe.initiate(null));
         } catch (err) {
-          console.log("loginUser err");
+          console.log("loginUser error");
         }
       },
     }),
@@ -35,7 +35,6 @@ export const authApi = createApi({
         try {
           const { data } = await queryFulfilled;
           dispatch(setUser(data));
-          console.log(setUser(data));
         } catch (err) {
           console.log("getprofile err");
         }

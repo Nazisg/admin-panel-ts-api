@@ -52,7 +52,6 @@ export const APIBaseQueryInterceptor = axiosBaseQuery({
     const { auth } = getState();
 
     if (auth?.user?.access_token) {
-      console.log();
       headers["Authorization"] = `Bearer ${auth?.user?.access_token}`;
     }
     return headers;
@@ -61,8 +60,6 @@ export const APIBaseQueryInterceptor = axiosBaseQuery({
 export const APIBaseQuery = async (args: any, api: any, extraOptions: any) => {
   let result = await APIBaseQueryInterceptor(args, api, extraOptions);
   if (result.error) {
-    console.log("Error an occured");
-    console.log(result.error);
     if (result.error && result.error.data && result.error.data.message) {
       message.error(result.error?.data?.message);
     }

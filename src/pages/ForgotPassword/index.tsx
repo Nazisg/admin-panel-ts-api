@@ -9,7 +9,6 @@ const ForgotPassword: React.FC = () => {
   const { token } = theme.useToken();
   const [current, setCurrent] = useState(0);
   const [mail, setMail] = useState("");
-  console.log(mail)
   const next = () => {
     setCurrent(current + 1);
   };

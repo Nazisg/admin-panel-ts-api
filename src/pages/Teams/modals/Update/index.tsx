@@ -49,7 +49,6 @@ const Update: React.FC<ActionModalProps> = ({
     }
   }, [team, reset]);
   const [updateTeam, {isSuccess}] = useUpdateTeamMutation();
-console.log(team)
   const onSubmit = () => {
     const values = getValues();
     updateTeam({

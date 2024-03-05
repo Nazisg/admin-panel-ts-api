@@ -24,10 +24,12 @@ import { useAppSelector } from "src/redux/hooks";
 
 export default function Projects() {
   const [query, setQuery] = useState("");
+  const [pagination, setPagination] = useState({ pageNumber: 1, pageSize: 10 });
+
   const { data: ProjectData } = useGetProjectsFilterQuery(query);
   const [modalOpen, setModalOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
-  const role = useAppSelector((state)=>state.auth.profile.role.roleName)
+  const role = useAppSelector((state) => state.auth.profile.role.roleName);
   const [status, setStatus] = useState<
     "view" | "delete" | "update" | "create" | "resetPassword"
   >("view");
@@ -69,22 +71,30 @@ export default function Projects() {
             projectId={record.id}
             setSelectedProjectId={setSelectedProjectId}
           />
-                    {role === "SUPER_ADMIN" || role === "ADMIN" ? (
-
-          <ActionButton
-            setStatus={setStatus}
-            setModalOpen={setModalOpen}
-            title="Update"
-            icon={<EditOutlined />}
-            type="btnUpdate"
-            projectId={record.id}
-            setSelectedProjectId={setSelectedProjectId}
-          />):null}
+          {role === "SUPER_ADMIN" || role === "ADMIN" ? (
+            <ActionButton
+              setStatus={setStatus}
+              setModalOpen={setModalOpen}
+              title="Update"
+              icon={<EditOutlined />}
+              type="btnUpdate"
+              projectId={record.id}
+              setSelectedProjectId={setSelectedProjectId}
+            />
+          ) : null}
         </Space>
       ),
     },
   ];
+  const handleTableChange = (pagination: any) => {
+    setPagination({
+      pageNumber: pagination.current,
+      pageSize: pagination.pageSize,
+    });
 
+    const queryString = `page=${pagination.current}&size=${pagination.pageSize}`;
+    setQuery(queryString);
+  };
   return (
     <>
       <Flex align="baseline" gap="small" className={styles.header}>
@@ -100,23 +110,28 @@ export default function Projects() {
             Filter
           </Button>
           {role === "SUPER_ADMIN" || role === "ADMIN" ? (
-
-          <Tooltip placement="top" title="Create">
-            <Button
-              onClick={handleCreate}
-              type="primary"
-              shape="circle"
-              icon={<PlusOutlined />}
-              size="large"
-              className="create-btn"
-            ></Button>
-          </Tooltip>):null}
+            <Tooltip placement="top" title="Create">
+              <Button
+                onClick={handleCreate}
+                type="primary"
+                shape="circle"
+                icon={<PlusOutlined />}
+                size="large"
+                className="create-btn"
+              ></Button>
+            </Tooltip>
+          ) : null}
         </Flex>
       </Flex>
       <Table
         bordered
         className="table"
         scroll={{ y: "350px", x: "auto" }}
+        pagination={{
+          ...pagination,
+          total: ProjectData?.totalElements,
+        }}
+        onChange={handleTableChange}
         columns={columns}
         loading={ProjectData === undefined}
         dataSource={projects}
