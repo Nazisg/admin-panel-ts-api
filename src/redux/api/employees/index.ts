@@ -36,6 +36,7 @@ export const employeesApi = createApi({
   reducerPath: "employeesApi",
   baseQuery: APIBaseQuery,
   tagTypes: ["Employees"],
+  keepUnusedDataFor: 1,
   endpoints: (builder) => ({
     getEmployees: builder.query<EmployeesType, void>({
       query: () => ({ url: `users`, method: "GET" }),

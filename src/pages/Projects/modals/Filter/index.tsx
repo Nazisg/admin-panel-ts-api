@@ -1,7 +1,7 @@
 import { Button, Form, Input } from "antd";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
-export default function FilterProject({ setQuery }) {
+export default function FilterProject({ setQuery, setModalOpen }) {
   interface FormType {
     name: string;
   }
@@ -17,6 +17,7 @@ export default function FilterProject({ setQuery }) {
       }
     }
     setQuery(fields.join("&"));
+    setModalOpen(false);
   };
   return (
     <Form

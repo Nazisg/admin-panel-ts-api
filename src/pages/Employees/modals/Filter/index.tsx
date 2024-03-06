@@ -7,7 +7,7 @@ interface FilterEmployeeProps {
   setQuery: (query: string) => void;
 }
 
-const FilterEmployee: React.FC<FilterEmployeeProps> = ({ setQuery }) => {
+const FilterEmployee: React.FC<FilterEmployeeProps> = ({ setQuery,setModalOpen }) => {
   const optionsTeams: SelectProps["options"] = [];
   const optionsProject: SelectProps["options"] = [];
   const { data: teams } = useGetTeamsQuery();
@@ -49,6 +49,7 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ setQuery }) => {
       }
     }
     setQuery(fields.join("&"));
+    setModalOpen(false)
   };
 
   return (

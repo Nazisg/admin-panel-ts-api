@@ -18,6 +18,7 @@ export const projectsApi = createApi({
   reducerPath: "projectsApi",
   baseQuery: APIBaseQuery,
   tagTypes: ["Projects"],
+  keepUnusedDataFor: 1,
   endpoints: (builder) => ({
     getProjects: builder.query<ProjectType, void>({
       query: () => ({ url: `api/project`, method: "GET" }),

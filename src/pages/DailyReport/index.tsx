@@ -29,6 +29,7 @@ import Filter from "src/shared/components/Filter";
 import * as XLSX from "xlsx";
 import styles from "./DailyReport.module.scss";
 import ReportModal from "./modals";
+import RenderIf from "src/shared/components/RenderIf";
 
 export default function DailyReport() {
   const [query, setQuery] = useState("");
@@ -139,25 +140,21 @@ export default function DailyReport() {
       "Created Date": report.createdDate,
       Note: report.note,
     }));
-
     const ws = XLSX.utils.json_to_sheet(exportData);
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const data = new Blob([excelBuffer], {
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
     });
-
     saveAs(data, "daily_reports.xlsx");
   };
   const handleTableChange = (pagination: any) => {
-    setPagination({
-      pageNumber: pagination.current,
-      pageSize: pagination.pageSize,
-    });
-
-    const queryString = `pageNumber=${pagination.current}&pageSize=${pagination.pageSize}`;
-    setQuery(queryString);
-  };
+    const queryParams = new URLSearchParams(query);
+    queryParams.set('pageNumber', pagination.current.toString());
+    queryParams.set('pageSize', pagination.pageSize.toString());
+    const updatedQuery = `${queryParams.toString()}`;
+    setQuery(updatedQuery);
+};
   return (
     <>
       <Flex align="baseline" gap="small" className={styles.header}>
@@ -227,12 +224,15 @@ export default function DailyReport() {
         statusType={status}
         selectedReportId={selectedReportId}
       />
+      <RenderIf condition={filterOpen}>
       <Filter
         modalOpen={filterOpen}
         setModalOpen={setFilterOpen}
         statusType="report"
         setQuery={setQuery}
       />
+      </RenderIf>
+     
     </>
   );
 }

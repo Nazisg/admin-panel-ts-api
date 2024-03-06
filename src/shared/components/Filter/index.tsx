@@ -9,9 +9,9 @@ const Filter: React.FC<FilterProps> = ({
   setQuery,
 }) => {
   const status = {
-    employee: <FilterEmployee setQuery={setQuery} />,
-    project: <FilterProject setQuery={setQuery} />,
-    report: <FilterReport setQuery={setQuery} />,
+    employee: <FilterEmployee setQuery={setQuery} setModalOpen={setModalOpen} />,
+    project: <FilterProject setQuery={setQuery} setModalOpen={setModalOpen} />,
+    report: <FilterReport setQuery={setQuery} setModalOpen={setModalOpen}/>,
   };
 
   return (

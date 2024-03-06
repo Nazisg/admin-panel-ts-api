@@ -8,7 +8,6 @@ const Projects = lazy(() => import("./Projects"));
 
 export default function PrivateRouter() {
   const role = useAppSelector((state) => state.auth.profile.role.roleName);
-  console.log(role);
 
   return (
     <Routes>

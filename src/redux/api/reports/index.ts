@@ -17,6 +17,7 @@ export const reportsApi = createApi({
   reducerPath: "reportsApi",
   baseQuery: APIBaseQuery,
   tagTypes: ["Reports"],
+  keepUnusedDataFor: 1,
   endpoints: (builder) => ({
     getReportsAdmin: builder.query<ReportType, string>({
       query: (query) => ({

@@ -4,20 +4,45 @@ import Delete from "./Delete";
 import ResetPassword from "./ResetPassword";
 import Update from "./Update";
 import View from "./View";
+import RenderIf from "src/shared/components/RenderIf";
 
-const EmployeeModal: React.FC<ModalProps & { selectedEmployeeId: number | null }> = ({
-  statusType,
-  modalOpen,
-  setModalOpen,
-  selectedEmployeeId,
-}) => {
+const EmployeeModal: React.FC<
+  ModalProps & { selectedEmployeeId: number | null }
+> = ({ statusType, modalOpen, setModalOpen, selectedEmployeeId }) => {
   const status = {
-    view: <View modalOpen={modalOpen} setModalOpen={setModalOpen} selectedEmployeeId={selectedEmployeeId}/>,
-    update: <Update modalOpen={modalOpen} setModalOpen={setModalOpen} selectedEmployeeId={selectedEmployeeId}/>,
-    delete: <Delete modalOpen={modalOpen} setModalOpen={setModalOpen} selectedEmployeeId={selectedEmployeeId}/>,
+    view: (
+      <RenderIf condition={modalOpen}>
+        <View
+          modalOpen={modalOpen}
+          setModalOpen={setModalOpen}
+          selectedEmployeeId={selectedEmployeeId}
+        />
+     </RenderIf>
+    ),
+    update: (
+      <RenderIf condition={modalOpen}>
+
+      <Update
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        selectedEmployeeId={selectedEmployeeId}
+      />
+      </RenderIf>
+    ),
+    delete: (
+      <Delete
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        selectedEmployeeId={selectedEmployeeId}
+      />
+    ),
     create: <Create modalOpen={modalOpen} setModalOpen={setModalOpen} />,
     resetPassword: (
-      <ResetPassword modalOpen={modalOpen} setModalOpen={setModalOpen} selectedEmployeeId={selectedEmployeeId} />
+      <ResetPassword
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        selectedEmployeeId={selectedEmployeeId}
+      />
     ),
   };
   return status[statusType];

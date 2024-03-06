@@ -21,6 +21,7 @@ import Filter from "src/shared/components/Filter";
 import styles from "./Projects.module.scss";
 import ProjectModal from "./modals/";
 import { useAppSelector } from "src/redux/hooks";
+import RenderIf from "src/shared/components/RenderIf";
 
 export default function Projects() {
   const [query, setQuery] = useState("");
@@ -87,14 +88,12 @@ export default function Projects() {
     },
   ];
   const handleTableChange = (pagination: any) => {
-    setPagination({
-      pageNumber: pagination.current,
-      pageSize: pagination.pageSize,
-    });
-
-    const queryString = `page=${pagination.current}&size=${pagination.pageSize}`;
-    setQuery(queryString);
-  };
+    const queryParams = new URLSearchParams(query);
+    queryParams.set('page', pagination.current.toString());
+    queryParams.set('size', pagination.pageSize.toString());
+    const updatedQuery = `${queryParams.toString()}`;
+    setQuery(updatedQuery);
+};
   return (
     <>
       <Flex align="baseline" gap="small" className={styles.header}>
@@ -136,7 +135,7 @@ export default function Projects() {
         loading={ProjectData === undefined}
         dataSource={projects}
       />
-      <ProjectModal
+       <ProjectModal
         modalOpen={modalOpen}
         setModalOpen={setModalOpen}
         statusType={status}

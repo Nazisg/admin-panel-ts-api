@@ -5,7 +5,7 @@ import { useGetProjectsSelectQuery } from "src/redux/api/projects";
 import moment from "moment";
 import { useAppSelector } from "src/redux/hooks";
 
-export default function FilterReport({ setQuery }) {
+export default function FilterReport({ setQuery,setModalOpen }) {
   const { RangePicker } = DatePicker;
   const optionsProject: SelectProps["options"] = [];
   const optionsEmployees: SelectProps["options"] = [];
@@ -59,6 +59,7 @@ export default function FilterReport({ setQuery }) {
     }
 
     setQuery(fields.join("&"));
+    setModalOpen(false)
   };
   return (
     <Form

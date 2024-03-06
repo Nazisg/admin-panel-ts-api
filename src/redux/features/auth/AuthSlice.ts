@@ -8,6 +8,7 @@ export interface AuthState {
     id: number | null;
     access_token: string | null;
     refresh_token: string | null;
+    expires_at: string | null;
   };
   profile: {
     id: number | null;
@@ -38,6 +39,7 @@ const initialState: AuthState = {
     id: null,
     access_token: null,
     refresh_token: null,
+    expires_at:null,
   },
   profile: {
     id: null,

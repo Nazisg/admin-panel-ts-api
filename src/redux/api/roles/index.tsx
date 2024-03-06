@@ -9,7 +9,7 @@ interface RoleType {
 export const rolesApi = createApi({
   reducerPath: "rolesApi",
   baseQuery: APIBaseQuery,
-
+  keepUnusedDataFor: 1,
   endpoints: (builder) => ({
     getRoles: builder.query<RoleType, void>({
       query: () => ({ url: `api/roles`, method: "GET" }),

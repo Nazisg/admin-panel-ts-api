@@ -8,7 +8,6 @@ const View: React.FC<ActionModalProps> = ({
   selectedEmployeeId,
 }) => {
   const { data } = useGetEmployeeByIdQuery(selectedEmployeeId);
-
   return (
     <Drawer
       title="View Employee"

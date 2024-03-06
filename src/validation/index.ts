@@ -6,6 +6,15 @@ export const createEmployeeSchema = z.object({
   password: z
     .string()
     .min(8, { message: "Password must be at least 8 characters" }),
+  // .refine((value) => /[A-Z]/.test(value), {
+  //   message: "Password must contain at least one uppercase character.",
+  // })
+  // .refine((value) => /[!@#$%^&]/.test(value), {
+  //   message: "Password must contain at least one symbol.",
+  // })
+  // .refine((value) => /[0-9]/.test(value), {
+  //   message: "Password must contain at least one numeric value.",
+  // }),
   mail: z
     .string()
     .email({ message: "Must be a valid email" })
@@ -21,6 +30,16 @@ export const loginSchema = z.object({
   password: z
     .string()
     .min(8, { message: "Password must be at least 8 characters" }),
+  // .refine((value) => /[A-Z]/.test(value), {
+  //   message: "Password must contain at least one uppercase character.",
+  // })
+  // .refine((value) => /[!@#$%^&]/.test(value), {
+  //   message: "Password must contain at least one symbol.",
+  // })
+  // .refine((value) => /[0-9]/.test(value), {
+  //   message: "Password must contain at least one numeric value.",
+  // }),
+
   mail: z
     .string()
     .email({ message: "Must be a valid email" })
@@ -35,8 +54,30 @@ export const createTeamSchema = z.object({
 });
 
 export const resetEmployeeSchema = z.object({
-  password: z.string(),
-  newConfirimPassword: z.string(),
+  password: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters" }),
+  // .refine((value) => /[A-Z]/.test(value), {
+  //   message: "Password must contain at least one uppercase character.",
+  // })
+  // .refine((value) => /[!@#$%^&]/.test(value), {
+  //   message: "Password must contain at least one symbol.",
+  // })
+  // .refine((value) => /[0-9]/.test(value), {
+  //   message: "Password must contain at least one numeric value.",
+  // }),,
+  newConfirimPassword: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters" }),
+  // .refine((value) => /[A-Z]/.test(value), {
+  //   message: "Password must contain at least one uppercase character.",
+  // })
+  // .refine((value) => /[!@#$%^&]/.test(value), {
+  //   message: "Password must contain at least one symbol.",
+  // })
+  // .refine((value) => /[0-9]/.test(value), {
+  //   message: "Password must contain at least one numeric value.",
+  // }),,
 });
 
 export const updateEmployeeSchema = z.object({
@@ -45,11 +86,11 @@ export const updateEmployeeSchema = z.object({
   email: z
     .string()
     .email({ message: "Must be a valid email" })
-    .min(1, { message: "Email is required" })
-    // .refine((value) => value.endsWith("@crocusoft.com"), {
-    //   message: "Email must end with @crocusoft.com",
-    // }),
-    ,
+    .min(1, { message: "Email is required" }),
+  // .refine((value) => value.endsWith("@crocusoft.com"), {
+  //   message: "Email must end with @crocusoft.com",
+  // }),
+
   teamId: z.number(),
   roleId: z.number(),
 });
@@ -64,11 +105,42 @@ export const createReportSchema = z.object({
 });
 
 export const changePasswordEmployeeSchema = z.object({
-  oldpassword: z.string().min(1, { message: "Old Password is required" }),
-  newPassword: z.string().min(1, { message: "New Password is required" }),
+  oldpassword: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters" }),
+  // .refine((value) => /[A-Z]/.test(value), {
+  //   message: "Password must contain at least one uppercase character.",
+  // })
+  // .refine((value) => /[!@#$%^&]/.test(value), {
+  //   message: "Password must contain at least one symbol.",
+  // })
+  // .refine((value) => /[0-9]/.test(value), {
+  //   message: "Password must contain at least one numeric value.",
+  // }),
+  newPassword: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters" }),
+  // .refine((value) => /[A-Z]/.test(value), {
+  //   message: "Password must contain at least one uppercase character.",
+  // })
+  // .refine((value) => /[!@#$%^&]/.test(value), {
+  //   message: "Password must contain at least one symbol.",
+  // })
+  // .refine((value) => /[0-9]/.test(value), {
+  //   message: "Password must contain at least one numeric value.",
+  // }),
   newConfirimPassword: z
     .string()
-    .min(1, { message: "New Confirim Password is required" }),
+    .min(8, { message: "Password must be at least 8 characters" }),
+  // .refine((value) => /[A-Z]/.test(value), {
+  //   message: "Password must contain at least one uppercase character.",
+  // })
+  // .refine((value) => /[!@#$%^&]/.test(value), {
+  //   message: "Password must contain at least one symbol.",
+  // })
+  // .refine((value) => /[0-9]/.test(value), {
+  //   message: "Password must contain at least one numeric value.",
+  // }),
 });
 
 export const filterSchema = z.object({
@@ -88,5 +160,23 @@ export const otpSchema = z.object({
 });
 export const confirmPasswordSchema = z.object({
   newPassword: z.string(),
+  // .refine((value) => /[A-Z]/.test(value), {
+  //   message: "Password must contain at least one uppercase character.",
+  // })
+  // .refine((value) => /[!@#$%^&]/.test(value), {
+  //   message: "Password must contain at least one symbol.",
+  // })
+  // .refine((value) => /[0-9]/.test(value), {
+  //   message: "Password must contain at least one numeric value.",
+  // }),
   confirmNewPassword: z.string(),
+  // .refine((value) => /[A-Z]/.test(value), {
+  //   message: "Password must contain at least one uppercase character.",
+  // })
+  // .refine((value) => /[!@#$%^&]/.test(value), {
+  //   message: "Password must contain at least one symbol.",
+  // })
+  // .refine((value) => /[0-9]/.test(value), {
+  //   message: "Password must contain at least one numeric value.",
+  // }),
 });

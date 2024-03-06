@@ -41,14 +41,17 @@ const ActionButton: React.FC<ActionButtonProps> = ({
           setModalOpen(true);
           // @ts-ignore
           setStatus(status[title]);
-          location.pathname === Urls.EMPLOYEE && role === "SUPER_ADMIN"
+          (location.pathname === Urls.EMPLOYEE && role === "SUPER_ADMIN") ||
+          (location.pathname === Urls.EMPLOYEE && role === "ADMIN") ||
+          (location.pathname === Urls.EMPLOYEE && role === "HEAD")
             ? setSelectedEmployeeId(employeeId)
             : null;
           location.pathname === Urls.TEAM ? setSelectedTeamId(teamId) : null;
           location.pathname === Urls.PROJECT
             ? setSelectedProjectId(projectId)
             : null;
-          location.pathname === Urls.EMPLOYEE && role === "EMPLOYEE" || location.pathname === Urls.REPORT
+          (location.pathname === Urls.EMPLOYEE && role === "EMPLOYEE") ||
+          location.pathname === Urls.REPORT
             ? setSelectedReportId(reportId)
             : null;
         }}

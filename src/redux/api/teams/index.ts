@@ -20,6 +20,7 @@ export const teamsApi = createApi({
   reducerPath: "teamsApi",
   baseQuery: APIBaseQuery,
   tagTypes: ["Teams"],
+  keepUnusedDataFor: 1,
   endpoints: (builder) => ({
     getTeams: builder.query<TeamType[], void>({
       query: () => ({ url: `api/teams`, method: "GET" }),
