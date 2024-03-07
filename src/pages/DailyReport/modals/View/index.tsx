@@ -25,7 +25,9 @@ const View: React.FC<ActionModalProps> = ({
         <Descriptions.Item label="Created date">
           {report?.localDateTime.slice(0, 10)}
         </Descriptions.Item>
-        <Descriptions.Item label="Note">{report?.reportText}</Descriptions.Item>
+        <Descriptions.Item label="Note">
+          <div dangerouslySetInnerHTML={{ __html: report?.reportText }} />
+        </Descriptions.Item>
       </Descriptions>
     </Drawer>
   );

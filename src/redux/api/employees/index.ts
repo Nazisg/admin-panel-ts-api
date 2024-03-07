@@ -28,7 +28,7 @@ interface EmployeesType {
   };
   oldpassword?: string;
   newPassword?: string;
-  newConfirimPassword?: string;
+  newConfirmPassword?: string;
   projectIds?: number[];
 }
 

@@ -16,7 +16,7 @@ const ChangePassword: FunctionComponent<ChangePasswordProps> = ({
   interface FormType {
     oldpassword: string;
     newPassword: string;
-    newConfirimPassword: string;
+    newConfirmPassword: string;
   }
   const [changePassword, { isSuccess }] = useChangePasswordMutation();
 
@@ -34,7 +34,7 @@ const ChangePassword: FunctionComponent<ChangePasswordProps> = ({
     changePassword({
       oldpassword: getValues().oldpassword,
       newPassword: getValues().newPassword,
-      newConfirimPassword: getValues().newConfirimPassword,
+      newConfirmPassword: getValues().newConfirmPassword,
     });
   };
 
@@ -109,11 +109,11 @@ const ChangePassword: FunctionComponent<ChangePasswordProps> = ({
                 value={value}
               />
             )}
-            name="newConfirimPassword"
+            name="newConfirmPassword"
           />
         </Form.Item>
-        {errors.newConfirimPassword && (
-          <span className="errorMsg">{errors.newConfirimPassword.message}</span>
+        {errors.newConfirmPassword && (
+          <span className="errorMsg">{errors.newConfirmPassword.message}</span>
         )}
         <Flex justify="end">
           <Button type="primary" htmlType="submit">

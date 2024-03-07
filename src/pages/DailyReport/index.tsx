@@ -78,7 +78,7 @@ export default function DailyReport() {
       title: "Note",
       dataIndex: "note",
       ellipsis: true,
-      render: (text) => (text.length >= 20 ? text.slice(0, 20) + "..." : text),
+     render: (text) => <div dangerouslySetInnerHTML={{__html: (text.length >= 20 ? text.slice(0, 20) + "..." : text)}}/>,
     },
     {
       title: "Action",
@@ -224,15 +224,12 @@ export default function DailyReport() {
         statusType={status}
         selectedReportId={selectedReportId}
       />
-      <RenderIf condition={filterOpen}>
       <Filter
         modalOpen={filterOpen}
         setModalOpen={setFilterOpen}
         statusType="report"
         setQuery={setQuery}
-      />
-      </RenderIf>
-     
+      />     
     </>
   );
 }

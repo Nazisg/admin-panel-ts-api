@@ -5,7 +5,7 @@ import { useGetProjectsSelectQuery } from "src/redux/api/projects";
 import moment from "moment";
 import { useAppSelector } from "src/redux/hooks";
 
-export default function FilterReport({ setQuery,setModalOpen }) {
+export default function FilterReport({ setQuery, setModalOpen }) {
   const { RangePicker } = DatePicker;
   const optionsProject: SelectProps["options"] = [];
   const optionsEmployees: SelectProps["options"] = [];
@@ -47,7 +47,7 @@ export default function FilterReport({ setQuery,setModalOpen }) {
     if (Array.isArray(data.dates) && data.dates.length >= 2) {
       const startDateFormatted = moment(data?.dates?.[0]).format("YYYY-MM-DD");
       const endDateFormatted = moment(data?.dates?.[1]).format("YYYY-MM-DD");
-
+      console.log(startDateFormatted, endDateFormatted);
       fields.push(`startDate=${startDateFormatted}`);
       fields.push(`endDate=${endDateFormatted}`);
     }
@@ -59,7 +59,7 @@ export default function FilterReport({ setQuery,setModalOpen }) {
     }
 
     setQuery(fields.join("&"));
-    setModalOpen(false)
+    setModalOpen(false);
   };
   return (
     <Form
@@ -83,8 +83,8 @@ export default function FilterReport({ setQuery,setModalOpen }) {
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
               <Select
-              mode="multiple"
-              size="large"
+                mode="multiple"
+                size="large"
                 placeholder="Nazrin Isgandarova"
                 onChange={onChange}
                 onBlur={onBlur}
@@ -101,8 +101,8 @@ export default function FilterReport({ setQuery,setModalOpen }) {
           control={control}
           render={({ field: { onChange, onBlur, value } }) => (
             <Select
-            mode="multiple"
-            size="large"
+              mode="multiple"
+              size="large"
               onChange={onChange}
               onBlur={onBlur}
               value={value}

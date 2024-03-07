@@ -129,7 +129,7 @@ export const changePasswordEmployeeSchema = z.object({
   // .refine((value) => /[0-9]/.test(value), {
   //   message: "Password must contain at least one numeric value.",
   // }),
-  newConfirimPassword: z
+  newConfirmPassword: z
     .string()
     .min(8, { message: "Password must be at least 8 characters" }),
   // .refine((value) => /[A-Z]/.test(value), {
