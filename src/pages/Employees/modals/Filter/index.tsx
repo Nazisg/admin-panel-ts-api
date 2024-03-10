@@ -1,17 +1,31 @@
 import { Button, Form, Input, Select, SelectProps } from "antd";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { useGetStatusListQuery } from "src/redux/api/employees";
 import { useGetProjectsSelectQuery } from "src/redux/api/projects";
 import { useGetTeamsQuery } from "src/redux/api/teams";
 
 interface FilterEmployeeProps {
   setQuery: (query: string) => void;
 }
+interface FormType {
+  firstName: string;
+  lastName: string;
+  mail: string;
+  teamId: number[];
+  projectIds: number[];
+  status: string;
+}
 
-const FilterEmployee: React.FC<FilterEmployeeProps> = ({ setQuery,setModalOpen }) => {
+const FilterEmployee: React.FC<FilterEmployeeProps> = ({
+  setQuery,
+  setModalOpen,
+}) => {
   const optionsTeams: SelectProps["options"] = [];
   const optionsProject: SelectProps["options"] = [];
+  const optionsStatus: SelectProps["options"] = [];
   const { data: teams } = useGetTeamsQuery();
   const { data: projects } = useGetProjectsSelectQuery();
+  const { data: statusList } = useGetStatusListQuery();
 
   if (Array.isArray(teams)) {
     teams.forEach((team) => {
@@ -29,12 +43,13 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ setQuery,setModalOpen }
     });
   });
 
-  interface FormType {
-    firstName: string;
-    lastName: string;
-    mail: string;
-    teamId: number[];
-    projectIds: number[];
+  if (Array.isArray(statusList)) {
+    statusList.forEach((status) => {
+      optionsStatus.push({
+        value: status,
+        label: status,
+      });
+    });
   }
 
   const { handleSubmit, control } = useForm<FormType>({});
@@ -49,7 +64,7 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ setQuery,setModalOpen }
       }
     }
     setQuery(fields.join("&"));
-    setModalOpen(false)
+    setModalOpen(false);
   };
 
   return (
@@ -93,6 +108,22 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ setQuery,setModalOpen }
           name="projectIds"
         />
       </Form.Item>
+      <Form.Item label="Status" name="status">
+        <Controller
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Select
+              size="large"
+              onChange={onChange}
+              onBlur={onBlur}
+              value={value}
+              placeholder="ACTIVE"
+              options={optionsStatus}
+            />
+          )}
+          name="status"
+        />
+      </Form.Item>
       <Form.Item label="Name" name="firstName">
         <Controller
           control={control}
@@ -128,6 +159,6 @@ const FilterEmployee: React.FC<FilterEmployeeProps> = ({ setQuery,setModalOpen }
       </Button>
     </Form>
   );
-}
+};
 
 export default FilterEmployee;

@@ -11,7 +11,9 @@ import PrivateRouter from "./PrivateRouter";
 const Router = () => {
   const { defaultAlgorithm, darkAlgorithm } = theme;
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const {user: { access_token }, } = useAppSelector((state) => state.auth);
+  const {
+    user: { access_token },
+  } = useAppSelector((state) => state.auth);
 
   return (
     <ConfigProvider
@@ -26,7 +28,7 @@ const Router = () => {
         <Auxilliary>
           <SideMenu />
           <Auxilliary>
-            <Header setIsDarkMode={setIsDarkMode} />
+            <Header setIsDarkMode={setIsDarkMode} isDarkMode={isDarkMode} />
             <Cover>
               <Suspense fallback={<Spinner />}>
                 <PrivateRouter />

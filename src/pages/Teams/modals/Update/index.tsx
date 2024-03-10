@@ -45,9 +45,11 @@ const Update: React.FC<ActionModalProps> = ({
       reset({
         teamName: team.name,
         employees: team.users?.map((user) => user.id),
+        // employees: team.users?.filter(user => user.status === "ACTIVE").map(user => user.id),
       });
     }
   }, [team, reset]);
+  
   const [updateTeam, {isSuccess}] = useUpdateTeamMutation();
   const onSubmit = () => {
     const values = getValues();

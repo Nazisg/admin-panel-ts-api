@@ -11,12 +11,8 @@ export default function PrivateRouter() {
 
   return (
     <Routes>
-      {role !== "EMPLOYEE" ? (
-        <Route path="/" element={<Employees />} />
-      ) : null}
-      {role !== "EMPLOYEE" ? (
-        <Route path="/teams" element={<Teams />} />
-      ) : null}
+      {role !== "EMPLOYEE" ? <Route path="/" element={<Employees />} /> : null}
+      {role !== "EMPLOYEE" ? <Route path="/teams" element={<Teams />} /> : null}
       {role !== "EMPLOYEE" ? (
         <Route path="/reports" element={<DailyReport />} />
       ) : (

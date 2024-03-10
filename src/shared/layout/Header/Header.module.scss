@@ -15,13 +15,17 @@
     font-size: 20px;
     margin: 0;
     display: none;
-  
+
     @media only screen and (min-width: 768px) {
       display: block;
     }
   }
-  
-  .light {
-    width: 30px;
+  .mode {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    svg{
+      font-size: 18px;
+    }
   }
 }

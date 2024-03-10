@@ -1,8 +1,9 @@
-import { Form, Select, DatePicker, SelectProps, Button } from "antd";
+import { Button, DatePicker, Form, Select, SelectProps } from "antd";
+import moment from "moment";
+import { useState } from "react"; 
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useGetEmployeesQuery } from "src/redux/api/employees";
 import { useGetProjectsSelectQuery } from "src/redux/api/projects";
-import moment from "moment";
 import { useAppSelector } from "src/redux/hooks";
 
 export default function FilterReport({ setQuery, setModalOpen }) {
@@ -17,8 +18,10 @@ export default function FilterReport({ setQuery, setModalOpen }) {
     startDate: string;
     endDate: string;
     projectIds: number[];
-    dates: string[];
+    dates: string[] |null;
   }
+
+  const [selectedDates, setSelectedDates] = useState<moment.Moment[]>([]); 
 
   if (Array.isArray(employees)) {
     employees?.map((employee) => {
@@ -44,10 +47,9 @@ export default function FilterReport({ setQuery, setModalOpen }) {
         fields.push(`userIds=${userId}`);
       });
     }
-    if (Array.isArray(data.dates) && data.dates.length >= 2) {
-      const startDateFormatted = moment(data?.dates?.[0]).format("YYYY-MM-DD");
-      const endDateFormatted = moment(data?.dates?.[1]).format("YYYY-MM-DD");
-      console.log(startDateFormatted, endDateFormatted);
+    if (Array.isArray(selectedDates) && selectedDates.length === 2) {
+      const startDateFormatted = selectedDates[0].format("YYYY-MM-DD");
+      const endDateFormatted = selectedDates[1].format("YYYY-MM-DD");
       fields.push(`startDate=${startDateFormatted}`);
       fields.push(`endDate=${endDateFormatted}`);
     }
@@ -61,6 +63,11 @@ export default function FilterReport({ setQuery, setModalOpen }) {
     setQuery(fields.join("&"));
     setModalOpen(false);
   };
+
+  const handleDateChange = (dates: moment.Moment[]) => {
+    setSelectedDates(dates); 
+  };
+
   return (
     <Form
       onFinish={handleSubmit(onSubmit)}
@@ -72,7 +79,14 @@ export default function FilterReport({ setQuery, setModalOpen }) {
         <Controller
           control={control}
           render={({ field: { onChange, onBlur } }) => (
-            <RangePicker onChange={onChange} onBlur={onBlur} size="large" />
+            <RangePicker
+              onChange={(dates) => {
+                onChange(dates);
+                handleDateChange(dates);
+              }}
+              onBlur={onBlur}
+              size="large"
+            />
           )}
           name="dates"
         />
