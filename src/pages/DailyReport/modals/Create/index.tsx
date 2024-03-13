@@ -17,7 +17,7 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
   const optionsProject: SelectProps["options"] = [];
   const { data: projects } = useGetProjectsQuery();
   const [createReport, { isSuccess }] = useCreateReportMutation();
-  
+
   const {
     handleSubmit,
     control,

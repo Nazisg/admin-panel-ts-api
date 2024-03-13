@@ -105,7 +105,7 @@ export const employeesApi = createApi({
         return {
           url: `users/change-password`,
           method: "PUT",
-          data
+          data,
         };
       },
       invalidatesTags: ["Employees"],

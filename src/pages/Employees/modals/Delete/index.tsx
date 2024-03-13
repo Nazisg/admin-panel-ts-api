@@ -10,7 +10,6 @@ const Delete: React.FC<ActionModalProps> = ({
   setModalOpen,
   selectedEmployeeId,
 }) => {
-
   const [deleteEmployee] = useDeleteEmployeeMutation();
   const { data: employee } = useGetEmployeeByIdQuery(
     selectedEmployeeId as number

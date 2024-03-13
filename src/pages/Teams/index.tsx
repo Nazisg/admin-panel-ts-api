@@ -15,11 +15,10 @@ import {
 } from "antd";
 import { useState } from "react";
 import { useGetTeamsQuery } from "src/redux/api/teams";
+import { useAppSelector } from "src/redux/hooks";
 import ActionButton from "src/shared/components/ActionButton";
 import { TeamType } from "src/shared/types";
 import TeamModal from "./modals/index";
-import { useAppSelector } from "src/redux/hooks";
-import RenderIf from "src/shared/components/RenderIf";
 export default function Teams() {
   const [modalOpen, setModalOpen] = useState(false);
   const [status, setStatus] = useState<
@@ -116,12 +115,12 @@ export default function Teams() {
         dataSource={teams}
         loading={data === undefined}
       />
-        <TeamModal
-          modalOpen={modalOpen}
-          setModalOpen={setModalOpen}
-          statusType={status}
-          selectedTeamId={selectedTeamId}
-        />
+      <TeamModal
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        statusType={status}
+        selectedTeamId={selectedTeamId}
+      />
     </>
   );
 }

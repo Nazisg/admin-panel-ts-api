@@ -1,6 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { APIBaseQuery } from "../axiosBase";
 import { setToken, setUser } from "../../features/auth/AuthSlice";
+import { APIBaseQuery } from "../axiosBase";
 
 interface LoginData {
   mail: string;

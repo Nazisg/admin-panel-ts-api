@@ -1,8 +1,8 @@
 import { ModalProps } from "shared/types";
+import RenderIf from "src/shared/components/RenderIf";
 import Create from "./Create";
 import Update from "./Update";
 import View from "./View";
-import RenderIf from "src/shared/components/RenderIf";
 
 const ReportModal: React.FC<ModalProps> = ({
   statusType,

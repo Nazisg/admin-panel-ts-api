@@ -1,6 +1,6 @@
 import { Button, DatePicker, Form, Select, SelectProps } from "antd";
 import moment from "moment";
-import { useState } from "react"; 
+import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useGetEmployeesQuery } from "src/redux/api/employees";
 import { useGetProjectsSelectQuery } from "src/redux/api/projects";
@@ -18,10 +18,10 @@ export default function FilterReport({ setQuery, setModalOpen }) {
     startDate: string;
     endDate: string;
     projectIds: number[];
-    dates: string[] |null;
+    dates: string[] | null;
   }
 
-  const [selectedDates, setSelectedDates] = useState<moment.Moment[]>([]); 
+  const [selectedDates, setSelectedDates] = useState<moment.Moment[]>([]);
 
   if (Array.isArray(employees)) {
     employees?.map((employee) => {
@@ -65,7 +65,7 @@ export default function FilterReport({ setQuery, setModalOpen }) {
   };
 
   const handleDateChange = (dates: moment.Moment[]) => {
-    setSelectedDates(dates); 
+    setSelectedDates(dates);
   };
 
   return (

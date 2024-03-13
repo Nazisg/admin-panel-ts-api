@@ -1,5 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Flex, Form, Input, Modal, Select, SelectProps, message } from "antd";
+import {
+  Button,
+  Flex,
+  Form,
+  Input,
+  Modal,
+  Select,
+  SelectProps,
+  message,
+} from "antd";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { ActionModalProps } from "shared/types";
@@ -49,8 +58,8 @@ const Update: React.FC<ActionModalProps> = ({
       });
     }
   }, [team, reset]);
-  
-  const [updateTeam, {isSuccess}] = useUpdateTeamMutation();
+
+  const [updateTeam, { isSuccess }] = useUpdateTeamMutation();
   const onSubmit = () => {
     const values = getValues();
     updateTeam({
@@ -105,8 +114,8 @@ const Update: React.FC<ActionModalProps> = ({
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
               <Select
-              mode="multiple"
-              size="large"
+                mode="multiple"
+                size="large"
                 placeholder="Nazrin Isgandarova"
                 onChange={onChange}
                 options={optionsEmployees}

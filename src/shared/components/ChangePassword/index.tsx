@@ -29,7 +29,7 @@ const ChangePassword: FunctionComponent<ChangePasswordProps> = ({
   } = useForm<FormType>({
     resolver: zodResolver(changePasswordEmployeeSchema),
   });
-  
+
   const onSubmit = () => {
     changePassword({
       oldpassword: getValues().oldpassword,

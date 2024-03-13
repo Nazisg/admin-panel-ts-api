@@ -76,7 +76,7 @@ export const APIBaseQuery = async (args: any, api: any, extraOptions: any) => {
 //   const state: any = api;
 //   const userState: any = state.getState() as RootState;
 //   const { user } = userState;
-  
+
 //   if (result.error) {
 //     const state: any = api;
 //     const userState: any = state.getState() as RootState;

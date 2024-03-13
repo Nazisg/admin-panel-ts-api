@@ -9,7 +9,7 @@ import {
   persistStore,
 } from "redux-persist";
 
-import { reducers , middleWares } from "./reducerAndMiddlewares";
+import { middleWares, reducers } from "./reducerAndMiddlewares";
 
 export const store = configureStore({
   reducer: reducers,

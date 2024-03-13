@@ -1,9 +1,9 @@
-import storage from "redux-persist/lib/storage";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
 export interface AuthState {
-  employeeData:any
+  employeeData: any;
   user: {
     id: number | null;
     access_token: string | null;
@@ -34,12 +34,12 @@ export interface AuthState {
 }
 
 const initialState: AuthState = {
-  employeeData : [],
+  employeeData: [],
   user: {
     id: null,
     access_token: null,
     refresh_token: null,
-    expires_at:null,
+    expires_at: null,
   },
   profile: {
     id: null,
@@ -59,7 +59,7 @@ const initialState: AuthState = {
       {
         id: null,
         projectName: null,
-      }
+      },
     ],
   },
 };

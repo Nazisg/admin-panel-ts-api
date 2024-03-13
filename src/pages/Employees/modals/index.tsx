@@ -1,10 +1,10 @@
 import { ModalProps } from "shared/types";
+import RenderIf from "src/shared/components/RenderIf";
 import Create from "./Create";
 import Delete from "./Delete";
 import ResetPassword from "./ResetPassword";
 import Update from "./Update";
 import View from "./View";
-import RenderIf from "src/shared/components/RenderIf";
 
 const EmployeeModal: React.FC<
   ModalProps & { selectedEmployeeId: number | null }
@@ -17,16 +17,15 @@ const EmployeeModal: React.FC<
           setModalOpen={setModalOpen}
           selectedEmployeeId={selectedEmployeeId}
         />
-     </RenderIf>
+      </RenderIf>
     ),
     update: (
       <RenderIf condition={modalOpen}>
-
-      <Update
-        modalOpen={modalOpen}
-        setModalOpen={setModalOpen}
-        selectedEmployeeId={selectedEmployeeId}
-      />
+        <Update
+          modalOpen={modalOpen}
+          setModalOpen={setModalOpen}
+          selectedEmployeeId={selectedEmployeeId}
+        />
       </RenderIf>
     ),
     delete: (

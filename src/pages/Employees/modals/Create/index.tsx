@@ -48,10 +48,13 @@ const Create: React.FC<ActionModalProps> = ({ modalOpen, setModalOpen }) => {
       });
     });
   }
-  
+
   const filteredRoles = roles
     ? role === "SUPER_ADMIN"
-      ? roles?.filter((role: { id: number, roleName:string }) => role.id > 1 && role.id !== 3)
+      ? roles?.filter(
+          (role: { id: number; roleName: string }) =>
+            role.id > 1 && role.id !== 3
+        )
       : role === "ADMIN"
       ? roles.filter((role: { id: number }) => role.id > 3)
       : []

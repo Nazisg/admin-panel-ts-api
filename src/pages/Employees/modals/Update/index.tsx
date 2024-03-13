@@ -1,3 +1,4 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Button,
   Col,
@@ -10,18 +11,17 @@ import {
   SelectProps,
   message,
 } from "antd";
+import { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { ActionModalProps } from "shared/types";
-import { useGetRolesQuery } from "src/redux/api/roles";
-import { useGetTeamsQuery } from "src/redux/api/teams";
 import {
   useGetEmployeeByIdQuery,
   useUpdateEmployeeMutation,
 } from "src/redux/api/employees";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { updateEmployeeSchema } from "src/validation";
-import { useEffect } from "react";
+import { useGetRolesQuery } from "src/redux/api/roles";
+import { useGetTeamsQuery } from "src/redux/api/teams";
 import { useAppSelector } from "src/redux/hooks";
+import { updateEmployeeSchema } from "src/validation";
 
 interface FormType {
   firstName: string;
@@ -44,7 +44,6 @@ const Update: React.FC<ActionModalProps> = ({
   } = useForm<FormType>({
     resolver: zodResolver(updateEmployeeSchema),
   });
-
 
   const [form] = Form.useForm();
   const { data: employee } = useGetEmployeeByIdQuery(selectedEmployeeId as any);
@@ -107,16 +106,14 @@ const Update: React.FC<ActionModalProps> = ({
       id: selectedEmployeeId,
       ...requestData,
     });
-    
-   
   };
 
-	useEffect(() => {
-		if (isSuccess) {
-      setModalOpen(false)
-			message.success("Employee updated succeccfully");
-		}
-	}, [isSuccess]);
+  useEffect(() => {
+    if (isSuccess) {
+      setModalOpen(false);
+      message.success("Employee updated succeccfully");
+    }
+  }, [isSuccess]);
 
   return (
     <Modal

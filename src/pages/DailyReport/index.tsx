@@ -51,7 +51,8 @@ export default function DailyReport() {
           {
             title: "Name",
             dataIndex: "firstName",
-            sorter: (a:unknown, b:unknown) => a.firstName.localeCompare(b.firstName),
+            sorter: (a: unknown, b: unknown) =>
+              a.firstName.localeCompare(b.firstName),
             ellipsis: true,
           },
           {
@@ -77,7 +78,13 @@ export default function DailyReport() {
       title: "Note",
       dataIndex: "note",
       ellipsis: true,
-     render: (text) => <div dangerouslySetInnerHTML={{__html: (text.length >= 20 ? text.slice(0, 20) + "..." : text)}}/>,
+      render: (text) => (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: text.length >= 20 ? text.slice(0, 20) + "..." : text,
+          }}
+        />
+      ),
     },
     {
       title: "Action",
@@ -149,11 +156,11 @@ export default function DailyReport() {
   };
   const handleTableChange = (pagination: any) => {
     const queryParams = new URLSearchParams(query);
-    queryParams.set('pageNumber', pagination.current.toString());
-    queryParams.set('pageSize', pagination.pageSize.toString());
+    queryParams.set("pageNumber", pagination.current.toString());
+    queryParams.set("pageSize", pagination.pageSize.toString());
     const updatedQuery = `${queryParams.toString()}`;
     setQuery(updatedQuery);
-};
+  };
   return (
     <>
       <Flex align="baseline" gap="small" className={styles.header}>
@@ -228,7 +235,7 @@ export default function DailyReport() {
         setModalOpen={setFilterOpen}
         statusType="report"
         setQuery={setQuery}
-      />     
+      />
     </>
   );
 }

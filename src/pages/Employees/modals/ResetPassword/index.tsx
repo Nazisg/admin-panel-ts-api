@@ -35,7 +35,7 @@ const ResetPassword: React.FC<ActionModalProps> = ({
       message.success("Password reseted successfully");
     }
   }, []);
-  
+
   return (
     <Modal
       title="Reset Password"

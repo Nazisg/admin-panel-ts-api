@@ -1,9 +1,9 @@
 import { ModalProps } from "shared/types";
+import RenderIf from "src/shared/components/RenderIf";
 import Create from "./Create";
 import Delete from "./Delete";
 import Update from "./Update";
 import View from "./View";
-import RenderIf from "src/shared/components/RenderIf";
 
 const TeamModal: React.FC<ModalProps> = ({
   statusType,

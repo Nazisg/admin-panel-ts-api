@@ -1,11 +1,11 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Form, Typography } from "antd";
 import { InputOTP } from "antd-input-otp";
-import styles from "./OTP.module.scss";
-import { useOtpMutation } from "src/redux/api/otp";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { otpSchema } from "src/validation";
 import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useOtpMutation } from "src/redux/api/otp";
+import { otpSchema } from "src/validation";
+import styles from "./OTP.module.scss";
 
 const OTP = ({ onNext }) => {
   interface FormType {
@@ -13,7 +13,7 @@ const OTP = ({ onNext }) => {
   }
   const [otp, { isSuccess }] = useOtpMutation();
   const [form] = Form.useForm();
-  const [countdown, setCountdown] = useState(300); // 300 
+  const [countdown, setCountdown] = useState(300); // 300
 
   const {
     handleSubmit,
@@ -31,7 +31,7 @@ const OTP = ({ onNext }) => {
   }, [isSuccess, onNext]);
 
   const handleResendClick = () => {
-    setCountdown(300); // 300 
+    setCountdown(300); // 300
     const otpValues = getValues().otp?.join("");
     otp(otpValues);
   };
@@ -40,14 +40,14 @@ const OTP = ({ onNext }) => {
     const timer = setInterval(() => {
       setCountdown((prevCountdown) => {
         if (prevCountdown === 0) {
-          clearInterval(timer); 
+          clearInterval(timer);
         }
         return prevCountdown > 0 ? prevCountdown - 1 : 0;
       });
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [countdown]); 
+  }, [countdown]);
 
   const formattedCountdown = `${Math.floor(countdown / 60)
     .toString()
@@ -67,7 +67,7 @@ const OTP = ({ onNext }) => {
       >
         <Form.Item>
           <Typography className={styles.title}>
-            Enter the OTP code we sent to your email {" "}
+            Enter the OTP code we sent to your email{" "}
             {countdown === 0 ? (
               <span className={styles.link} onClick={handleResendClick}>
                 Resend code

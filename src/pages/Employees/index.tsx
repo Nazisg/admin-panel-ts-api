@@ -28,7 +28,6 @@ import { useAppSelector } from "src/redux/hooks";
 import Filter from "src/shared/components/Filter";
 import EmployeeModal from "../Employees/modals/index";
 import styles from "./Employees.module.scss";
-import RenderIf from "src/shared/components/RenderIf";
 
 export default function Employees() {
   const [pagination, setPagination] = useState({ pageNumber: 1, pageSize: 10 });
@@ -176,19 +175,19 @@ export default function Employees() {
   ];
   const handleTableChange = (pagination: any) => {
     const queryParams = new URLSearchParams(query);
-    queryParams.set('pageNumber', pagination.current.toString());
-    queryParams.set('pageSize', pagination.pageSize.toString());
+    queryParams.set("pageNumber", pagination.current.toString());
+    queryParams.set("pageSize", pagination.pageSize.toString());
     const updatedQuery = `${queryParams.toString()}`;
     setQuery(updatedQuery);
-};
+  };
   return (
     <>
-        <EmployeeModal
-          modalOpen={modalOpen}
-          setModalOpen={setModalOpen}
-          statusType={status}
-          selectedEmployeeId={selectedEmployeeId}
-        />
+      <EmployeeModal
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        statusType={status}
+        selectedEmployeeId={selectedEmployeeId}
+      />
       <Flex align="baseline" gap="small" className={styles.header}>
         <Typography.Title className="title">Employees</Typography.Title>
         <Flex gap="small" justify="flex-end">
@@ -229,12 +228,12 @@ export default function Employees() {
         dataSource={employees}
         onChange={handleTableChange}
       />
-        <Filter
-          modalOpen={filterOpen}
-          setModalOpen={setFilterOpen}
-          statusType="employee"
-          setQuery={setQuery}
-        />
+      <Filter
+        modalOpen={filterOpen}
+        setModalOpen={setFilterOpen}
+        statusType="employee"
+        setQuery={setQuery}
+      />
     </>
   );
 }
