@@ -29,7 +29,6 @@ import Filter from "src/shared/components/Filter";
 import * as XLSX from "xlsx";
 import styles from "./DailyReport.module.scss";
 import ReportModal from "./modals";
-import RenderIf from "src/shared/components/RenderIf";
 
 export default function DailyReport() {
   const [query, setQuery] = useState("");
@@ -52,7 +51,7 @@ export default function DailyReport() {
           {
             title: "Name",
             dataIndex: "firstName",
-            sorter: (a, b) => a.firstName.localeCompare(b.firstName),
+            sorter: (a:unknown, b:unknown) => a.firstName.localeCompare(b.firstName),
             ellipsis: true,
           },
           {

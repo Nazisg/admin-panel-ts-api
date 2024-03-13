@@ -21,8 +21,9 @@ const ActionButton: React.FC<ActionButtonProps> = ({
 }) => {
   const status = {
     View: "view",
-    Update: "update",
     Delete: "delete",
+    Update: "update",
+    Create: "create",
     ResetPassword: "resetPassword",
   };
 

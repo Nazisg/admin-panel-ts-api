@@ -42,6 +42,7 @@ export interface ReportType {
   createdDate: string;
   firstName?: string | any;
   lastName?:string | any;
+  id:number
 }
 
 export interface ProjectType {
@@ -88,21 +89,21 @@ export interface ActionModalProps {
   selectedReportId: number | null;
 }
 
+
 export interface ActionButtonProps {
   icon: JSX.Element;
   type: string;
   title: string;
-  employeeId: number | string;
-  teamId: number | string;
-  projectId: number | string;
-  reportId:number | string;
-  setSelectedEmployeeId:any;
-  setSelectedProjectId: number | null | any
-  setSelectedTeamId:any;
-  setSelectedReportId: number| null | any
-
+  employeeId?: number | string;
+  teamId?: number | string;
+  projectId?: number | string;
+  reportId?:number | string;
+  setSelectedEmployeeId?:any;
+  setSelectedProjectId?: number | null | any
+  setSelectedTeamId?:any;
+  setSelectedReportId?: number| null | any
   setModalOpen: Dispatch<SetStateAction<boolean>>;
   setStatus: Dispatch<
-    SetStateAction<"view" | "delete" | "update" | "create" | "resetPassword">
-  >;
+  SetStateAction<"view" | "delete" | "update" | "create" | "resetPassword">
+>;
 }
