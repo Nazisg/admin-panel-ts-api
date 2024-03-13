@@ -5,13 +5,13 @@ import { PersistGate } from "redux-persist/integration/react";
 import Spinner from "shared/components/Spinner";
 import App from "./App.tsx";
 import "./index.css";
-import { store, persistor} from "./redux/store.ts";
+import { persistor, store } from "./redux/store.ts";
 import "./styles/index.scss";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
     <Provider store={store}>
-      <PersistGate loading={<Spinner/>} persistor={persistor}>
+      <PersistGate loading={<Spinner />} persistor={persistor}>
         <App />
       </PersistGate>
     </Provider>

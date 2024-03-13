@@ -8,8 +8,8 @@ import { Image, Layout, Menu, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import logo from "shared/media/imgs/crocusoft-logo.png";
-import styles from "./SideMenu.module.scss";
 import { useAppSelector } from "src/redux/hooks";
+import styles from "./SideMenu.module.scss";
 
 const enum Urls {
   TEAM = "/teams",

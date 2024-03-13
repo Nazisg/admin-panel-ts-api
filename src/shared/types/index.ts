@@ -13,7 +13,7 @@ export interface ModalProps {
 export interface FilterProps {
   modalOpen: boolean;
   setModalOpen: Dispatch<SetStateAction<boolean>>;
-  setQuery:string | any;
+  setQuery: string | any;
   statusType:
     | "employee"
     | "team"
@@ -21,13 +21,12 @@ export interface FilterProps {
     | "report"
     | "resetPassword"
     | any;
-
 }
 
 export interface TeamType {
   key: React.Key;
   teamName: string;
-  team?:string;
+  team?: string;
   // employees: {
   //   name: string;
   //   surname: string;
@@ -41,8 +40,8 @@ export interface ReportType {
   projectName: string;
   createdDate: string;
   firstName?: string | any;
-  lastName?:string | any;
-  id:number
+  lastName?: string | any;
+  id: number;
 }
 
 export interface ProjectType {
@@ -64,7 +63,7 @@ export interface EmployeeType {
   team: { teamName: string };
   role: { roleName: string };
   status: boolean;
-  totalElements:number | any 
+  totalElements: number | any;
 }
 
 export interface RenderIfProps {
@@ -89,7 +88,6 @@ export interface ActionModalProps {
   selectedReportId: number | null;
 }
 
-
 export interface ActionButtonProps {
   icon: JSX.Element;
   type: string;
@@ -97,13 +95,13 @@ export interface ActionButtonProps {
   employeeId?: number | string;
   teamId?: number | string;
   projectId?: number | string;
-  reportId?:number | string;
-  setSelectedEmployeeId?:any;
-  setSelectedProjectId?: number | null | any
-  setSelectedTeamId?:any;
-  setSelectedReportId?: number| null | any
+  reportId?: number | string;
+  setSelectedEmployeeId?: any;
+  setSelectedProjectId?: number | null | any;
+  setSelectedTeamId?: any;
+  setSelectedReportId?: number | null | any;
   setModalOpen: Dispatch<SetStateAction<boolean>>;
   setStatus: Dispatch<
-  SetStateAction<"view" | "delete" | "update" | "create" | "resetPassword">
->;
+    SetStateAction<"view" | "delete" | "update" | "create" | "resetPassword">
+  >;
 }
